@@ -2,37 +2,9 @@
 # Estudo permanece só como grupo de validação, não como preditor.
 library(MASS)
 
-locate_tema <- function() {
-  cands <- character()
-  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
-  for (i in seq_len(max(1L, sys.nframe()))) {
-    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
-    if (!is.null(ofile) && nzchar(ofile)) {
-      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
-    }
-  }
-  args <- commandArgs(trailingOnly = FALSE)
-  f <- sub("^--file=", "", args[grepl("^--file=", args)])
-  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
-  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
-  d <- wd
-  for (i in seq_len(12)) {
-    push(file.path(d, "tema_rgna.R"))
-    push(file.path(d, "scripts", "tema_rgna.R"))
-    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
-    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
-    parent <- dirname(d)
-    if (identical(parent, d)) break
-    d <- parent
-  }
-  cands <- unique(cands[file.exists(cands)])
-  cands <- cands[!grepl("projeto-rgna3", cands)]
-  if (!length(cands)) {
-    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
-  }
-  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
-}
-source(locate_tema(), encoding = "UTF-8")
+# Carrega o tema e as funções de leitura a partir de um caminho relativo simples.
+# A função find_root() dentro de tema_rgna.R cuidará de localizar a raiz do projeto.
+source(file.path(dirname(rstudioapi::getActiveDocumentContext()$path), "tema_rgna.R"), encoding = "UTF-8")
 
 root <- find_root()
 df <- ler_treino(root)
@@ -106,12 +78,14 @@ message("Preditores: país, categoria_paises, status, sexo, modelo (+ interaçõ
 message("Grupo de CV: Estudo. Alvo: MAPE (MAPE_log disponível).")
 
 # Visualização da densidade do MAPE por modelo
-ggplot(modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
+p_dens <- ggplot(modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
   geom_density(adjust = 1.1, linewidth = 0.55) +
   scale_color_manual(values = pal_modelo) +
   labs(
-    title = "Densidade do MAPE por modelo",
-    x = "MAPE",
+    title = "Densidade do MAPE por modelo (transformado por Box-Cox)",
+    x = "MAPE (Box-Cox)",
     y = "Densidade",
     caption = "Fonte: dados_treino.xlsx. Kernel gaussiano."
   )
+# Salva o gráfico gerado
+ggsave(file.path(out_dir, "figuras", "03_densidade_mape_boxcox.png"), p_dens, width = 8, height = 5, dpi = 140)
