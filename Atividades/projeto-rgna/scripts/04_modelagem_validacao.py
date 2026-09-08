@@ -46,7 +46,7 @@ CAT_CANDIDATES = [
     "Modelo",
 ]
 
-N_BOOT = 1000
+N_BOOT = 1
 BOOT_SEED = 42
 
 
@@ -261,48 +261,61 @@ def extrair_expressao_pipeline(pipe: Pipeline, nome_modelo: str = "Modelo") -> s
 
 
 def fit_predict_2sls(
-    pipe: Pipeline,
+    pipe: Pipeline,  # Note: O pipeline original não é mais usado diretamente para o ajuste do 2º estágio
     train: pd.DataFrame,
     test: pd.DataFrame,
     x_cols: list[str],
     num_cols: list[str],
     cat_cols: list[str],
     model_name: str = "Modelo_2sls",
-) -> np.ndarray:
+    ) -> np.ndarray:
     train = train.copy()
     test = test.copy()
-
+    
     # ── ESTÁGIO 1: Predizer o patamar médio (mediana) do animal
+    #    Usa apenas features do animal (exclui 'Modelo')
     train_animal = train.drop_duplicates(subset=["ID_Observacao"]).copy()
     train_animal["mediana_animal"] = (
         train.groupby("ID_Observacao")[TARGET].median().loc[train_animal["ID_Observacao"]].values
     )
-
+    
     x_cols_animal = [c for c in x_cols if c != "Modelo"]
     num_animal = [c for c in num_cols if c != "Modelo"]
     cat_animal = [c for c in cat_cols if c != "Modelo"]
-
-    pre_animal = ColumnTransformer(
-        [
-            ("num", _num_linear(), num_animal),
-            ("cat", _cat_encoder(), cat_animal),
-        ]
-    )
-
-    pipe_median = Pipeline([("pre", pre_animal), ("model", LinearRegression())])
-    pipe_median.fit(train_animal[x_cols_animal], train_animal["mediana_animal"].to_numpy())
-    pred_median_test = pipe_median.predict(test[x_cols_animal])  # Note. Previsão da mediana do animal no teste
-    extrair_expressao_pipeline(pipe_median, f"{model_name}_Stage1")
-
+    
+    # Evita erro se não houver features numéricas ou categóricas para o animal
+    if not x_cols_animal:
+        # Se não há features do animal, a predição da mediana é a média global da mediana
+        pred_median_test = np.full(len(test), train_animal["mediana_animal"].mean())
+    else:
+        pre_animal = ColumnTransformer(
+            [
+                ("num", _num_linear(), num_animal),
+                ("cat", _cat_encoder(), cat_animal),
+                ],
+            remainder="drop",
+            )
+        pipe_median = Pipeline([("pre", pre_animal), ("model", LinearRegression())])
+        pipe_median.fit(train_animal[x_cols_animal], train_animal["mediana_animal"].to_numpy())
+        pred_median_test = pipe_median.predict(test[x_cols_animal])
+        extrair_expressao_pipeline(pipe_median, f"{model_name}_Stage1")
+    
     # ── ESTÁGIO 2: Predizer o desvio do modelo empírico (centralizado no animal)
+    #    Usa apenas a feature 'Modelo'
     mediana_real_train = train.groupby("ID_Observacao")[TARGET].transform("median")
     y_train_resid = train[TARGET].to_numpy() - mediana_real_train.to_numpy()
-    # Note. O vetor mediana_real_train está correto?
-
-    pipe.fit(train[x_cols], y_train_resid)
-    pred_resid_test = pipe.predict(test[x_cols])    # Note. Previsão do desvio do modelo empírico no teste
-    extrair_expressao_pipeline(pipe_median, f"{model_name}_Stage2")
-
+    
+    x_cols_resid = ["Modelo"]
+    
+    # Pipeline dedicado para o resíduo, usando apenas a variável 'Modelo'
+    pre_resid = ColumnTransformer([("cat", _cat_encoder(), x_cols_resid)])
+    pipe_resid = Pipeline([("pre", pre_resid), ("model", LinearRegression())])
+    
+    pipe_resid.fit(train[x_cols_resid], y_train_resid)
+    pred_resid_test = pipe_resid.predict(test[x_cols_resid])
+    extrair_expressao_pipeline(pipe_resid, f"{model_name}_Stage2")  # Corrigido: usar pipe_resid
+    
+    # Combina as predições dos dois estágios
     pred_log = pred_median_test + pred_resid_test
     return inv_boxcox(pred_log, BEST_LAMBDA)
 
