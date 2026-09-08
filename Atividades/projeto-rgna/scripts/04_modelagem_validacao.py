@@ -6,98 +6,20 @@ Prevê MAPE na escala original. Encoding de país no fold (sem Estudo como featu
 
 from __future__ import annotations
 
-from datetime import datetime
 import json
-import os
 from itertools import combinations, product
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import GroupKFold
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, SplineTransformer, StandardScaler
 
-PAISES_OCULTOS = [
-    "Campo Rico",
-    "Ilha Verdejante",
-    "Terra Nortenha",
-    "Monção Dourada",
-    "Costa Austral",
-]
-
-TARGET = "MAPE_boxcox"  # Note. MAPE na escala logarítmica (Box-Cox) para regressão linear
-BEST_LAMBDA = 0.3434343
-
-# Candidatos a features para varredura completa
-NUM_CANDIDATES = [
-    "Peso_Corporal_kg",
-    "Consumo_MS_kg",
-    "Fracao_Perda_A",
-]
-CAT_CANDIDATES = [
-    "Pais_Estudo",
-    "Status_Metabolico",
-    "Sexo_Animal",
-    "Modelo",
-]
-
-N_BOOT = 1
-BOOT_SEED = 42
-
-
-def _is_root(p: Path) -> bool:
-    return (p / "projeto-rgna.Rproj").exists() or (p / "data" / "raw" / "dados_treino.xlsx").exists()
-
-
-def find_root() -> Path:
-    env = os.environ.get("RGNA_ROOT", "").strip()
-    if env:
-        p = Path(env).resolve()
-        if _is_root(p):
-            return p
-    starts = [Path(__file__).resolve().parent.parent, Path.cwd().resolve()]
-    seen: set[Path] = set()
-    for here in starts:
-        for p in [here, *here.parents]:
-            if p in seen:
-                continue
-            seen.add(p)
-            if _is_root(p):
-                return p
-            for nested in (p / "projeto-rgna", p / "Atividades" / "projeto-rgna"):
-                if _is_root(nested):
-                    return nested.resolve()
-    raise FileNotFoundError("data/raw/dados_treino.xlsx")
-
-
-def load_frame(root: Path) -> pd.DataFrame:
-    csv_path = root / "data" / "processed" / "03_modelagem.csv"
-    if not csv_path.exists():
-        raise FileNotFoundError("Rode antes scripts/03_engenharia_features.R")
-    df = pd.read_csv(csv_path)
-    df["Estudo"] = df["Estudo"].astype(str)
-    return df
-
-
-def rmse(y_true, y_pred) -> float:
-    return float(np.sqrt(mean_squared_error(y_true, y_pred)))
-
-
-def regression_scores(y_true, y_pred) -> dict:
-    return {
-        "mae": float(mean_absolute_error(y_true, y_pred)),
-        "rmse": rmse(y_true, y_pred),
-        "r2": float(r2_score(y_true, y_pred)),
-        "mape": float(np.mean(np.abs((y_true - y_pred) / y_true))),
-    }
+from rgna import config, modeling, pipelines, utils
 
 
 def top1_accuracy(frame: pd.DataFrame, pred_col: str) -> float:
+    """Calcula a acurácia top-1."""
     real = frame.loc[frame.groupby("ID_Observacao")["MAPE"].idxmin(), ["ID_Observacao", "Modelo"]]
     hat = frame.loc[frame.groupby("ID_Observacao")[pred_col].idxmin(), ["ID_Observacao", "Modelo"]]
     m = real.merge(hat, on="ID_Observacao", suffixes=("_real", "_hat"))
@@ -105,12 +27,14 @@ def top1_accuracy(frame: pd.DataFrame, pred_col: str) -> float:
 
 
 def baseline_predict(train: pd.DataFrame, test: pd.DataFrame) -> np.ndarray:
+    """Gera predições da baseline (mediana por modelo)."""
     med = train.groupby("Modelo", observed=True)["MAPE"].median()
     fallback = float(train["MAPE"].median())
     return test["Modelo"].map(med).fillna(fallback).to_numpy(dtype=float)
 
 
 def campeao_do_fold(train: pd.DataFrame) -> str:
+    """Identifica o modelo 'campeão' (menor mediana de MAPE) em um fold de treino."""
     med = train.groupby("Modelo", observed=True)["MAPE"].median()
     return str(med.idxmin())
 
@@ -118,333 +42,152 @@ def campeao_do_fold(train: pd.DataFrame) -> str:
 def generate_feature_sets() -> list[dict]:
     """Gera todas as combinações possíveis de variáveis numéricas e categóricas."""
     num_combinations = []
-    for r in range(1, len(NUM_CANDIDATES) + 1):
-        num_combinations.extend(list(combinations(NUM_CANDIDATES, r)))
+    for r in range(1, len(config.NUM_CANDIDATES) + 1):
+        num_combinations.extend(list(combinations(config.NUM_CANDIDATES, r)))
 
     cat_combinations = []
-    for r in range(1, len(CAT_CANDIDATES) + 1):
-        cat_combinations.extend(list(combinations(CAT_CANDIDATES, r)))
+    for r in range(1, len(config.CAT_CANDIDATES) + 1):
+        cat_combinations.extend(list(combinations(config.CAT_CANDIDATES, r)))
 
     feature_sets = []
+    # Combinações com variáveis numéricas e categóricas
     for num_cols, cat_cols in product(num_combinations, cat_combinations):
-        num_list = list(num_cols)
-        cat_list = list(cat_cols)
-        feature_sets.append(
-            {
-                "num": num_list,
-                "cat": cat_list,
-                "x_cols": num_list + cat_list,
-                "name": f"num({'_'.join(num_list)})__cat({'_'.join(cat_list)})",
-            }
-        )
-    # Adicionar combinações com apenas uma variável numérica e nenhuma categórica
+        num_list, cat_list = list(num_cols), list(cat_cols)
+        feature_sets.append({
+            "num": num_list,
+            "cat": cat_list,
+            "x_cols": num_list + cat_list,
+            "name": f"num({'_'.join(num_list)})__cat({'_'.join(cat_list)})",
+        })
+    # Combinações com apenas variáveis numéricas
     for num_cols in num_combinations:
         num_list = list(num_cols)
-        feature_sets.append(
-            {
-                "num": num_list,
-                "cat": [],
-                "x_cols": num_list,
-                "name": f"num({'_'.join(num_list)})__cat(none)",
-            }
-        )
+        feature_sets.append({
+            "num": num_list,
+            "cat": [],
+            "x_cols": num_list,
+            "name": f"num({'_'.join(num_list)})__cat(none)",
+        })
     return feature_sets
 
 
-def _cat_encoder() -> Pipeline:
-    return Pipeline(
-        [
-            ("imp", SimpleImputer(strategy="most_frequent")),
-            ("oh", OneHotEncoder(handle_unknown="ignore", sparse_output=True)),
-        ]
-    )
-
-
-def _num_linear() -> Pipeline:
-    return Pipeline(
-        [
-            ("imp", SimpleImputer(strategy="median")),
-            ("sc", StandardScaler()),
-        ]
-    )
-
-
-def linear_preprocessor(num_cols: list[str], cat_cols: list[str]) -> ColumnTransformer:
-    return ColumnTransformer(
-        [
-            ("num", _num_linear(), num_cols),
-            ("cat", _cat_encoder(), cat_cols),
-        ]
-    )
-
-
-def spline_preprocessor(num_cols: list[str], cat_cols: list[str]) -> ColumnTransformer:
-    num_spline = [num_cols[0]]
-    num_linear = num_cols[1:]
-
-    transformers = [
-        (
-            "spl",
-            Pipeline(
-                [
-                    ("imp", SimpleImputer(strategy="median")),
-                    (
-                        "bs",
-                        SplineTransformer(
-                            n_knots=4,
-                            degree=3,
-                            include_bias=False,
-                            extrapolation="constant",
-                        ),
-                    ),
-                    ("sc", StandardScaler()),
-                ]
-            ),
-            num_spline,
-        ),
-        ("cat", _cat_encoder(), cat_cols),
-    ]
-
-    if num_linear:
-        transformers.append(("num", _num_linear(), num_linear))
-
-    return ColumnTransformer(transformers)
-
-
-def ols_pipeline(num_cols: list[str], cat_cols: list[str]) -> Pipeline:
-    return Pipeline([("pre", linear_preprocessor(num_cols, cat_cols)), ("model", LinearRegression())])
-
-
-def spline_pipeline(num_cols: list[str], cat_cols: list[str]) -> Pipeline:
-    return Pipeline([("pre", spline_preprocessor(num_cols, cat_cols)), ("model", LinearRegression())])
-
-def inv_boxcox(y_trans: np.ndarray, lambda_param: float) -> np.ndarray:
-    """Reverte a transformação de Box-Cox para a escala original."""
-    if lambda_param == 0:
-        return np.exp(y_trans)
-    else:
-        # Garante que o argumento da potência seja estritamente positivo para evitar NaNs
-        inner = np.maximum(lambda_param * y_trans + 1.0, 1e-12)
-        return inner ** (1.0 / lambda_param)
-
-
-def extrair_expressao_pipeline(pipe: Pipeline, nome_modelo: str = "Modelo") -> str:
-    """Extrai a equação matemática de um Pipeline scikit-learn contendo
-    ColumnTransformer + LinearRegression.
-    """
-    preprocessor = pipe.named_steps["pre"]
-    regressor = pipe.named_steps["model"]
-
-    # 1. Recupera os nomes das variáveis geradas pelo pré-processador (Ex: OHE, Splines)
-    try:
-        feature_names = preprocessor.get_feature_names_out()
-    except AttributeError:
-        feature_names = [f"x_{i}" for i in range(len(regressor.coef_))]
-
-    # Limpa os prefixos gerados pelo ColumnTransformer (ex: 'cat__Sexo_Animal_M' -> 'Sexo_Animal_M')
-    clean_names = [f.split("__")[-1] for f in feature_names]
-
-    intercept = regressor.intercept_
-    coefs = regressor.coef_
-
-    # 2. Monta a string da expressão matemática
-    termos = [f"{intercept:.4f}"]
-    for coef, name in zip(coefs, clean_names):
-        sinal = "+" if coef >= 0 else "-"
-        termos.append(f"{sinal} {abs(coef):.4f} * ({name})")
-
-    expressao = " ".join(termos)
-    expr = f"{nome_modelo}: y_hat = {expressao}"
-    
-    with open("equacao_modelo.txt", "a", encoding="utf-8") as f:
-        f.write(f"[{datetime.now():%Y-%m-%d %H:%M:%S}]\n {expr}\n")
-
-
-def fit_predict_2sls(
-    pipe: Pipeline,  # Note: O pipeline original não é mais usado diretamente para o ajuste do 2º estágio
-    train: pd.DataFrame,
-    test: pd.DataFrame,
-    x_cols: list[str],
-    num_cols: list[str],
-    cat_cols: list[str],
-    model_name: str = "Modelo_2sls",
-    ) -> np.ndarray:
-    train = train.copy()
-    test = test.copy()
-    
-    # ── ESTÁGIO 1: Predizer o patamar médio (mediana) do animal
-    #    Usa apenas features do animal (exclui 'Modelo')
-    train_animal = train.drop_duplicates(subset=["ID_Observacao"]).copy()
-    train_animal["mediana_animal"] = (
-        train.groupby("ID_Observacao")[TARGET].median().loc[train_animal["ID_Observacao"]].values
-    )
-    
-    x_cols_animal = [c for c in x_cols if c != "Modelo"]
-    num_animal = [c for c in num_cols if c != "Modelo"]
-    cat_animal = [c for c in cat_cols if c != "Modelo"]
-    
-    # Evita erro se não houver features numéricas ou categóricas para o animal
-    if not x_cols_animal:
-        # Se não há features do animal, a predição da mediana é a média global da mediana
-        pred_median_test = np.full(len(test), train_animal["mediana_animal"].mean())
-    else:
-        pre_animal = ColumnTransformer(
-            [
-                ("num", _num_linear(), num_animal),
-                ("cat", _cat_encoder(), cat_animal),
-                ],
-            remainder="drop",
-            )
-        pipe_median = Pipeline([("pre", pre_animal), ("model", LinearRegression())])
-        pipe_median.fit(train_animal[x_cols_animal], train_animal["mediana_animal"].to_numpy())
-        pred_median_test = pipe_median.predict(test[x_cols_animal])
-        extrair_expressao_pipeline(pipe_median, f"{model_name}_Stage1")
-    
-    # ── ESTÁGIO 2: Predizer o desvio do modelo empírico (centralizado no animal)
-    #    Usa apenas a feature 'Modelo'
-    mediana_real_train = train.groupby("ID_Observacao")[TARGET].transform("median")
-    y_train_resid = train[TARGET].to_numpy() - mediana_real_train.to_numpy()
-    
-    x_cols_resid = ["Modelo"]
-    
-    # Pipeline dedicado para o resíduo, usando apenas a variável 'Modelo'
-    pre_resid = ColumnTransformer([("cat", _cat_encoder(), x_cols_resid)])
-    pipe_resid = Pipeline([("pre", pre_resid), ("model", LinearRegression())])
-    
-    pipe_resid.fit(train[x_cols_resid], y_train_resid)
-    pred_resid_test = pipe_resid.predict(test[x_cols_resid])
-    extrair_expressao_pipeline(pipe_resid, f"{model_name}_Stage2")  # Corrigido: usar pipe_resid
-    
-    # Combina as predições dos dois estágios
-    pred_log = pred_median_test + pred_resid_test
-    return inv_boxcox(pred_log, BEST_LAMBDA)
-
-def fit_predict_simples(
-    pipe: Pipeline, train: pd.DataFrame, test: pd.DataFrame, x_cols: list[str], model_name: str = "Modelo_Simples"
-) -> np.ndarray:
-    """Ajusta o modelo diretamente na escala original (MAPE), sem estratégia de etapas."""
-    train = train.copy()
-    test = test.copy()
-
-    pipe.fit(train[x_cols], train[TARGET].to_numpy())
-    extrair_expressao_pipeline(pipe, model_name)
-    return inv_boxcox(pipe.predict(test[x_cols]), BEST_LAMBDA)
-
-
-def collect_fold(
+def collect_fold_results(
     name: str, protocol: str, fold: str, test: pd.DataFrame, pred: np.ndarray, campeao: str
 ) -> tuple[dict, pd.DataFrame]:
+    """Coleta e calcula as métricas para um único fold."""
     tmp = test.copy()
     tmp["pred"] = pred
     real_win = tmp.loc[tmp.groupby("ID_Observacao")["MAPE"].idxmin(), "Modelo"]
-    scores = regression_scores(tmp["MAPE"], pred)
-    scores.update(
-        {
-            "modelo": name,
-            "protocolo": protocol,
-            "fold": fold,
-            "n": int(len(tmp)),
-            "top1": top1_accuracy(tmp, "pred"),
-            "top1_sempre_campeao": float((real_win.to_numpy() == campeao).mean()),
-        }
-    )
+    scores = utils.regression_scores(tmp["MAPE"], pred)
+    scores.update({
+        "modelo": name,
+        "protocolo": protocol,
+        "fold": fold,
+        "n": int(len(tmp)),
+        "top1": top1_accuracy(tmp, "pred"),
+        "top1_sempre_campeao": float((real_win.to_numpy() == campeao).mean()),
+    })
     return scores, tmp
 
 
-def model_predictions(
-    train: pd.DataFrame,
-    test: pd.DataFrame,
-    ) -> dict[str, np.ndarray]:
-    preds = {
-        "baseline_mediana_modelo": baseline_predict(train, test),
-        }
-    
+def run_all_models_for_fold(
+    train: pd.DataFrame, test: pd.DataFrame
+) -> dict[str, tuple[np.ndarray, list[str]]]:
+    """
+    Executa todos os modelos para um determinado par de treino/teste.
+
+    Retorna um dicionário com as predições e as equações de cada modelo.
+    """
+    predictions = {"baseline_mediana_modelo": (baseline_predict(train, test), [])}
     feature_sets = generate_feature_sets()
-    
+
     for fset in feature_sets:
-        num_cols = fset["num"]
-        cat_cols = fset["cat"]
-        x_cols = fset["x_cols"]
-        suffix = fset["name"]
-        
-        pipe_ols = ols_pipeline(num_cols, cat_cols)
-        pipe_spl = spline_pipeline(num_cols, cat_cols)
-        
-        preds[f"ols__{suffix}"] = fit_predict_2sls(pipe_ols, train, test, x_cols, num_cols, cat_cols, f"ols__{suffix}")
-        preds[f"splines__{suffix}"] = fit_predict_2sls(
-            pipe_spl, train, test, x_cols, num_cols, cat_cols, f"splines__{suffix}"
-            )
-        preds[f"ols_simples__{suffix}"] = fit_predict_simples(pipe_ols, train, test, x_cols, f"ols_simples__{suffix}")
-        preds[f"splines_simples__{suffix}"] = fit_predict_simples(
-            pipe_spl, train, test, x_cols, f"splines_simples__{suffix}"
-            )
-    
-    return preds
+        num, cat, x_cols, name = fset["num"], fset["cat"], fset["x_cols"], fset["name"]
+
+        # Define os pipelines
+        pipe_ols = pipelines.ols_pipeline(num, cat)
+        pipe_spl = pipelines.spline_pipeline(num, cat)
+
+        # Executa os modelos e coleta predições/equações
+        predictions[f"ols__{name}"] = modeling.fit_predict_2sls(
+            pipe_ols, train, test, x_cols, num, cat, f"ols__{name}"
+        )
+        predictions[f"splines__{name}"] = modeling.fit_predict_2sls(
+            pipe_spl, train, test, x_cols, num, cat, f"splines__{name}"
+        )
+        predictions[f"ols_simples__{name}"] = modeling.fit_predict_simples(
+            pipe_ols, train, test, x_cols, f"ols_simples__{name}"
+        )
+        predictions[f"splines_simples__{name}"] = modeling.fit_predict_simples(
+            pipe_spl, train, test, x_cols, f"splines_simples__{name}"
+        )
+
+    return predictions
 
 
-def run_group_kfold(df: pd.DataFrame, n_splits: int = 5) -> tuple[list[dict], pd.DataFrame]:
+def run_group_kfold(df: pd.DataFrame, n_splits: int = 5) -> tuple[list[dict], pd.DataFrame, list[str]]:
+    """Executa a validação cruzada GroupKFold."""
     groups = df["Estudo"].to_numpy()
     cv = GroupKFold(n_splits=min(n_splits, df["Estudo"].nunique()))
     
-    # Salvar grupos em pastas separadas para debug. 1 pasta por grupo, e dado de treino e teste dentro de cada pasta.
-    group_dir = Path(find_root()) / "data" / "processed" / "group_kfold_folds"
-    group_dir.mkdir(exist_ok=True)
-    for i, (tr, te) in enumerate(cv.split(df, df["MAPE"], groups), start=1):
-        fold_dir = group_dir / f"fold_{i}"
-        fold_dir.mkdir(exist_ok=True)
-        train, test = df.iloc[tr].copy(), df.iloc[te].copy()
-        train.to_csv(fold_dir / "train.csv", index=False)
-        test.to_csv(fold_dir / "test.csv", index=False)
-    
-    rows = []
-    oof_parts = []
-    for i, (tr, te) in enumerate(cv.split(df, df["MAPE"], groups), start=1):
-        # Note. estou usando MAPE_log para treinar?
-        train, test = df.iloc[tr].copy(), df.iloc[te].copy()
-        g_tr = train["Estudo"].to_numpy()
+    rows, oof_parts, all_equations = [], [], []
+    for i, (tr_idx, te_idx) in enumerate(cv.split(df, groups=groups), 1):
+        train, test = df.iloc[tr_idx].copy(), df.iloc[te_idx].copy()
         campeao = campeao_do_fold(train)
-        print(f"GroupKFold fold {i}", flush=True)
-        preds = model_predictions(train, test)
         fold_name = f"gkf{i}"
-        for name, pred in preds.items():
-            scores, _tmp = collect_fold(name, "GroupKFold", fold_name, test, pred, campeao)
+        utils.log(f"Executando GroupKFold Fold {i}...")
+
+        preds_and_eqs = run_all_models_for_fold(train, test)
+        
+        for name, (pred, equacoes) in preds_and_eqs.items():
+            scores, _ = collect_fold_results(name, "GroupKFold", fold_name, test, pred, campeao)
             rows.append(scores)
+            all_equations.extend(equacoes)
+            
             part = test[["ID_Observacao", "Estudo", "Pais_Estudo", "Modelo", "MAPE"]].copy()
             part["pred"] = pred
             part["modelo_ml"] = name
             part["protocolo"] = "GroupKFold"
             part["fold"] = fold_name
             oof_parts.append(part)
-    return rows, pd.concat(oof_parts, ignore_index=True)
+            
+    return rows, pd.concat(oof_parts, ignore_index=True), all_equations
 
 
-def run_loso_paises(df: pd.DataFrame) -> tuple[list[dict], pd.DataFrame]:
-    estudos = (
-        df.loc[df["Pais_Estudo"].isin(PAISES_OCULTOS), "Estudo"].drop_duplicates().tolist()
-    )
-    rows = []
-    oof_parts = []
+def run_loso_paises(df: pd.DataFrame) -> tuple[list[dict], pd.DataFrame, list[str]]:
+    """Executa a validação cruzada Leave-One-Study-Out para países específicos."""
+    estudos = df.loc[df["Pais_Estudo"].isin(config.PAISES_OCULTOS), "Estudo"].unique()
+    
+    rows, oof_parts, all_equations = [], [], []
     for estudo in estudos:
         test = df[df["Estudo"] == estudo].copy()
         train = df[df["Estudo"] != estudo].copy()
         if test.empty or train.empty:
             continue
+            
         campeao = campeao_do_fold(train)
-        preds = model_predictions(train, test)
-        for name, pred in preds.items():
-            print(f"LOSO_paises_case estudo {estudo} modelo {name}", flush=True)
-            scores, _tmp = collect_fold(name, "LOSO_paises_case", str(estudo), test, pred, campeao)
+        utils.log(f"Executando LOSO para Estudo: {estudo}...")
+
+        preds_and_eqs = run_all_models_for_fold(train, test)
+
+        for name, (pred, equacoes) in preds_and_eqs.items():
+            scores, _ = collect_fold_results(name, "LOSO_paises_case", str(estudo), test, pred, campeao)
             rows.append(scores)
+            all_equations.extend(equacoes)
+
             part = test[["ID_Observacao", "Estudo", "Pais_Estudo", "Modelo", "MAPE"]].copy()
             part["pred"] = pred
             part["modelo_ml"] = name
             part["protocolo"] = "LOSO_paises_case"
             part["fold"] = str(estudo)
             oof_parts.append(part)
-    return rows, pd.concat(oof_parts, ignore_index=True) if oof_parts else pd.DataFrame()
+            
+    return rows, pd.concat(oof_parts, ignore_index=True) if oof_parts else pd.DataFrame(), all_equations
 
 
-def summarize(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def summarize_results(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Agrega os resultados dos folds."""
+    utils.log(f"Agregando resultados dos folds...")
     raw = pd.DataFrame(rows)
     agg = (
         raw.groupby(["protocolo", "modelo"], as_index=False)
@@ -463,152 +206,168 @@ def summarize(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def vif_from_matrix(X: pd.DataFrame) -> pd.DataFrame:
+    """Calcula o VIF a partir de uma matriz de features."""
     X = X.astype(float).copy()
-    keep = [c for c in X.columns if float(X[c].std(ddof=0)) > 1e-12]
+    # Remove colunas com variância zero
+    keep = [c for c in X.columns if X[c].std(ddof=0) > 1e-12]
     X = X[keep]
+    
     rows = []
     for col in X.columns:
-        y = X[col].to_numpy()
-        Z = X.drop(columns=[col]).to_numpy()
-        if Z.size == 0:
-            vif = float("inf")
-            r2 = float("nan")
+        y = X[col]
+        Z = X.drop(columns=[col])
+        
+        if Z.empty:
+            vif, r2 = 1.0, 0.0
         else:
-            lr = LinearRegression()
-            lr.fit(Z, y)
-            r2 = float(lr.score(Z, y))
-            vif = float("inf") if r2 >= 1.0 - 1e-12 else float(1.0 / (1.0 - r2))
+            lr = LinearRegression().fit(Z, y)
+            r2 = lr.score(Z, y)
+            vif = 1.0 / (1.0 - r2) if r2 < 1.0 - 1e-9 else float("inf")
+            
         rows.append({"bloco": None, "variavel": col, "r2_auxiliar": r2, "VIF": vif})
+        
     return pd.DataFrame(rows)
 
 
 def compute_vif(df: pd.DataFrame) -> pd.DataFrame:
-    """VIF nos numéricos (peso e fração A)."""
-    vif_num = vif_from_matrix(df[NUM_CANDIDATES].copy())
+    """Calcula o VIF para as variáveis numéricas candidatas."""
+    vif_num = vif_from_matrix(df[config.NUM_CANDIDATES])
     vif_num["bloco"] = "numericos_brutos"
-    vif_num["alerta"] = np.where(
-        vif_num["VIF"] >= 10, "VIF>=10", np.where(vif_num["VIF"] >= 5, "VIF>=5", "ok")
-    )
+    vif_num["alerta"] = np.where(vif_num["VIF"] >= 10, "VIF>=10", np.where(vif_num["VIF"] >= 5, "VIF>=5", "ok"))
     return vif_num.sort_values("VIF", ascending=False)
 
 
-def cluster_bootstrap_error(
-    oof: pd.DataFrame,
-    n_boot: int = N_BOOT,
-    seed: int = BOOT_SEED,
-) -> pd.DataFrame:
-    """IC 95% do MAE e do RMSE via bootstrap por Estudo (OOF do GroupKFold)."""
+def cluster_bootstrap_error(oof: pd.DataFrame) -> pd.DataFrame:
+    """Calcula o erro via bootstrap clusterizado por 'Estudo' sem reconstruir DataFrames em cada iteração."""
+    utils.log(f"Calculando erro via bootstrap clusterizado por Estudo...")
     gkf = oof[oof["protocolo"] == "GroupKFold"].copy()
     if gkf.empty:
         return pd.DataFrame()
-    rng = np.random.default_rng(seed)
+
+    rng = np.random.default_rng(config.BOOT_SEED)
     rows = []
-    for name, sub in gkf.groupby("modelo_ml"):
-        studies = sub["Estudo"].unique()
-        buckets = {s: sub[sub["Estudo"] == s] for s in studies}
-        n_g = len(studies)
-        mae_b = np.empty(n_boot)
-        rmse_b = np.empty(n_boot)
-        for b in range(n_boot):
-            draw = rng.choice(studies, size=n_g, replace=True)
-            parts = [buckets[s] for s in draw]
-            y = np.concatenate([p["MAPE"].to_numpy() for p in parts])
-            yhat = np.concatenate([p["pred"].to_numpy() for p in parts])
-            mae_b[b] = mean_absolute_error(y, yhat)
-            rmse_b[b] = rmse(y, yhat)
-        y_obs = sub["MAPE"].to_numpy()
-        yhat_obs = sub["pred"].to_numpy()
-        rows.append(
-            {
-                "protocolo": "GroupKFold",
-                "modelo": name,
-                "n_boot": n_boot,
-                "agrupamento": "Estudo",
-                "mape": float(np.mean(np.abs((y_obs - yhat_obs) / y_obs))),
-                "mape_ic95_inf": float(np.quantile(np.abs((y_obs - yhat_obs) / y_obs), 0.025)),
-                "mape_ic95_sup": float(np.quantile(np.abs((y_obs - yhat_obs) / y_obs), 0.975)),
-                "mae": float(mean_absolute_error(y_obs, yhat_obs)),
-                "mae_ic95_inf": float(np.quantile(mae_b, 0.025)),
-                "mae_ic95_sup": float(np.quantile(mae_b, 0.975)),
-                "rmse": rmse(y_obs, yhat_obs),
-                "rmse_ic95_inf": float(np.quantile(rmse_b, 0.025)),
-                "rmse_ic95_sup": float(np.quantile(rmse_b, 0.975)),
-            }
-        )
+
+    for name, sub in gkf.groupby("modelo_ml", sort=False):
+        sub = sub.sort_values(["Estudo", "ID_Observacao"]).copy()
+        grouped = sub.groupby("Estudo", sort=False)
+        studies = list(grouped.groups.keys())
+        n_studies = len(studies)
+
+        y_by_study = [grouped.get_group(s)["MAPE"].to_numpy(dtype=float) for s in studies]
+        yhat_by_study = [grouped.get_group(s)["pred"].to_numpy(dtype=float) for s in studies]
+
+        boot_idx = rng.choice(n_studies, size=(config.N_BOOT, n_studies), replace=True)
+        mae_b = np.empty(config.N_BOOT, dtype=float)
+        rmse_b = np.empty(config.N_BOOT, dtype=float)
+        mape_b = np.empty(config.N_BOOT, dtype=float)
+
+        for b in range(config.N_BOOT):
+            idx = boot_idx[b]
+            y_b = np.concatenate([y_by_study[i] for i in idx])
+            yhat_b = np.concatenate([yhat_by_study[i] for i in idx])
+
+            err = y_b - yhat_b
+            mae_b[b] = float(np.mean(np.abs(err)))
+            rmse_b[b] = float(np.sqrt(np.mean(err ** 2)))
+
+            denom = np.abs(y_b)
+            rel = np.divide(err, y_b, out=np.zeros_like(err, dtype=float), where=denom > 0)
+            mape_b[b] = float(np.mean(np.abs(rel)))
+
+        y_obs = sub["MAPE"].to_numpy(dtype=float)
+        yhat_obs = sub["pred"].to_numpy(dtype=float)
+        err_obs = y_obs - yhat_obs
+
+        denom_obs = np.abs(y_obs)
+        rel_obs = np.divide(err_obs, y_obs, out=np.zeros_like(err_obs, dtype=float), where=denom_obs > 0)
+
+        rows.append({
+            "protocolo": "GroupKFold",
+            "modelo": name,
+            "n_boot": config.N_BOOT,
+            "agrupamento": "Estudo",
+            "mape": float(np.mean(np.abs(rel_obs))),
+            "mape_ic95_inf": float(np.quantile(mape_b, 0.025)),
+            "mape_ic95_sup": float(np.quantile(mape_b, 0.975)),
+            "mae": float(np.mean(np.abs(err_obs))),
+            "mae_ic95_inf": float(np.quantile(mae_b, 0.025)),
+            "mae_ic95_sup": float(np.quantile(mae_b, 0.975)),
+            "rmse": float(np.sqrt(np.mean(err_obs ** 2))),
+            "rmse_ic95_inf": float(np.quantile(rmse_b, 0.025)),
+            "rmse_ic95_sup": float(np.quantile(rmse_b, 0.975)),
+        })
+
     return pd.DataFrame(rows).sort_values("mae")
 
 
-def filter_models(agg: pd.DataFrame, raw: pd.DataFrame, oof: pd.DataFrame, boot: pd.DataFrame) -> tuple[
-    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Filtra modelos com top1 < 0.5 ou com MAE pior que baseline."""
-    baseline_mape = agg[agg["modelo"] == "baseline_mediana_modelo"][["protocolo", "mape"]].set_index("protocolo")[
-        "mape"].to_dict()
+def filter_models(agg: pd.DataFrame) -> set[str]:
+    """Filtra modelos com desempenho inferior à baseline."""
+    utils.log(f"Filtrando modelos com desempenho inferior à baseline...")
+    baseline_metrics = agg[agg["modelo"] == "baseline_mediana_modelo"].set_index("protocolo")[["mape", "mae"]].to_dict('index')
     
-    baseline_mae = agg[agg["modelo"] == "baseline_mediana_modelo"][["protocolo", "mae"]].set_index("protocolo")["mae"].to_dict()
+    models_to_keep = set(agg["modelo"])
     
-    agg_filtered_tmp = agg[(
-        agg.apply(lambda row: row["mape"] <= baseline_mape.get(row["protocolo"], float("inf")), axis=1))].copy()
-    
-    models_to_keep = set(agg_filtered_tmp["modelo"])
-    
-    agg_filtered_tmp = agg_filtered_tmp[(
-        agg_filtered_tmp.apply(lambda row: row["mae"] <= baseline_mae.get(row["protocolo"], float("inf")), axis=1))].copy()
-    
-    if not agg_filtered_tmp.empty:
-        models_to_keep = set(agg_filtered_tmp["modelo"])
-    
-    agg_filtered = agg[agg["modelo"].isin(models_to_keep)].copy()
-    raw_filtered = raw[raw["modelo"].isin(models_to_keep)].copy()
-    oof_filtered = oof[oof["modelo_ml"].isin(models_to_keep)].copy()
-    boot_filtered = boot[boot["modelo"].isin(models_to_keep)].copy()
-    
-    return agg_filtered, raw_filtered, oof_filtered, boot_filtered
+    for _, row in agg.iterrows():
+        protocol = row["protocolo"]
+        if protocol in baseline_metrics:
+            # Se o MAE ou MAPE for pior que a baseline, marca para remoção
+            if row["mape"] > baseline_metrics[protocol]["mape"] or row["mae"] > baseline_metrics[protocol]["mae"]:
+                models_to_keep.discard(row["modelo"])
+                
+    return models_to_keep
+
 
 def main() -> None:
-    root = find_root()
-    out = root / "data" / "processed"
-    out.mkdir(parents=True, exist_ok=True)
-    df = load_frame(root)
-    print(f"n={len(df)} estudos={df['Estudo'].nunique()}", flush=True)
+    """Orquestra a execução da modelagem e avaliação."""
+    root = utils.find_root()
+    out_dir = root / "data" / "processed"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    
+    df = utils.load_frame(root)
+    utils.log(f"Dados carregados: n={len(df)}, estudos={df['Estudo'].nunique()}")
 
     vif = compute_vif(df)
-    print("VIF ok", flush=True)
-    vif.to_csv(out / "04_vif.csv", index=False)
+    vif.to_csv(out_dir / "04_vif.csv", index=False)
+    utils.log(f"VIF calculado.")
 
-    rows_g, oof_g = run_group_kfold(df)
-    rows_l, oof_l = run_loso_paises(df)
-    raw, agg = summarize(rows_g + rows_l)
+    rows_g, oof_g, eqs_g = run_group_kfold(df)
+    rows_l, oof_l, eqs_l = run_loso_paises(df)
+    
+    raw, agg = summarize_results(rows_g + rows_l)
     oof = pd.concat([oof_g, oof_l], ignore_index=True)
+    all_equations = eqs_g + eqs_l
 
     boot = cluster_bootstrap_error(oof)
     
-    agg, raw, oof, boot = filter_models(agg, raw, oof, boot)
+    # Filtra os modelos com base no desempenho
+    # models_to_keep = filter_models(agg)
+    # agg_f = agg[agg["modelo"].isin(models_to_keep)].copy()
+    # raw_f = raw[raw["modelo"].isin(models_to_keep)].copy()
+    # oof_f = oof[oof["modelo_ml"].isin(models_to_keep)].copy()
+    # boot_f = boot[boot["modelo"].isin(models_to_keep)].copy()
+    
+    # Salva os resultados
+    agg.to_csv(out_dir / "04_metricas_resumo.csv", index=False)
+    raw.to_csv(out_dir / "04_metricas_folds.csv", index=False)
+    oof.to_csv(out_dir / "04_predicoes_oof.csv", index=False)
+    boot.to_csv(out_dir / "04_bootstrap_ic.csv", index=False)
+    (out_dir / "04_equacoes_modelos.txt").write_text("\n".join(sorted(list(set(all_equations)))), encoding="utf-8")
+    
+    # Cria o JSON de resumo
+    summary_json = {
+        "metricas": agg.to_dict(orient="records"),
+        "vif_numericos": vif.to_dict(orient="records"),
+    }
+    (out_dir / "04_resumo.json").write_text(json.dumps(summary_json, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    agg.to_csv(out / "04_metricas_resumo.csv", index=False)
-    raw.to_csv(out / "04_metricas_folds.csv", index=False)
-    oof.to_csv(out / "04_predicoes_oof.csv", index=False)
-    boot.to_csv(out / "04_bootstrap_ic.csv", index=False)
-    (out / "04_resumo.json").write_text(
-        json.dumps(
-            {
-                "metricas": agg.to_dict(orient="records"),
-                # "bootstrap": boot.to_dict(orient="records"),
-                "vif_numericos": vif.loc[vif["bloco"] == "numericos_brutos"].to_dict(
-                    orient="records"
-                ),
-            },
-            ensure_ascii=False,
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-    print("VIF (numéricos):")
-    print(vif.loc[vif["bloco"] == "numericos_brutos"].to_string(index=False))
-    print("\nMétricas (média dos folds):")
-    print(agg.head(10).to_string(index=False))  # Exibe os 10 melhores
-    print("\nBootstrap cluster (IC 95% do erro, GroupKFold):")
-    print(boot.head(10).to_string(index=False))
-    print(f"\nSaídas em {out}")
+    utils.log("\n--- Resultados ---")
+    utils.log("VIF (Numéricos):")
+    utils.log(vif.to_string(index=False))
+    utils.log("\nMelhores Modelos (Métricas Agregadas):")
+    utils.log(agg.head(10).to_string(index=False))
+    utils.log("\nBootstrap (IC 95% do Erro - GroupKFold):")
+    utils.log(boot.head(10).to_string(index=False))
+    utils.log(f"\nResultados salvos em: {out_dir}")
 
 
 if __name__ == "__main__":

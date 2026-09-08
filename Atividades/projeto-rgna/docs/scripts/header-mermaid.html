@@ -1,0 +1,16 @@
+<!-- Força o carregamento do Mermaid evitando conflitos com RequireJS / Plotly -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Se o RequireJS foi carregado pelo plotly/crosstalk, definimos o módulo manualmente
+    if (typeof require === 'function' && typeof mermaid === 'undefined') {
+      require(['https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'], function(m) {
+        window.mermaid = m;
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.contentLoaded();
+      });
+    } else if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: true });
+    }
+  });
+</script>

@@ -1,11 +1,14 @@
 # Tema e leitura do treino — compartilhado entre scripts e o relatório
 
 suppressPackageStartupMessages({
-  library(readxl)
-  library(dplyr)
-  library(ggplot2)
-  library(tidyr)
-  library(rprojroot)
+  library(readxl)      # Leitura de arquivos Excel
+  library(dplyr)       # Transformação de dados
+  library(ggplot2)     # Visualização de dados
+  library(tidyr)       # Remodelagem e transformação de dados
+  library(purrr)       # Programaçõa funcional
+  library(rprojroot)   # Econtra raiz do projeto
+  library(this.path)   # Recupera caminho do script
+  library(performance) # Avaliação e validação de modelos estatísticos
 })
 
 # Função unificada para encontrar a raiz do projeto.
@@ -16,10 +19,11 @@ find_root <- function() {
   if (nzchar(env)) {
     return(normalizePath(env, winslash = "/", mustWork = TRUE))
   }
-  # Senão, usa rprojroot para buscar a partir do diretório atual ou do script.
+  # Senão, usa rprojroot para buscar a partir do diretório do script atual.
   rprojroot::find_root(
     criterion = rprojroot::has_file("projeto-rgna.Rproj") |
-      rprojroot::has_file("data/raw/dados_treino.xlsx")
+      rprojroot::has_file("data/raw/dados_treino.xlsx"),
+    path = this.path::this.path()
   )
 }
 

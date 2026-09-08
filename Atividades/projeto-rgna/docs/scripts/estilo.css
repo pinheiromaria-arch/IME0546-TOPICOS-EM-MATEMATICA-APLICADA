@@ -1,0 +1,376 @@
+body {
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #1c1917;
+  background: #f7f4ee;
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.toc-toggle {
+  display: none;
+}
+
+#TOC {
+  background: transparent;
+  border: 1px solid #e6e0d6;
+  padding: 0.75rem 1rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+#TOC > ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+#TOC ul ul {
+  padding-left: 0.85rem;
+  margin: 0.15rem 0 0.45rem;
+  list-style: none;
+}
+
+#TOC li {
+  margin: 0.2rem 0;
+}
+
+#TOC li.toc-branch > .toc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+
+#TOC .toc-caret {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.2rem;
+  margin: 0.02rem 0.05rem 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #6b6560;
+  cursor: pointer;
+  line-height: 1.2;
+  font-size: 0.72rem;
+}
+
+#TOC .toc-caret:hover {
+  background: #e6e0d6;
+  color: #1c1917;
+}
+
+#TOC .toc-caret::before {
+  content: "▸";
+  display: block;
+}
+
+#TOC li.toc-branch:not(.toc-collapsed) > .toc-row .toc-caret::before {
+  content: "▾";
+}
+
+#TOC li.toc-collapsed > ul {
+  display: none;
+}
+
+#TOC li.toc-branch > .toc-row > a {
+  flex: 1 1 auto;
+}
+
+#TOC a {
+  color: #4a453f;
+  text-decoration: none;
+}
+
+#TOC a:hover {
+  color: #2f4a3c;
+  text-decoration: underline;
+}
+
+#TOC a.active {
+  color: #1c1917;
+  font-weight: 600;
+}
+
+#TOC::before {
+  content: "Tópicos";
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b6560;
+  margin-bottom: 0.65rem;
+}
+
+@media (min-width: 1100px) {
+  body {
+    max-width: none;
+    margin: 0;
+    padding: 2.5rem max(1.25rem, calc(50% - 25rem)) 4rem 18.5rem;
+  }
+
+  #TOC {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 16.5rem;
+    height: 100vh;
+    margin: 0;
+    padding: 1.5rem 1.1rem 2rem 1.25rem;
+    border: 0;
+    border-right: 1px solid #e6e0d6;
+    background: #f1ede5;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 1099px) {
+  .toc-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    position: fixed;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 40;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #f7f4ee;
+    background: #2f4a3c;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+  }
+
+  body {
+    padding-top: 3.6rem;
+  }
+
+  #TOC {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 30;
+    width: min(18.5rem, 88vw);
+    height: 100vh;
+    margin: 0;
+    padding: 3.4rem 1.1rem 2rem;
+    border: 0;
+    border-right: 1px solid #e6e0d6;
+    background: #f1ede5;
+    overflow-y: auto;
+    box-sizing: border-box;
+    transform: translateX(-105%);
+    transition: transform 0.2s ease;
+  }
+
+  body.toc-open #TOC {
+    transform: translateX(0);
+  }
+
+  .toc-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    background: rgba(28, 25, 23, 0.28);
+  }
+
+  body.toc-open .toc-backdrop {
+    display: block;
+  }
+}
+
+h1, h2, h3 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1c1917;
+}
+
+h1 { font-size: 1.85rem; margin-top: 0; line-height: 1.25; }
+h2 { font-size: 1.25rem; margin-top: 2.4rem; border-bottom: 1px solid #e6e0d6; padding-bottom: 0.35rem; }
+h3 { font-size: 1.05rem; margin-top: 1.6rem; }
+
+.subtitle, .author, .date {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #6b6560;
+  font-size: 0.95rem;
+}
+
+p { margin: 0.85rem 0; }
+li { margin: 0.25rem 0; }
+
+a { color: #2f4a3c; }
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.75rem 0 2rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+table,
+table.rgna,
+table.table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: transparent;
+  color: #1c1917;
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  border-top: 2px solid #1c1917;
+  border-bottom: 2px solid #1c1917;
+}
+
+table caption {
+  caption-side: top;
+  text-align: left;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #4a453f;
+  padding: 0 0 0.7rem;
+  line-height: 1.45;
+}
+
+thead th {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5c564f;
+  text-align: left;
+  vertical-align: bottom;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #1c1917;
+  padding: 0.35rem 0.85rem 0.5rem 0;
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 0.48rem 0.85rem 0.48rem 0;
+  vertical-align: baseline;
+  border: 0;
+  background: transparent;
+}
+
+tbody tr + tr td {
+  border-top: 1px solid #e4ddd2;
+}
+
+td:first-child,
+th:first-child {
+  white-space: normal;
+  padding-left: 0;
+}
+
+th:last-child,
+td:last-child {
+  padding-right: 0;
+}
+
+th[align="right"],
+td[align="right"],
+th[style*="text-align: right"],
+td[style*="text-align: right"],
+th[style*="text-align:right"],
+td[style*="text-align:right"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.84rem;
+}
+
+img, .figure {
+  max-width: 100%;
+}
+
+.caption, .figure > p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  color: #6b6560;
+}
+
+pre, code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.82rem;
+}
+
+blockquote {
+  border-left: 3px solid #2f4a3c;
+  margin: 1.2rem 0;
+  padding: 0.1rem 0 0.1rem 1rem;
+  color: #3f3a36;
+}
+
+@media print {
+  body {
+    background: #fff;
+    max-width: none;
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  .toc-toggle, .toc-backdrop, #TOC .toc-caret {
+    display: none !important;
+  }
+
+  #TOC li.toc-collapsed > ul {
+    display: block !important;
+  }
+
+  #TOC {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    transform: none;
+    background: transparent;
+    border: 1px solid #e6e0d6;
+    padding: 0.75rem 1rem;
+  }
+
+  #header, #TOC {
+    page-break-after: avoid;
+  }
+
+  h2 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .table-wrap {
+    overflow: visible;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
+
+  img, .figure {
+    page-break-inside: avoid;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

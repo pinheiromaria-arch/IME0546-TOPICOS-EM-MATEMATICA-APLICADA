@@ -2,16 +2,15 @@
 # Relatório consolidado: relatorio/relatorio-eda.Rmd
 
 # Carrega o tema e as funções de leitura a partir de um caminho relativo simples.
-# A função find_root() dentro de tema_rgna.R cuidará de localizar a raiz do projeto.
 source(file.path(dirname(rstudioapi::getActiveDocumentContext()$path), "tema_rgna.R"), encoding = "UTF-8")
 
+# --- Setup ---
 root <- find_root()
 df <- ler_treino(root)
 theme_set(theme_rgna())
 out_dir <- file.path(root, "data", "processed")
-fig_dir <- file.path(out_dir, "figuras")
-dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
 
+# --- Funções de Análise ---
 resumo_grupo <- function(data, grupo) {
   data |>
     group_by({{ grupo }}, Modelo) |>
@@ -25,6 +24,7 @@ vencedor <- function(tab, grupo) {
     ungroup()
 }
 
+# --- Análises ---
 tab_pais <- resumo_grupo(df, Pais_Estudo)
 tab_status <- resumo_grupo(df, Status_Metabolico)
 tab_sexo <- resumo_grupo(df, Sexo_Animal)
@@ -33,7 +33,6 @@ win_pais <- vencedor(tab_pais, Pais_Estudo)
 win_status <- vencedor(tab_status, Status_Metabolico)
 win_sexo <- vencedor(tab_sexo, Sexo_Animal)
 
-# Ranking dentro do animal: quem tem o menor MAPE observado
 win_id <- df |>
   group_by(ID_Observacao) |>
   slice_min(MAPE, n = 1, with_ties = TRUE) |>
@@ -58,14 +57,13 @@ tab_pais_oculto <- tab_pais |>
 win_pais_oculto <- win_pais |>
   filter(Pais_Estudo %in% paises_ocultos)
 
-num <- df |>
-  select(MAPE, Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B)
-cors <- as.data.frame(cor(num, use = "complete.obs"))
+cors <- as.data.frame(cor(select(df, where(is.numeric)), use = "complete.obs"))
 cors$variavel <- rownames(cors)
 
-# Variância entre vs dentro de estudo (ANOVA one-way)
+# Variância entre vs dentro de estudo (ANOVA e ICC)
 aov_est <- aov(MAPE ~ Estudo, data = df)
 ss <- summary(aov_est)[[1]]
+
 var_estudo <- tibble(
   fonte = c("Estudo", "Residual (dentro)"),
   gl = ss[["Df"]],
@@ -73,42 +71,63 @@ var_estudo <- tibble(
   fracao_ss = ss[["Sum Sq"]] / sum(ss[["Sum Sq"]])
 )
 
-# ICC aproximado: componentes de variância (método dos momentos)
-ms <- ss[["Mean Sq"]]
-n_por_estudo <- df |> count(Estudo)
-n0 <- (sum(n_por_estudo$n) - sum(n_por_estudo$n^2) / sum(n_por_estudo$n)) / (nrow(n_por_estudo) - 1)
-sigma2_w <- ms[2]
-sigma2_b <- max(0, (ms[1] - ms[2]) / n0)
-icc <- sigma2_b / (sigma2_b + sigma2_w)
-icc_tab <- tibble(icc_estudo = icc, sigma2_entre = sigma2_b, sigma2_dentro = sigma2_w, n0 = n0)
+# Note. Qual abordagem metodológica utilizar para calcular o ICC? Também posso usar a lib library(lme4)
+# # ICC aproximado: componentes de variância (método dos momentos)
+# ms <- ss[["Mean Sq"]]
+# n_por_estudo <- df |> count(Estudo)
+# n0 <- (sum(n_por_estudo$n) - sum(n_por_estudo$n^2) / sum(n_por_estudo$n)) / (nrow(n_por_estudo) - 1)
+# sigma2_w <- ms[2]
+# sigma2_b <- max(0, (ms[1] - ms[2]) / n0)
+# icc <- sigma2_b / (sigma2_b + sigma2_w)
+# icc_tab <- tibble(icc_estudo = icc, sigma2_entre = sigma2_b, sigma2_dentro = sigma2_w, n0 = n0)
 
-write.csv(tab_pais, file.path(out_dir, "02_mape_pais_modelo.csv"), row.names = FALSE)
-write.csv(tab_status, file.path(out_dir, "02_mape_status_modelo.csv"), row.names = FALSE)
-write.csv(tab_sexo, file.path(out_dir, "02_mape_sexo_modelo.csv"), row.names = FALSE)
-write.csv(win_pais, file.path(out_dir, "02_vencedor_pais.csv"), row.names = FALSE)
-write.csv(win_status, file.path(out_dir, "02_vencedor_status.csv"), row.names = FALSE)
-write.csv(win_sexo, file.path(out_dir, "02_vencedor_sexo.csv"), row.names = FALSE)
-write.csv(vitorias_modelo, file.path(out_dir, "02_vitorias_por_modelo.csv"), row.names = FALSE)
-write.csv(vitorias_pais_modelo, file.path(out_dir, "02_vitorias_pais_modelo.csv"), row.names = FALSE)
-write.csv(tab_pais_oculto, file.path(out_dir, "02_mape_paises_estudo_oculto.csv"), row.names = FALSE)
-write.csv(win_pais_oculto, file.path(out_dir, "02_vencedor_paises_estudo_oculto.csv"), row.names = FALSE)
-write.csv(cors, file.path(out_dir, "02_correlacao_numericas.csv"), row.names = FALSE)
-write.csv(var_estudo, file.path(out_dir, "02_anova_estudo.csv"), row.names = FALSE)
-write.csv(icc_tab, file.path(out_dir, "02_icc_estudo.csv"), row.names = FALSE)
+# Cálculo manual do ICC (1,1) via Quadrados Médios (MS) da ANOVA
+ms_entre <- ss[["Mean Sq"]][1]
+ms_res <- ss[["Mean Sq"]][2]
 
+# k_0 é o tamanho médio Harmônico dos grupos para dados desbalanceados
+n_obs <- length(df$MAPE)
+n_grupos <- length(unique(df$Estudo))
+k_0 <- (n_obs - sum(table(df$Estudo)^2) / n_obs) / (n_grupos - 1)
+
+# Variâncias
+var_entre <- max(0, (ms_entre - ms_res) / k_0)
+var_dentro <- ms_res
+icc_val <- var_entre / (var_entre + var_dentro)
+
+icc_tab <- tibble(icc_estudo = icc_val)
+
+# --- Salvando Saídas ---
+outputs_csv <- list(
+  "02_mape_pais_modelo" = tab_pais,
+  "02_mape_status_modelo" = tab_status,
+  "02_mape_sexo_modelo" = tab_sexo,
+  "02_vencedor_pais" = win_pais,
+  "02_vencedor_status" = win_status,
+  "02_vencedor_sexo" = win_sexo,
+  "02_vitorias_por_modelo" = vitorias_modelo,
+  "02_vitorias_pais_modelo" = vitorias_pais_modelo,
+  "02_mape_paises_estudo_oculto" = tab_pais_oculto,
+  "02_vencedor_paises_estudo_oculto" = win_pais_oculto,
+  "02_correlacao_numericas" = cors,
+  "02_anova_estudo" = var_estudo,
+  "02_icc_estudo" = icc_tab
+)
+
+iwalk(outputs_csv, ~ write.csv(.x, file.path(out_dir, paste0(.y, ".csv")), row.names = FALSE))
+
+# --- Gráficos ---
 p_status <- ggplot(df, aes(x = Status_Metabolico, y = MAPE)) +
   geom_boxplot(fill = fill_soft, color = fill_main, outlier.alpha = 0.35, width = 0.55, linewidth = 0.4) +
   facet_wrap(~ Modelo, nrow = 1) +
   labs(title = "MAPE por status metabólico", x = NULL, y = "MAPE") +
   theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
-ggsave(file.path(fig_dir, "02_mediana_status_modelo.png"), p_status, width = 9, height = 5, dpi = 140)
 
 p_sexo <- ggplot(df, aes(x = Sexo_Animal, y = MAPE)) +
   geom_boxplot(fill = fill_soft, color = fill_main, outlier.alpha = 0.35, width = 0.55, linewidth = 0.4) +
   facet_wrap(~ Modelo, nrow = 1) +
   labs(title = "MAPE por sexo", x = NULL, y = "MAPE") +
   theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
-ggsave(file.path(fig_dir, "02_mediana_sexo_modelo.png"), p_sexo, width = 9, height = 5, dpi = 140)
 
 ord_pais <- tab_pais |>
   group_by(Pais_Estudo) |>
@@ -124,9 +143,9 @@ p_heat <- ggplot(heat, aes(x = Modelo, y = Pais_Estudo, fill = mediana)) +
   scale_color_manual(values = c("TRUE" = "white", "FALSE" = ink), guide = "none") +
   labs(title = "Mediana do MAPE: país × modelo", x = NULL, y = NULL) +
   theme(panel.grid = element_blank(), axis.line = element_blank(), axis.ticks = element_blank(), legend.position = "right")
-ggsave(file.path(fig_dir, "02_heatmap_pais_modelo.png"), p_heat, width = 8, height = 7.2, dpi = 140)
 
-message("ICC (fração da variância do MAPE entre estudos): ", round(icc, 3))
+# --- Mensagens Finais ---
+message("ICC (fração da variância do MAPE entre estudos): ", round(icc_tab$icc_estudo, 3))
 message("Vencedores (mediana) nos 5 países do case:")
 print(win_pais_oculto)
 message("Saídas em ", out_dir)

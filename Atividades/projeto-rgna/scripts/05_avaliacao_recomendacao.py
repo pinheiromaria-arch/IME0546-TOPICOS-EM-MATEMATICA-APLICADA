@@ -1,87 +1,113 @@
-"""Fase 5 — consolidar métricas e decidir se o seletor bate o campeão global."""
+"""Fase 5 — Consolidar métricas e decidir se o seletor de modelos supera a baseline."""
 
 from __future__ import annotations
 
 import json
-import os
-from pathlib import Path
-
 import pandas as pd
 
-
-def _is_root(p: Path) -> bool:
-    return (p / "projeto-rgna.Rproj").exists() or (p / "data" / "raw" / "dados_treino.xlsx").exists()
+from rgna import utils
 
 
-def find_root() -> Path:
-    env = os.environ.get("RGNA_ROOT", "").strip()
-    if env:
-        p = Path(env).resolve()
-        if _is_root(p):
-            return p
-    starts = [Path(__file__).resolve().parent.parent, Path.cwd().resolve()]
-    seen: set[Path] = set()
-    for here in starts:
-        for p in [here, *here.parents]:
-            if p in seen:
-                continue
-            seen.add(p)
-            if _is_root(p):
-                return p
-            for nested in (p / "projeto-rgna", p / "Atividades" / "projeto-rgna"):
-                if _is_root(nested):
-                    return nested.resolve()
-    raise FileNotFoundError("data/raw/dados_treino.xlsx")
+def criar_tabela_decisao(resumo: pd.DataFrame, campeao_global: str) -> pd.DataFrame:
+    """
+    Cria a tabela de decisão final de forma vetorizada com pandas.
+
+    Args:
+        resumo: DataFrame com as métricas agregadas dos modelos.
+        campeao_global: O nome do modelo campeão global.
+
+    Returns:
+        DataFrame com a análise de decisão por protocolo.
+    """
+    # Encontra o melhor modelo (menor MAE) para cada protocolo
+    best_models_idx = resumo.groupby("protocolo")["mae"].idxmin()
+    best_models = resumo.loc[best_models_idx].set_index("protocolo")
+
+    # Isola a baseline para cada protocolo
+    baseline = resumo[resumo["modelo"] == "baseline_mediana_modelo"].set_index("protocolo")
+
+    # Junta as informações do melhor modelo e da baseline
+    decisao = best_models.join(
+        baseline,
+        lsuffix="_melhor",
+        rsuffix="_baseline"
+    )
+
+    # Calcula as colunas de decisão
+    decisao["ganho_mae_vs_baseline"] = decisao["mae_baseline"] - decisao["mae_melhor"]
+    # Adiciona 1e-9 para estabilidade numérica ao comparar floats
+    decisao["seletor_supera_campeao"] = decisao["top1_melhor"] > (decisao["top1_sempre_campeao_melhor"] + 1e-9)
+    decisao["campeao_global_treino"] = campeao_global
+    
+    # Renomeia e seleciona as colunas finais
+    decisao = decisao.rename(columns={"modelo_melhor": "melhor_modelo_mae"})
+    colunas_finais = [
+        "melhor_modelo_mae",
+        "mae_melhor",
+        "mae_baseline",
+        "ganho_mae_vs_baseline",
+        "top1_melhor",
+        "top1_sempre_campeao_melhor",
+        "seletor_supera_campeao",
+        "campeao_global_treino",
+    ]
+    decisao = decisao[colunas_finais].reset_index()
+
+    # Pivota a tabela de resumo para ter MAE de cada modelo como uma coluna
+    mae_pivot = resumo.pivot_table(index="protocolo", columns="modelo", values="mae").reset_index()
+    
+    # Junta a tabela de decisão com os MAEs pivotados
+    decisao_final = pd.merge(decisao, mae_pivot, on="protocolo")
+    
+    return decisao_final
 
 
 def main() -> None:
-    root = find_root()
-    out = root / "data" / "processed"
-    resumo = pd.read_csv(out / "04_metricas_resumo.csv")
-    campeao = (out / "01_campeao_global.txt").read_text(encoding="utf-8").strip()
-    boot_path = out / "04_bootstrap_ic.csv"
-    boot = pd.read_csv(boot_path) if boot_path.exists() else pd.DataFrame()
+    """Orquestra a avaliação e a criação dos artefatos de decisão."""
+    root = utils.find_root()
+    out_dir = root / "data" / "processed"
+    
+    # Carrega os artefatos da fase de modelagem
+    try:
+        resumo = pd.read_csv(out_dir / "04_metricas_resumo.csv")
+        campeao_global = (out_dir / "01_campeao_global.txt").read_text(encoding="utf-8").strip()
+        boot_path = out_dir / "04_bootstrap_ic.csv"
+        boot = pd.read_csv(boot_path) if boot_path.exists() else pd.DataFrame()
+    except FileNotFoundError as e:
+        print(f"Erro: Arquivo necessário não encontrado. Rode o script 04 antes. Detalhe: {e}")
+        return
 
-    linhas = []
-    for proto in resumo["protocolo"].unique():
-        sub = resumo[resumo["protocolo"] == proto]
-        best = sub.loc[sub["mae"].idxmin()]
-        base = sub[sub["modelo"] == "baseline_mediana_modelo"].iloc[0]
-        seletor_ok = float(best["top1"]) > float(best["top1_sempre_campeao"]) + 1e-9
-        linha = {
-            "protocolo": proto,
-            "melhor_mae": best["modelo"],
-            "mae_melhor": best["mae"],
-            "mae_baseline": base["mae"],
-            "ganho_mae_vs_baseline": float(base["mae"]) - float(best["mae"]),
-            "top1_melhor": best["top1"],
-            "top1_sempre_campeao": best["top1_sempre_campeao"],
-            "seletor_supera_campeao": seletor_ok,
-            "campeao_global_treino": campeao,
-        }
-        for _, row in sub.iterrows():
-            linha[f"mae_{row['modelo']}"] = row["mae"]
-        linhas.append(linha)
+    # Cria a tabela de decisão
+    tabela_decisao = criar_tabela_decisao(resumo, campeao_global)
 
-    dec = pd.DataFrame(linhas)
-    dec.to_csv(out / "05_decisao.csv", index=False)
-    payload = {"decisao": linhas}
+    # Salva os resultados
+    tabela_decisao.to_csv(out_dir / "05_decisao.csv", index=False)
+
+    # Cria o payload JSON para o resumo
+    payload = {
+        "decisao": tabela_decisao.to_dict(orient="records"),
+    }
     if not boot.empty:
         payload["bootstrap_ic95"] = boot.to_dict(orient="records")
-    (out / "05_decisao.json").write_text(
+        
+    (out_dir / "05_decisao.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    print("Campeao global (mediana no treino completo):", campeao)
-    print(dec.to_string(index=False))
+    # Imprime os resultados no console
+    print("--- Análise de Decisão ---")
+    print("Campeão Global (mediana no treino completo):", campeao_global)
+    print("\nTabela de Decisão por Protocolo:")
+    print(tabela_decisao.to_string(index=False))
+    
     if not boot.empty:
-        print("")
-        print("IC 95% bootstrap (MAE, GroupKFold por Estudo):")
+        print("\nIC 95% Bootstrap (MAE, GroupKFold por Estudo):")
         print(boot.to_string(index=False))
-    print("")
-    print("Regra: o seletor (argmin do MAPE previsto) so substitui")
-    print("sempre o campeao se Top-1 for maior naquele protocolo.")
-    print(f"Saidas em {out}")
+        
+    print("\nRegra de Decisão:")
+    print("O seletor (argmin do MAPE previsto) é considerado superior se sua acurácia Top-1")
+    print("for estritamente maior que a do baseline ('sempre campeão') naquele protocolo.")
+    print(f"\nResultados salvos em: {out_dir}")
 
 
 if __name__ == "__main__":

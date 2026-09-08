@@ -2,16 +2,15 @@
 # Relatório consolidado: relatorio/relatorio-eda.Rmd
 
 # Carrega o tema e as funções de leitura a partir de um caminho relativo simples.
-# A função find_root() dentro de tema_rgna.R cuidará de localizar a raiz do projeto.
 source(file.path(dirname(rstudioapi::getActiveDocumentContext()$path), "tema_rgna.R"), encoding = "UTF-8")
 
+# --- Setup ---
 root <- find_root()
 df <- ler_treino(root)
 theme_set(theme_rgna())
 out_dir <- file.path(root, "data", "processed")
-fig_dir <- file.path(out_dir, "figuras")
-dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
 
+# --- Análise ---
 nulos <- tibble(
   coluna = names(df),
   n_na = colSums(is.na(df)),
@@ -69,19 +68,29 @@ estudos_pais <- df |>
   ) |>
   arrange(n_estudo, Pais_Estudo)
 
-write.csv(nulos, file.path(out_dir, "01_nulos_tipos.csv"), row.names = FALSE)
-write.csv(contagens, file.path(out_dir, "01_contagens.csv"), row.names = FALSE)
-write.csv(sistema, file.path(out_dir, "01_sistema_producao.csv"), row.names = FALSE)
-write.csv(mape_global, file.path(out_dir, "01_mape_global.csv"), row.names = FALSE)
-write.csv(mape_modelo, file.path(out_dir, "01_mape_por_modelo.csv"), row.names = FALSE)
-write.csv(estudos_pais, file.path(out_dir, "01_estudos_por_pais.csv"), row.names = FALSE)
+# --- Salvando Saídas ---
+
+# Agrupa todos os dataframes a serem salvos em uma lista nomeada
+outputs_csv <- list(
+  "01_nulos_tipos" = nulos,
+  "01_contagens" = contagens,
+  "01_sistema_producao" = sistema,
+  "01_mape_global" = mape_global,
+  "01_mape_por_modelo" = mape_modelo,
+  "01_estudos_por_pais" = estudos_pais
+)
+
+# Itera sobre a lista e salva cada dataframe como um CSV
+iwalk(outputs_csv, ~ write.csv(.x, file.path(out_dir, paste0(.y, ".csv")), row.names = FALSE))
+
+# Salva o campeão global em um arquivo de texto
 writeLines(campeao, file.path(out_dir, "01_campeao_global.txt"))
 
+# --- Gráficos ---
 p_hist <- ggplot(df, aes(x = MAPE)) +
   geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
   geom_vline(xintercept = median(df$MAPE), linetype = "22", color = ink, linewidth = 0.4) +
   labs(title = "Distribuição do MAPE", x = "MAPE", y = "Frequência")
-ggsave(file.path(fig_dir, "01_hist_mape.png"), p_hist, width = 8, height = 4.5, dpi = 140)
 
 p_box <- ggplot(df, aes(x = Modelo, y = MAPE)) +
   geom_boxplot(
@@ -89,8 +98,8 @@ p_box <- ggplot(df, aes(x = Modelo, y = MAPE)) +
     outlier.alpha = 0.45, outlier.size = 1.1, width = 0.55, linewidth = 0.45
   ) +
   labs(title = "MAPE por modelo empírico", x = NULL, y = "MAPE")
-ggsave(file.path(fig_dir, "01_box_mape_modelo.png"), p_box, width = 8, height = 4.5, dpi = 140)
 
+# --- Mensagens Finais ---
 message("Campeão global (menor mediana de MAPE): ", campeao)
 message("Sistema_Producao constante? ", sistema$constante[1], " -> ", paste(sistema$Sistema_Producao, collapse = ", "))
 message("Saídas em ", out_dir)
