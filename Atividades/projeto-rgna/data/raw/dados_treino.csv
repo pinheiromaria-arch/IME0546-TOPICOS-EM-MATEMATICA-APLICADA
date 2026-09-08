@@ -1,0 +1,1131 @@
+"Estudo
+","Pais_Estudo
+","Sistema_Producao
+","Status_Metabolico
+","Sexo_Animal
+","Peso_Corporal_kg
+","Consumo_MS_kg
+","Fracao_Perda_A
+","Fracao_Perda_B
+","Modelo
+","MAPE
+","Unnamed: 12
+","Espacial
+","Ambiental
+","Características Animal
+"
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.35,0.0203038674,0.0203038674033149,Modelo_1,0.463267945533497,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.35,0.0203038674,0.0203038674033149,Modelo_2,0.319869948490913,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.35,0.0203038674,0.0203038674033149,Modelo_3,0.374635069512696,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.35,0.0203038674,0.0203038674033149,Modelo_4,0.13035752577688,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.35,0.0203038674,0.0203038674033149,Modelo_5,0.287022183976341,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.7,0.02127071823,0.0212707182320442,Modelo_1,0.405665475101837,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.7,0.02127071823,0.0212707182320442,Modelo_2,0.263184024025272,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.7,0.02127071823,0.0212707182320442,Modelo_3,0.351648360212819,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.7,0.02127071823,0.0212707182320442,Modelo_4,0.101806052040901,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.7,0.02127071823,0.0212707182320442,Modelo_5,0.262544319976723,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.36,0.02033149171,0.0203314917127072,Modelo_1,0.243768779022125,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.36,0.02033149171,0.0203314917127072,Modelo_2,0.121758057907676,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.36,0.02033149171,0.0203314917127072,Modelo_3,0.212482501365747,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.36,0.02033149171,0.0203314917127072,Modelo_4,0.0387872166074842,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.36,0.02033149171,0.0203314917127072,Modelo_5,0.136823101611582,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.09,0.01958563536,0.019585635359116,Modelo_1,0.123489518895512,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.09,0.01958563536,0.019585635359116,Modelo_2,0.0163594373875266,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.09,0.01958563536,0.019585635359116,Modelo_3,0.111941455896412,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.09,0.01958563536,0.019585635359116,Modelo_4,0.142133723709369,NaN,NaN,NaN,NaN
+Estudo_AF,Grandvale,Confinamento,Terminação,Boi,362.0,7.09,0.01958563536,0.019585635359116,Modelo_5,0.0459110907448541,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.8,0.02445141066,0.0244514106583072,Modelo_1,0.0755688879848592,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.8,0.02445141066,0.0244514106583072,Modelo_2,0.170124200836972,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.8,0.02445141066,0.0244514106583072,Modelo_3,0.0231833969781823,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.8,0.02445141066,0.0244514106583072,Modelo_4,0.1233072414546,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.8,0.02445141066,0.0244514106583072,Modelo_5,0.0688317876551585,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.22,0.02263322884,0.0226332288401254,Modelo_1,0.151633596875699,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.22,0.02263322884,0.0226332288401254,Modelo_2,0.233664469703453,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.22,0.02263322884,0.0226332288401254,Modelo_3,0.0606916914594333,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.22,0.02263322884,0.0226332288401254,Modelo_4,0.00617423374301075,NaN,NaN,NaN,NaN
+Estudo_AR,Grandvale,Confinamento,Crescimento,Boi,319.0,7.22,0.02263322884,0.0226332288401254,Modelo_5,0.142419955495085,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.26,0.01501199041,0.0150119904076739,Modelo_1,0.867094703049759,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.26,0.01501199041,0.0150119904076739,Modelo_2,0.706587479935795,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.26,0.01501199041,0.0150119904076739,Modelo_3,0.825690208667737,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.26,0.01501199041,0.0150119904076739,Modelo_4,0.366548956661316,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.26,0.01501199041,0.0150119904076739,Modelo_5,0.819914927768861,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.74,0.01616306954,0.0161630695443645,Modelo_1,0.0848575712143929,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.74,0.01616306954,0.0161630695443645,Modelo_2,0.168668665667166,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.74,0.01616306954,0.0161630695443645,Modelo_3,0.0512203898050974,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.74,0.01616306954,0.0161630695443645,Modelo_4,0.0610194902548725,NaN,NaN,NaN,NaN
+Estudo_BG,Terra do Galo,Confinamento,Terminação,Novilho,417.0,6.74,0.01616306954,0.0161630695443645,Modelo_5,0.0379820089955023,NaN,NaN,NaN,NaN
+Estudo_F,Península Matina,Confinamento,Crescimento,Boi,178.0,3.881,0.02180337079,0.0218033707865169,Modelo_1,0.12962676962677,NaN,NaN,NaN,NaN
+Estudo_F,Península Matina,Confinamento,Crescimento,Boi,178.0,3.881,0.02180337079,0.0218033707865169,Modelo_2,0.0762514800514801,NaN,NaN,NaN,NaN
+Estudo_F,Península Matina,Confinamento,Crescimento,Boi,178.0,3.881,0.02180337079,0.0218033707865169,Modelo_3,0.251196396396396,NaN,NaN,NaN,NaN
+Estudo_F,Península Matina,Confinamento,Crescimento,Boi,178.0,3.881,0.02180337079,0.0218033707865169,Modelo_4,0.0489189189189189,NaN,NaN,NaN,NaN
+Estudo_F,Península Matina,Confinamento,Crescimento,Boi,178.0,3.881,0.02180337079,0.0218033707865169,Modelo_5,0.00631891891891902,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.86,0.02018587361,0.020185873605948,Modelo_1,0.0471111111111111,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.86,0.02018587361,0.020185873605948,Modelo_2,0.165531111111111,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.86,0.02018587361,0.020185873605948,Modelo_3,0.0355333333333333,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.86,0.02018587361,0.020185873605948,Modelo_4,0.179466666666667,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.86,0.02018587361,0.020185873605948,Modelo_5,0.0190177777777778,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.98,0.02040892193,0.0204089219330855,Modelo_1,0.366446886446886,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.98,0.02040892193,0.0204089219330855,Modelo_2,0.445607326007326,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.98,0.02040892193,0.0204089219330855,Modelo_3,0.299721611721612,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.98,0.02040892193,0.0204089219330855,Modelo_4,0.155384615384615,NaN,NaN,NaN,NaN
+Estudo_CB,Ilha Verdejante,Confinamento,Terminação,Boi,538.0,10.98,0.02040892193,0.0204089219330855,Modelo_5,0.291103296703297,NaN,NaN,NaN,NaN
+Estudo_Z,Campo Rico,Confinamento,Crescimento,Boi,215.0,5.82,0.02706976744,0.0270697674418605,Modelo_1,0.666516584121267,NaN,NaN,NaN,NaN
+Estudo_Z,Campo Rico,Confinamento,Crescimento,Boi,215.0,5.82,0.02706976744,0.0270697674418605,Modelo_2,0.532684976737205,NaN,NaN,NaN,NaN
+Estudo_Z,Campo Rico,Confinamento,Crescimento,Boi,215.0,5.82,0.02706976744,0.0270697674418605,Modelo_3,0.846975836710191,NaN,NaN,NaN,NaN
+Estudo_Z,Campo Rico,Confinamento,Crescimento,Boi,215.0,5.82,0.02706976744,0.0270697674418605,Modelo_4,0.834308869878433,NaN,NaN,NaN,NaN
+Estudo_Z,Campo Rico,Confinamento,Crescimento,Boi,215.0,5.82,0.02706976744,0.0270697674418605,Modelo_5,0.546600630346691,NaN,NaN,NaN,NaN
+Estudo_BB,Terra Nortenha,Confinamento,Crescimento,Touro,328.0,7.5,0.02286585366,0.0228658536585366,Modelo_1,0.13112582781457,NaN,NaN,NaN,NaN
+Estudo_BB,Terra Nortenha,Confinamento,Crescimento,Touro,328.0,7.5,0.02286585366,0.0228658536585366,Modelo_2,0.217549668874172,NaN,NaN,NaN,NaN
+Estudo_BB,Terra Nortenha,Confinamento,Crescimento,Touro,328.0,7.5,0.02286585366,0.0228658536585366,Modelo_3,0.0759602649006622,NaN,NaN,NaN,NaN
+Estudo_BB,Terra Nortenha,Confinamento,Crescimento,Touro,328.0,7.5,0.02286585366,0.0228658536585366,Modelo_4,0.043046357615894,NaN,NaN,NaN,NaN
+Estudo_BB,Terra Nortenha,Confinamento,Crescimento,Touro,328.0,7.5,0.02286585366,0.0228658536585366,Modelo_5,0.154180132450331,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.89,0.01406122449,0.0140612244897959,Modelo_1,0.0201373326410701,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.89,0.01406122449,0.0140612244897959,Modelo_2,0.111490463819591,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.89,0.01406122449,0.0140612244897959,Modelo_3,0.0160237761445677,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.89,0.01406122449,0.0140612244897959,Modelo_4,0.144465041493087,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.89,0.01406122449,0.0140612244897959,Modelo_5,0.0599799661271885,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.71,0.01369387755,0.0136938775510204,Modelo_1,0.104251259435092,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.71,0.01369387755,0.0136938775510204,Modelo_2,0.185985756329261,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.71,0.01369387755,0.0136938775510204,Modelo_3,0.0700962392682353,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.71,0.01369387755,0.0136938775510204,Modelo_4,0.0369697258708604,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.71,0.01369387755,0.0136938775510204,Modelo_5,0.0267349943688223,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.46,0.01318367347,0.0131836734693878,Modelo_1,0.118488247064557,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.46,0.01318367347,0.0131836734693878,Modelo_2,0.0196444861742058,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.46,0.01318367347,0.0131836734693878,Modelo_3,0.164767205683413,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.46,0.01318367347,0.0131836734693878,Modelo_4,0.278083857789571,NaN,NaN,NaN,NaN
+Estudo_T,Arquipélago Oriente,Confinamento,Crescimento,Boi,490.0,6.46,0.01318367347,0.0131836734693878,Modelo_5,0.22462215456524,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.81,0.01858649789,0.0185864978902954,Modelo_1,0.245248124935786,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.81,0.01858649789,0.0185864978902954,Modelo_2,0.328843111065447,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.81,0.01858649789,0.0185864978902954,Modelo_3,0.139937532107264,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.81,0.01858649789,0.0185864978902954,Modelo_4,0.0495736155347786,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.81,0.01858649789,0.0185864978902954,Modelo_5,0.140032261378814,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.66,0.01827004219,0.0182700421940928,Modelo_1,0.288522821983625,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.66,0.01827004219,0.0182700421940928,Modelo_2,0.366493111732118,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.66,0.01827004219,0.0182700421940928,Modelo_3,0.18635402265039,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.66,0.01827004219,0.0182700421940928,Modelo_4,0.108398293866745,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.66,0.01827004219,0.0182700421940928,Modelo_5,0.185109623964308,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.67,0.01829113924,0.0182911392405063,Modelo_1,0.394757678043089,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.67,0.01829113924,0.0182911392405063,Modelo_2,0.461133475017711,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.67,0.01829113924,0.0182911392405063,Modelo_3,0.309960036671251,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.67,0.01829113924,0.0182911392405063,Modelo_4,0.241280160020003,NaN,NaN,NaN,NaN
+Estudo_W,Ilha Verdejante,Confinamento,Crescimento,Novilha,474.0,8.67,0.01829113924,0.0182911392405063,Modelo_5,0.308930157936409,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,7.27,0.01573593074,0.0157359307359307,Modelo_1,0.0419201702895376,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,7.27,0.01573593074,0.0157359307359307,Modelo_2,0.0593531074271289,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,7.27,0.01573593074,0.0157359307359307,Modelo_3,0.128840356803307,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,7.27,0.01573593074,0.0157359307359307,Modelo_4,0.238476739318777,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,7.27,0.01573593074,0.0157359307359307,Modelo_5,0.144309837400748,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,8.41,0.0182034632,0.0182034632034632,Modelo_1,0.265563875582014,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,8.41,0.0182034632,0.0182034632034632,Modelo_2,0.344571053542729,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,8.41,0.0182034632,0.0182034632034632,Modelo_3,0.192765866187103,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,8.41,0.0182034632,0.0182034632034632,Modelo_4,0.0873292715067516,NaN,NaN,NaN,NaN
+Estudo_Q,Ilha Verdejante,Confinamento,Crescimento,Novilha,462.0,8.41,0.0182034632,0.0182034632034632,Modelo_5,0.194358453611977,NaN,NaN,NaN,NaN
+Estudo_B,Reino Litoral,Confinamento,Crescimento,Boi,541.0,11.43,0.02112754159,0.0211275415896488,Modelo_1,0.0250574712643679,NaN,NaN,NaN,NaN
+Estudo_B,Reino Litoral,Confinamento,Crescimento,Boi,541.0,11.43,0.02112754159,0.0211275415896488,Modelo_2,0.105504597701149,NaN,NaN,NaN,NaN
+Estudo_B,Reino Litoral,Confinamento,Crescimento,Boi,541.0,11.43,0.02112754159,0.0211275415896488,Modelo_3,0.0374870114942529,NaN,NaN,NaN,NaN
+Estudo_B,Reino Litoral,Confinamento,Crescimento,Boi,541.0,11.43,0.02112754159,0.0211275415896488,Modelo_4,0.106620689655172,NaN,NaN,NaN,NaN
+Estudo_B,Reino Litoral,Confinamento,Crescimento,Boi,541.0,11.43,0.02112754159,0.0211275415896488,Modelo_5,0.0501504597701149,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,434.0,10.2,0.02350230415,0.0235023041474654,Modelo_1,0.385885885885886,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,434.0,10.2,0.02350230415,0.0235023041474654,Modelo_2,0.459804804804805,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,434.0,10.2,0.02350230415,0.0235023041474654,Modelo_3,0.387466216216216,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,434.0,10.2,0.02350230415,0.0235023041474654,Modelo_4,0.479279279279279,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,434.0,10.2,0.02350230415,0.0235023041474654,Modelo_5,0.410325075075075,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,439.0,10.1,0.02300683371,0.0230068337129841,Modelo_1,0.404342723004695,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,439.0,10.1,0.02300683371,0.0230068337129841,Modelo_2,0.475667546948357,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,439.0,10.1,0.02300683371,0.0230068337129841,Modelo_3,0.406327024647887,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,439.0,10.1,0.02300683371,0.0230068337129841,Modelo_4,0.49618544600939,NaN,NaN,NaN,NaN
+Estudo_BP,Grandvale,Confinamento,Crescimento,Boi,439.0,10.1,0.02300683371,0.0230068337129841,Modelo_5,0.426139231220657,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,474.0,8.9,0.01877637131,0.0187763713080169,Modelo_1,0.149913842619184,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,474.0,8.9,0.01877637131,0.0187763713080169,Modelo_2,0.244652498564044,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,474.0,8.9,0.01877637131,0.0187763713080169,Modelo_3,0.141614014933946,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,474.0,8.9,0.01877637131,0.0187763713080169,Modelo_4,0.0735209649626652,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,474.0,8.9,0.01877637131,0.0187763713080169,Modelo_5,0.140003446295233,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,486.0,10.4,0.02139917695,0.0213991769547325,Modelo_1,0.0746934225195095,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,486.0,10.4,0.02139917695,0.0213991769547325,Modelo_2,0.187201783723523,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,486.0,10.4,0.02139917695,0.0213991769547325,Modelo_3,0.0566053511705686,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,486.0,10.4,0.02139917695,0.0213991769547325,Modelo_4,0.217391304347826,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,486.0,10.4,0.02139917695,0.0213991769547325,Modelo_5,0.0642664437012264,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.6,0.02132796781,0.021327967806841,Modelo_1,0.133299022130726,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.6,0.02132796781,0.021327967806841,Modelo_2,0.239711785898096,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.6,0.02132796781,0.021327967806841,Modelo_3,0.115362840967576,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.6,0.02132796781,0.021327967806841,Modelo_4,0.14565105506948,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.6,0.02132796781,0.021327967806841,Modelo_5,0.118753474009264,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.5,0.02112676056,0.0211267605633803,Modelo_1,0.177165354330709,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.5,0.02112676056,0.0211267605633803,Modelo_2,0.277706692913386,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.5,0.02112676056,0.0211267605633803,Modelo_3,0.16060531496063,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.5,0.02112676056,0.0211267605633803,Modelo_4,0.0851377952755906,NaN,NaN,NaN,NaN
+Estudo_CU,Costa Austral,Confinamento,Crescimento,Boi,497.0,10.5,0.02112676056,0.0211267605633803,Modelo_5,0.162912401574803,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.8,0.01408045977,0.0140804597701149,Modelo_1,0.185074626865672,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.8,0.01408045977,0.0140804597701149,Modelo_2,0.0454626865671643,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.8,0.01408045977,0.0140804597701149,Modelo_3,0.175794029850746,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.8,0.01408045977,0.0140804597701149,Modelo_4,0.0053731343283582,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.8,0.01408045977,0.0140804597701149,Modelo_5,0.330823880597015,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,8.6,0.01235632184,0.0123563218390805,Modelo_1,0.0463768115942029,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,8.6,0.01235632184,0.0123563218390805,Modelo_2,0.0677971014492753,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,8.6,0.01235632184,0.0123563218390805,Modelo_3,0.0252753623188406,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,8.6,0.01235632184,0.0123563218390805,Modelo_4,0.152463768115942,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,8.6,0.01235632184,0.0123563218390805,Modelo_5,0.192373913043478,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.0,0.01436781609,0.014367816091954,Modelo_1,0.151428571428571,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.0,0.01436781609,0.014367816091954,Modelo_2,0.0142857142857143,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.0,0.01436781609,0.014367816091954,Modelo_3,0.141812857142857,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.0,0.01436781609,0.014367816091954,Modelo_4,0.0285714285714286,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.0,0.01436781609,0.014367816091954,Modelo_5,0.287544285714286,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_1,0.0253164556962025,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_2,0.137493670886076,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_3,0.038393670886076,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_4,0.190886075949367,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_5,0.0979506329113924,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_1,0.00487804878048787,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_2,0.11669512195122,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_3,0.00095365853658531,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_4,0.145853658536585,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_5,0.121831707317073,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.7,0.01393678161,0.0139367816091954,Modelo_1,0.245933014354067,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.7,0.01393678161,0.0139367816091954,Modelo_2,0.334267942583732,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.7,0.01393678161,0.0139367816091954,Modelo_3,0.191259330143541,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.7,0.01393678161,0.0139367816091954,Modelo_4,0.0253588516746412,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.7,0.01393678161,0.0139367816091954,Modelo_5,0.0924535885167464,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,11.1,0.01594827586,0.015948275862069,Modelo_1,0.192592592592593,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,11.1,0.01594827586,0.015948275862069,Modelo_2,0.294009259259259,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,11.1,0.01594827586,0.015948275862069,Modelo_3,0.131912962962963,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,11.1,0.01594827586,0.015948275862069,Modelo_4,0.0791666666666666,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,11.1,0.01594827586,0.015948275862069,Modelo_5,0.0486240740740741,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_1,0.336206896551724,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_2,0.412603448275862,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_3,0.289735775862069,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_4,0.149137931034483,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,9.4,0.01350574713,0.0135057471264368,Modelo_5,0.198238362068966,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_1,0.307563025210084,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_2,0.391336134453782,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_3,0.257005882352941,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_4,0.0911764705882352,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_5,0.175017647058824,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.7,0.01537356322,0.0153735632183908,Modelo_1,0.310569105691057,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.7,0.01537356322,0.0153735632183908,Modelo_2,0.395617886178862,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.7,0.01537356322,0.0153735632183908,Modelo_3,0.259704878048781,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.7,0.01537356322,0.0153735632183908,Modelo_4,0.0865853658536586,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.7,0.01537356322,0.0153735632183908,Modelo_5,0.183472357723577,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_1,0.346031746031746,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_2,0.425150793650794,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_3,0.298963095238095,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_4,0.141666666666667,NaN,NaN,NaN,NaN
+Estudo_AB,Reino Litoral,Confinamento,Terminação,Boi,696.0,10.3,0.01479885057,0.0147988505747126,Modelo_5,0.221513095238095,NaN,NaN,NaN,NaN
+Estudo_CA,Ilha Verdejante,Confinamento,Terminação,Boi,531.0,11.03,0.02077212806,0.0207721280602637,Modelo_1,0.238771929824561,NaN,NaN,NaN,NaN
+Estudo_CA,Ilha Verdejante,Confinamento,Terminação,Boi,531.0,11.03,0.02077212806,0.0207721280602637,Modelo_2,0.334095614035088,NaN,NaN,NaN,NaN
+Estudo_CA,Ilha Verdejante,Confinamento,Terminação,Boi,531.0,11.03,0.02077212806,0.0207721280602637,Modelo_3,0.217241710526316,NaN,NaN,NaN,NaN
+Estudo_CA,Ilha Verdejante,Confinamento,Terminação,Boi,531.0,11.03,0.02077212806,0.0207721280602637,Modelo_4,0.0159210526315789,NaN,NaN,NaN,NaN
+Estudo_CA,Ilha Verdejante,Confinamento,Terminação,Boi,531.0,11.03,0.02077212806,0.0207721280602637,Modelo_5,0.20895951754386,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.82,0.01666981667,0.0166698166698167,Modelo_1,0.23563025210084,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.82,0.01666981667,0.0166698166698167,Modelo_2,0.0986789915966386,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.82,0.01666981667,0.0166698166698167,Modelo_3,0.213378151260504,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.82,0.01666981667,0.0166698166698167,Modelo_4,0.00799999999999998,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.82,0.01666981667,0.0166698166698167,Modelo_5,0.263952605042017,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.74,0.01651861652,0.0165186165186165,Modelo_1,0.181877022653722,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.74,0.01651861652,0.0165186165186165,Modelo_2,0.0516148867313917,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.74,0.01651861652,0.0165186165186165,Modelo_3,0.159676375404531,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.74,0.01651861652,0.0165186165186165,Modelo_4,0.0383171521035598,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.74,0.01651861652,0.0165186165186165,Modelo_5,0.209598381877023,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.1,0.01530901531,0.0153090153090153,Modelo_1,0.0408870408870409,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.1,0.01530901531,0.0153090153090153,Modelo_2,0.141552321552322,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.1,0.01530901531,0.0153090153090153,Modelo_3,0.0652252252252253,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.1,0.01530901531,0.0153090153090153,Modelo_4,0.236590436590437,NaN,NaN,NaN,NaN
+Estudo_O,Terra Nortenha,Confinamento,Terminação,Touro,529.1,8.1,0.01530901531,0.0153090153090153,Modelo_5,0.0140376992376993,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.9,0.01043885812,0.0104388581167448,Modelo_1,0.0945594157807609,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.9,0.01043885812,0.0104388581167448,Modelo_2,0.154807432254709,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.9,0.01043885812,0.0104388581167448,Modelo_3,0.00431469601598004,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.9,0.01043885812,0.0104388581167448,Modelo_4,0.0683016388384029,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.9,0.01043885812,0.0104388581167448,Modelo_5,0.0683496271893667,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.8,0.0102258202,0.0102258201959949,Modelo_1,0.260423684407516,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.8,0.0102258202,0.0102258201959949,Modelo_2,0.308391346657684,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.8,0.0102258202,0.0102258201959949,Modelo_3,0.17957930982858,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.8,0.0102258202,0.0102258201959949,Modelo_4,0.245452503929935,NaN,NaN,NaN,NaN
+Estudo_G,Arquipélago Oriente,Confinamento,Crescimento,Boi,469.4,4.8,0.0102258202,0.0102258201959949,Modelo_5,0.125217156972827,NaN,NaN,NaN,NaN
+Estudo_BY,Campo Rico,Confinamento,Crescimento,Boi,444.0,8.7,0.01959459459,0.0195945945945946,Modelo_1,0.037037037037037,NaN,NaN,NaN,NaN
+Estudo_BY,Campo Rico,Confinamento,Crescimento,Boi,444.0,8.7,0.01959459459,0.0195945945945946,Modelo_2,0.0769373219373219,NaN,NaN,NaN,NaN
+Estudo_BY,Campo Rico,Confinamento,Crescimento,Boi,444.0,8.7,0.01959459459,0.0195945945945946,Modelo_3,0.147293447293447,NaN,NaN,NaN,NaN
+Estudo_BY,Campo Rico,Confinamento,Crescimento,Boi,444.0,8.7,0.01959459459,0.0195945945945946,Modelo_4,0.301282051282051,NaN,NaN,NaN,NaN
+Estudo_BY,Campo Rico,Confinamento,Crescimento,Boi,444.0,8.7,0.01959459459,0.0195945945945946,Modelo_5,0.128222222222222,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.94,0.02728522337,0.0272852233676976,Modelo_1,0.811847694970368,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.94,0.02728522337,0.0272852233676976,Modelo_2,0.624232246813867,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.94,0.02728522337,0.0272852233676976,Modelo_3,0.85363914092411,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.94,0.02728522337,0.0272852233676976,Modelo_4,1.21356597786752,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.94,0.02728522337,0.0272852233676976,Modelo_5,0.638676050243877,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.79,0.02676975945,0.0267697594501718,Modelo_1,0.74932650862069,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.79,0.02676975945,0.0267697594501718,Modelo_2,0.57055697737069,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.79,0.02676975945,0.0267697594501718,Modelo_3,0.787877155172414,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.79,0.02676975945,0.0267697594501718,Modelo_4,1.12483162715517,NaN,NaN,NaN,NaN
+Estudo_E,Arquipélago Oriente,Confinamento,Crescimento,Boi,291.0,7.79,0.02676975945,0.0267697594501718,Modelo_5,0.581259717518473,NaN,NaN,NaN,NaN
+Estudo_BO,Grandvale,Confinamento,Crescimento,Boi,337.0,8.56,0.02540059347,0.0254005934718101,Modelo_1,0.489265055537812,NaN,NaN,NaN,NaN
+Estudo_BO,Grandvale,Confinamento,Crescimento,Boi,337.0,8.56,0.02540059347,0.0254005934718101,Modelo_2,0.544829837822492,NaN,NaN,NaN,NaN
+Estudo_BO,Grandvale,Confinamento,Crescimento,Boi,337.0,8.56,0.02540059347,0.0254005934718101,Modelo_3,0.497743000106462,NaN,NaN,NaN,NaN
+Estudo_BO,Grandvale,Confinamento,Crescimento,Boi,337.0,8.56,0.02540059347,0.0254005934718101,Modelo_4,0.586869654707406,NaN,NaN,NaN,NaN
+Estudo_BO,Grandvale,Confinamento,Crescimento,Boi,337.0,8.56,0.02540059347,0.0254005934718101,Modelo_5,0.54258064516129,NaN,NaN,NaN,NaN
+Estudo_AQ,Grandvale,Confinamento,Crescimento,Boi,322.0,5.8,0.01801242236,0.0180124223602484,Modelo_1,0.517148779030703,NaN,NaN,NaN,NaN
+Estudo_AQ,Grandvale,Confinamento,Crescimento,Boi,322.0,5.8,0.01801242236,0.0180124223602484,Modelo_2,0.395722105994203,NaN,NaN,NaN,NaN
+Estudo_AQ,Grandvale,Confinamento,Crescimento,Boi,322.0,5.8,0.01801242236,0.0180124223602484,Modelo_3,0.446905338268722,NaN,NaN,NaN,NaN
+Estudo_AQ,Grandvale,Confinamento,Crescimento,Boi,322.0,5.8,0.01801242236,0.0180124223602484,Modelo_4,0.0800784809561541,NaN,NaN,NaN,NaN
+Estudo_AQ,Grandvale,Confinamento,Crescimento,Boi,322.0,5.8,0.01801242236,0.0180124223602484,Modelo_5,0.325056930734079,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,309.4,3.5,0.01131221719,0.0113122171945701,Modelo_1,0.303195535225392,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,309.4,3.5,0.01131221719,0.0113122171945701,Modelo_2,0.330079457484124,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,309.4,3.5,0.01131221719,0.0113122171945701,Modelo_3,0.27363159579445,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,309.4,3.5,0.01131221719,0.0113122171945701,Modelo_4,0.384433555758009,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,309.4,3.5,0.01131221719,0.0113122171945701,Modelo_5,0.324415911194951,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,314.0,5.0,0.01592356688,0.0159235668789809,Modelo_1,0.232176537484921,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,314.0,5.0,0.01592356688,0.0159235668789809,Modelo_2,0.284528137201859,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,314.0,5.0,0.01592356688,0.0159235668789809,Modelo_3,0.191736823500679,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,314.0,5.0,0.01592356688,0.0159235668789809,Modelo_4,0.203345221698782,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,314.0,5.0,0.01592356688,0.0159235668789809,Modelo_5,0.255891053437858,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,311.4,7.6,0.0244059088,0.0244059087989724,Modelo_1,0.192236144760312,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,311.4,7.6,0.0244059088,0.0244059087989724,Modelo_2,0.273354182670183,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,311.4,7.6,0.0244059088,0.0244059087989724,Modelo_3,0.140683240101888,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,311.4,7.6,0.0244059088,0.0244059087989724,Modelo_4,0.0262907001793492,NaN,NaN,NaN,NaN
+Estudo_AL,Monção Dourada,Confinamento,Crescimento,Boi,311.4,7.6,0.0244059088,0.0244059087989724,Modelo_5,0.223988829431205,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,143.54,3.52,0.02452278111,0.0245227811063118,Modelo_1,0.47316384180791,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,143.54,3.52,0.02452278111,0.0245227811063118,Modelo_2,0.415621468926554,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,143.54,3.52,0.02452278111,0.0245227811063118,Modelo_3,0.636723163841808,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,143.54,3.52,0.02452278111,0.0245227811063118,Modelo_4,0.305084745762712,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,143.54,3.52,0.02452278111,0.0245227811063118,Modelo_5,0.234862005649717,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,144.05,3.91,0.027143353,0.0271433530024297,Modelo_1,0.286799065420561,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,144.05,3.91,0.027143353,0.0271433530024297,Modelo_2,0.225195677570093,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,144.05,3.91,0.027143353,0.0271433530024297,Modelo_3,0.428913551401869,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,144.05,3.91,0.027143353,0.0271433530024297,Modelo_4,0.199036214953271,NaN,NaN,NaN,NaN
+Estudo_AN,Vale do Indus Novo,Confinamento,Crescimento,Novilho,144.05,3.91,0.027143353,0.0271433530024297,Modelo_5,0.0864541471962616,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,8.01,0.01592445328,0.0159244532803181,Modelo_1,0.230760038240927,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,8.01,0.01592445328,0.0159244532803181,Modelo_2,0.102551983747618,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,8.01,0.01592445328,0.0159244532803181,Modelo_3,0.208550430210334,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,8.01,0.01592445328,0.0159244532803181,Modelo_4,0.0236376673040078,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,8.01,0.01592445328,0.0159244532803181,Modelo_5,0.252734823135765,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,6.88,0.01367793241,0.0136779324055666,Modelo_1,0.0148325072959571,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,6.88,0.01367793241,0.0136779324055666,Modelo_2,0.106573443946858,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,6.88,0.01367793241,0.0136779324055666,Modelo_3,0.0453523211859644,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,6.88,0.01367793241,0.0136779324055666,Modelo_4,0.25517007145013,NaN,NaN,NaN,NaN
+Estudo_AH,Grandvale,Confinamento,Terminação,Boi,503.0,6.88,0.01367793241,0.0136779324055666,Modelo_5,0.0109811735810683,NaN,NaN,NaN,NaN
+Estudo_L,Ilha Verdejante,Confinamento,Crescimento,Novilha,422.5595128,10.02,0.0237126362,0.0237126362002943,Modelo_1,0.176326530612245,NaN,NaN,NaN,NaN
+Estudo_L,Ilha Verdejante,Confinamento,Crescimento,Novilha,422.5595128,10.02,0.0237126362,0.0237126362002943,Modelo_2,0.274536734693878,NaN,NaN,NaN,NaN
+Estudo_L,Ilha Verdejante,Confinamento,Crescimento,Novilha,422.5595128,10.02,0.0237126362,0.0237126362002943,Modelo_3,0.118397959183673,NaN,NaN,NaN,NaN
+Estudo_L,Ilha Verdejante,Confinamento,Crescimento,Novilha,422.5595128,10.02,0.0237126362,0.0237126362002943,Modelo_4,0.0735714285714285,NaN,NaN,NaN,NaN
+Estudo_L,Ilha Verdejante,Confinamento,Crescimento,Novilha,422.5595128,10.02,0.0237126362,0.0237126362002943,Modelo_5,0.155036084183673,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,293.9,4.53,0.01541340592,0.0154134059203811,Modelo_1,0.137619047619048,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,293.9,4.53,0.01541340592,0.0154134059203811,Modelo_2,0.0692404761904761,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,293.9,4.53,0.01541340592,0.0154134059203811,Modelo_3,0.0448095238095238,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,293.9,4.53,0.01541340592,0.0154134059203811,Modelo_4,0.266571428571429,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,293.9,4.53,0.01541340592,0.0154134059203811,Modelo_5,0.065387619047619,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,300.1,4.55,0.0151616128,0.0151616127957348,Modelo_1,0.87843137254902,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,300.1,4.55,0.0151616128,0.0151616127957348,Modelo_2,0.764843137254902,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,300.1,4.55,0.0151616128,0.0151616127957348,Modelo_3,0.726039215686275,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,300.1,4.55,0.0151616128,0.0151616127957348,Modelo_4,0.213333333333333,NaN,NaN,NaN,NaN
+Estudo_AO,Grandvale,Confinamento,Crescimento,Boi,300.1,4.55,0.0151616128,0.0151616127957348,Modelo_5,0.555901176470588,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,6.32,0.01869822485,0.018698224852071,Modelo_1,0.586571041781519,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,6.32,0.01869822485,0.018698224852071,Modelo_2,0.449017609833762,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,6.32,0.01869822485,0.018698224852071,Modelo_3,0.525488598905002,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,6.32,0.01869822485,0.018698224852071,Modelo_4,0.165148275659647,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,6.32,0.01869822485,0.018698224852071,Modelo_5,0.41306762348034,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,7.88,0.02331360947,0.0233136094674556,Modelo_1,0.375577446208377,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,7.88,0.02331360947,0.0233136094674556,Modelo_2,0.233877567969316,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,7.88,0.02331360947,0.0233136094674556,Modelo_3,0.348888649852213,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,7.88,0.02331360947,0.0233136094674556,Modelo_4,0.0858712710316686,NaN,NaN,NaN,NaN
+Estudo_X,Ilha Verdejante,Confinamento,Crescimento,Novilho,338.0,7.88,0.02331360947,0.0233136094674556,Modelo_5,0.234825962555093,NaN,NaN,NaN,NaN
+Estudo_BU,Vale do Indus Novo,Confinamento,Crescimento,Novilho,130.83,3.63,0.02774592983,0.0277459298326072,Modelo_1,0.913750282230752,NaN,NaN,NaN,NaN
+Estudo_BU,Vale do Indus Novo,Confinamento,Crescimento,Novilho,130.83,3.63,0.02774592983,0.0277459298326072,Modelo_2,0.834052833596749,NaN,NaN,NaN,NaN
+Estudo_BU,Vale do Indus Novo,Confinamento,Crescimento,Novilho,130.83,3.63,0.02774592983,0.0277459298326072,Modelo_3,0.996974486340032,NaN,NaN,NaN,NaN
+Estudo_BU,Vale do Indus Novo,Confinamento,Crescimento,Novilho,130.83,3.63,0.02774592983,0.0277459298326072,Modelo_4,0.72115601715963,NaN,NaN,NaN,NaN
+Estudo_BU,Vale do Indus Novo,Confinamento,Crescimento,Novilho,130.83,3.63,0.02774592983,0.0277459298326072,Modelo_5,0.452916414540528,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.243211805483604,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.179631617410381,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.222478715012564,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.17958133192976,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.147252188592656,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.173498993961159,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.113484050078958,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.153928506694103,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.113436584344914,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0829202901668995,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.151966902328844,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.0930531500775087,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.132755506571275,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.0930065552743652,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0630501930996169,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.141494475944036,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.0831163032586222,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.122457729238809,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.0830701320445982,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0533861004350749,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.101442038191614,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.0451122224425302,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.0830732475111317,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.0450676712711036,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0164251846303354,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.0208487183239351,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.03135940358985,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.00382398549812211,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.0314006949194649,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0579473898548111,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.0126160673697098,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.0391710213028352,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.00427136922363697,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.0392119796378564,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0655445883237239,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_1,0.0126160673697098,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_2,0.0391710213028352,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_3,0.00427136922363697,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_4,0.0392119796378564,NaN,NaN,NaN,NaN
+Estudo_CP,Grandvale,Confinamento,Crescimento,Boi,325.0,4.066,0.01251076923,0.0125107692307692,Modelo_5,0.0655445883237239,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,347.0,7.4,0.02132564841,0.0213256484149856,Modelo_1,0.805555555555556,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,347.0,7.4,0.02132564841,0.0213256484149856,Modelo_2,0.627722222222222,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,347.0,7.4,0.02132564841,0.0213256484149856,Modelo_3,1.00999166666667,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,347.0,7.4,0.02132564841,0.0213256484149856,Modelo_4,1.15833333333333,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,347.0,7.4,0.02132564841,0.0213256484149856,Modelo_5,0.872652777777778,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,327.0,7.4,0.02262996942,0.0226299694189602,Modelo_1,0.477272727272727,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,327.0,7.4,0.02262996942,0.0226299694189602,Modelo_2,0.331772727272727,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,327.0,7.4,0.02262996942,0.0226299694189602,Modelo_3,0.644538636363636,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,327.0,7.4,0.02262996942,0.0226299694189602,Modelo_4,0.765909090909091,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,327.0,7.4,0.02262996942,0.0226299694189602,Modelo_5,0.509534090909091,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,335.0,7.6,0.02268656716,0.0226865671641791,Modelo_1,0.454945054945055,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,335.0,7.6,0.02268656716,0.0226865671641791,Modelo_2,0.308835164835165,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,335.0,7.6,0.02268656716,0.0226865671641791,Modelo_3,0.619334065934066,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,335.0,7.6,0.02268656716,0.0226865671641791,Modelo_4,0.753846153846154,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,335.0,7.6,0.02268656716,0.0226865671641791,Modelo_5,0.49336043956044,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,334.0,7.6,0.02275449102,0.0227544910179641,Modelo_1,0.285436893203884,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,334.0,7.6,0.02275449102,0.0227544910179641,Modelo_2,0.156349514563107,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,334.0,7.6,0.02275449102,0.0227544910179641,Modelo_3,0.430673786407767,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,334.0,7.6,0.02275449102,0.0227544910179641,Modelo_4,0.549514563106796,NaN,NaN,NaN,NaN
+Estudo_CQ,Grandvale,Confinamento,Crescimento,Boi,334.0,7.6,0.02275449102,0.0227544910179641,Modelo_5,0.318409708737864,NaN,NaN,NaN,NaN
+Estudo_CS,Grandvale,Confinamento,Terminação,Boi,397.0,7.319,0.01843576826,0.0184357682619647,Modelo_1,0.561195626195047,NaN,NaN,NaN,NaN
+Estudo_CS,Grandvale,Confinamento,Terminação,Boi,397.0,7.319,0.01843576826,0.0184357682619647,Modelo_2,0.408682489842273,NaN,NaN,NaN,NaN
+Estudo_CS,Grandvale,Confinamento,Terminação,Boi,397.0,7.319,0.01843576826,0.0184357682619647,Modelo_3,0.521179612810726,NaN,NaN,NaN,NaN
+Estudo_CS,Grandvale,Confinamento,Terminação,Boi,397.0,7.319,0.01843576826,0.0184357682619647,Modelo_4,0.204381333652022,NaN,NaN,NaN,NaN
+Estudo_CS,Grandvale,Confinamento,Terminação,Boi,397.0,7.319,0.01843576826,0.0184357682619647,Modelo_5,0.468970766610916,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,375.0,6.145,0.01638666667,0.0163866666666667,Modelo_1,0.409269249632173,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,375.0,6.145,0.01638666667,0.0163866666666667,Modelo_2,0.290133643943109,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,375.0,6.145,0.01638666667,0.0163866666666667,Modelo_3,0.344445806768024,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,375.0,6.145,0.01638666667,0.0163866666666667,Modelo_4,0.0246689553702796,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,375.0,6.145,0.01638666667,0.0163866666666667,Modelo_5,0.292195929377146,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,373.0,6.231,0.01670509383,0.0167050938337802,Modelo_1,0.533818278005555,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,373.0,6.231,0.01670509383,0.0167050938337802,Modelo_2,0.402509456421108,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,373.0,6.231,0.01670509383,0.0167050938337802,Modelo_3,0.465258563682053,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,373.0,6.231,0.01670509383,0.0167050938337802,Modelo_4,0.120772384605211,NaN,NaN,NaN,NaN
+Estudo_AW,Grandvale,Confinamento,Terminação,Boi,373.0,6.231,0.01670509383,0.0167050938337802,Modelo_5,0.404101309350615,NaN,NaN,NaN,NaN
+Estudo_BM,Monção Dourada,Confinamento,Crescimento,Vaca,98.0,2.75,0.02806122449,0.0280612244897959,Modelo_1,0.3415625,NaN,NaN,NaN,NaN
+Estudo_BM,Monção Dourada,Confinamento,Crescimento,Vaca,98.0,2.75,0.02806122449,0.0280612244897959,Modelo_2,0.3168828125,NaN,NaN,NaN,NaN
+Estudo_BM,Monção Dourada,Confinamento,Crescimento,Vaca,98.0,2.75,0.02806122449,0.0280612244897959,Modelo_3,0.389113839285715,NaN,NaN,NaN,NaN
+Estudo_BM,Monção Dourada,Confinamento,Crescimento,Vaca,98.0,2.75,0.02806122449,0.0280612244897959,Modelo_4,0.0441406250000002,NaN,NaN,NaN,NaN
+Estudo_BM,Monção Dourada,Confinamento,Crescimento,Vaca,98.0,2.75,0.02806122449,0.0280612244897959,Modelo_5,0.0754464732142855,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.2,0.01603563474,0.0160356347438753,Modelo_1,0.0569105691056912,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.2,0.01603563474,0.0160356347438753,Modelo_2,0.147908351810791,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.2,0.01603563474,0.0160356347438753,Modelo_3,0.082409460458241,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.2,0.01603563474,0.0160356347438753,Modelo_4,0.276274944567628,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.2,0.01603563474,0.0160356347438753,Modelo_5,0.0743503325942352,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.8,0.01737193764,0.0173719376391982,Modelo_1,0.0500352360817477,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.8,0.01737193764,0.0173719376391982,Modelo_2,0.147202255109232,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.8,0.01737193764,0.0173719376391982,Modelo_3,0.0692741367159973,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.8,0.01737193764,0.0173719376391982,Modelo_4,0.252431289640592,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.8,0.01737193764,0.0173719376391982,Modelo_5,0.0696236786469345,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.9,0.01759465479,0.0175946547884187,Modelo_1,0.214326978625072,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.9,0.01759465479,0.0175946547884187,Modelo_2,0.295401502021953,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.9,0.01759465479,0.0175946547884187,Modelo_3,0.229404968226459,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.9,0.01759465479,0.0175946547884187,Modelo_4,0.379318313113807,NaN,NaN,NaN,NaN
+Estudo_AK,Grandvale,Confinamento,Terminação,Boi,449.0,7.9,0.01759465479,0.0175946547884187,Modelo_5,0.230789139225881,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,655.0,10.2,0.01557251908,0.0155725190839695,Modelo_1,0.220952380952381,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,655.0,10.2,0.01557251908,0.0155725190839695,Modelo_2,0.31472380952381,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,655.0,10.2,0.01557251908,0.0155725190839695,Modelo_3,0.190328571428571,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,655.0,10.2,0.01557251908,0.0155725190839695,Modelo_4,0.0199999999999999,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,655.0,10.2,0.01557251908,0.0155725190839695,Modelo_5,0.115309523809524,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,677.0,10.3,0.01521418021,0.0152141802067947,Modelo_1,0.330081300813008,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,677.0,10.3,0.01521418021,0.0152141802067947,Modelo_2,0.411130081300813,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,677.0,10.3,0.01521418021,0.0152141802067947,Modelo_3,0.303451219512195,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,677.0,10.3,0.01521418021,0.0152141802067947,Modelo_4,0.120731707317073,NaN,NaN,NaN,NaN
+Estudo_CN,Reino Litoral,Confinamento,Terminação,Boi,677.0,10.3,0.01521418021,0.0152141802067947,Modelo_5,0.231275609756098,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_1,0.168573224387178,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_2,0.0682589566310496,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_3,0.110928975487115,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_4,0.145191703331238,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_5,0.246501571338781,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_1,0.0666666666666666,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_2,0.146787148594378,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_3,0.112706827309237,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_4,0.317269076305221,NaN,NaN,NaN,NaN
+Estudo_AV,Grandvale,Confinamento,Terminação,Boi,555.0,6.25,0.01126126126,0.0112612612612613,Modelo_5,0.004425702811245,NaN,NaN,NaN,NaN
+Estudo_D,Monção Dourada,Confinamento,Crescimento,Novilho,238.0,3.0,0.01260504202,0.0126050420168067,Modelo_1,0.148529411764706,NaN,NaN,NaN,NaN
+Estudo_D,Monção Dourada,Confinamento,Crescimento,Novilho,238.0,3.0,0.01260504202,0.0126050420168067,Modelo_2,0.170367647058823,NaN,NaN,NaN,NaN
+Estudo_D,Monção Dourada,Confinamento,Crescimento,Novilho,238.0,3.0,0.01260504202,0.0126050420168067,Modelo_3,0.0885029411764705,NaN,NaN,NaN,NaN
+Estudo_D,Monção Dourada,Confinamento,Crescimento,Novilho,238.0,3.0,0.01260504202,0.0126050420168067,Modelo_4,0.305147058823529,NaN,NaN,NaN,NaN
+Estudo_D,Monção Dourada,Confinamento,Crescimento,Novilho,238.0,3.0,0.01260504202,0.0126050420168067,Modelo_5,0.224019117647059,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_1,0.0378821143081432,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_2,0.117435324644502,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_3,0.0470734848481056,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_4,0.0709086006817487,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_5,0.0674732737781399,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_1,0.0192846402872021,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_2,0.0649954324432591,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_3,0.00954714038838771,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_4,0.134539440602363,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_5,0.0120647554413344,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_1,0.295601669956662,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_2,0.188474182052118,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_3,0.283224439268135,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_4,0.442100798715013,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_5,0.255753792481946,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_1,0.137171073944945,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_2,0.043143501046317,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_3,0.126307373286851,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_4,0.265755789019992,NaN,NaN,NaN,NaN
+Estudo_AS,Península Matina,Confinamento,Crescimento,Boi,392.0,6.0,0.01530612245,0.0153061224489796,Modelo_5,0.102195930987724,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.89,0.02031034483,0.0203103448275862,Modelo_1,0.251454138702461,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.89,0.02031034483,0.0203103448275862,Modelo_2,0.149782997762863,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.89,0.02031034483,0.0203103448275862,Modelo_3,0.233601789709172,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.89,0.02031034483,0.0203103448275862,Modelo_4,0.383557046979866,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.89,0.02031034483,0.0203103448275862,Modelo_5,0.095559284116331,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.95,0.02051724138,0.0205172413793103,Modelo_1,0.077511961722488,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.95,0.02051724138,0.0205172413793103,Modelo_2,0.0108803827751196,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.95,0.02051724138,0.0205172413793103,Modelo_3,0.0629282296650717,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.95,0.02051724138,0.0205172413793103,Modelo_4,0.195693779904306,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.95,0.02051724138,0.0205172413793103,Modelo_5,0.0562583732057417,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.49,0.01893103448,0.0189310344827586,Modelo_1,0.0016838166510757,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.49,0.01893103448,0.0189310344827586,Modelo_2,0.0741384471468663,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.49,0.01893103448,0.0189310344827586,Modelo_3,0.0177362020579981,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.49,0.01893103448,0.0189310344827586,Modelo_4,0.0784845650140318,NaN,NaN,NaN,NaN
+Estudo_CE,Campo Rico,Confinamento,Crescimento,Novilho,290.0,5.49,0.01893103448,0.0189310344827586,Modelo_5,0.126071094480823,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.0,0.02398523985,0.0239852398523985,Modelo_1,0.0164948453608247,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.0,0.02398523985,0.0239852398523985,Modelo_2,0.120515463917526,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.0,0.02398523985,0.0239852398523985,Modelo_3,0.0934536082474227,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.0,0.02398523985,0.0239852398523985,Modelo_4,0.407216494845361,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.0,0.02398523985,0.0239852398523985,Modelo_5,0.0885731958762887,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.6,0.02509225092,0.0250922509225092,Modelo_1,0.0875,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.6,0.02509225092,0.0250922509225092,Modelo_2,0.21275,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.6,0.02509225092,0.0250922509225092,Modelo_3,0.0176339285714285,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.6,0.02509225092,0.0250922509225092,Modelo_4,0.275,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.6,0.02509225092,0.0250922509225092,Modelo_5,0.02695,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.8,0.02546125461,0.0254612546125461,Modelo_1,0.0929824561403508,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.8,0.02546125461,0.0254612546125461,Modelo_2,0.21819298245614,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.8,0.02546125461,0.0254612546125461,Modelo_3,0.0232894736842105,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.8,0.02546125461,0.0254612546125461,Modelo_4,0.271052631578947,NaN,NaN,NaN,NaN
+Estudo_BA,Ilhota Central,Confinamento,Crescimento,Boi,542.0,13.8,0.02546125461,0.0254612546125461,Modelo_5,0.0341087719298246,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,9.8,0.02350119904,0.0235011990407674,Modelo_1,0.0586666666666667,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,9.8,0.02350119904,0.0235011990407674,Modelo_2,0.0660533333333332,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,9.8,0.02350119904,0.0235011990407674,Modelo_3,0.0842553333333333,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,9.8,0.02350119904,0.0235011990407674,Modelo_4,0.372,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,9.8,0.02350119904,0.0235011990407674,Modelo_5,0.036662,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,10.3,0.02470023981,0.0247002398081535,Modelo_1,0.077124183006536,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,10.3,0.02470023981,0.0247002398081535,Modelo_2,0.0531895424836602,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,10.3,0.02470023981,0.0247002398081535,Modelo_3,0.144199346405229,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,10.3,0.02470023981,0.0247002398081535,Modelo_4,0.413725490196079,NaN,NaN,NaN,NaN
+Estudo_BF,Campo Rico,Confinamento,Crescimento,Novilho,417.0,10.3,0.02470023981,0.0247002398081535,Modelo_5,0.0903967320261438,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.3,4.68,0.01725027645,0.0172502764467379,Modelo_1,0.2298671875,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.3,4.68,0.01725027645,0.0172502764467379,Modelo_2,0.278220390625,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.3,4.68,0.01725027645,0.0172502764467379,Modelo_3,0.1455765625,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.3,4.68,0.01725027645,0.0172502764467379,Modelo_4,0.22258984375,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.3,4.68,0.01725027645,0.0172502764467379,Modelo_5,0.24240098828125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,273.0,4.67,0.01710622711,0.0171062271062271,Modelo_1,0.23081640625,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,273.0,4.67,0.01710622711,0.0171062271062271,Modelo_2,0.27897501953125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,273.0,4.67,0.01710622711,0.0171062271062271,Modelo_3,0.146620703125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,273.0,4.67,0.01710622711,0.0171062271062271,Modelo_4,0.2242509765625,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,273.0,4.67,0.01710622711,0.0171062271062271,Modelo_5,0.24195548828125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.6,4.7,0.01730486009,0.0173048600883652,Modelo_1,0.22796875,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.6,4.7,0.01730486009,0.0173048600883652,Modelo_2,0.2767111328125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.6,4.7,0.01730486009,0.0173048600883652,Modelo_3,0.14348828125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.6,4.7,0.01730486009,0.0173048600883652,Modelo_4,0.219267578125,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,271.6,4.7,0.01730486009,0.0173048600883652,Modelo_5,0.2403769375,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,272.8,4.68,0.01715542522,0.0171554252199413,Modelo_1,0.241715384615385,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,272.8,4.68,0.01715542522,0.0171554252199413,Modelo_2,0.289324692307692,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,272.8,4.68,0.01715542522,0.0171554252199413,Modelo_3,0.158721538461538,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,272.8,4.68,0.01715542522,0.0171554252199413,Modelo_4,0.23455,NaN,NaN,NaN,NaN
+Estudo_AT,Monção Dourada,Confinamento,Maturo,Não especificado,272.8,4.68,0.01715542522,0.0171554252199413,Modelo_5,0.252892761538462,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,501.2,9.62,0.01919393456,0.019193934557063,Modelo_1,0.614678899082569,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,501.2,9.62,0.01919393456,0.019193934557063,Modelo_2,0.426397278631069,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,501.2,9.62,0.01919393456,0.019193934557063,Modelo_3,0.616408102257499,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,501.2,9.62,0.01919393456,0.019193934557063,Modelo_4,0.348644469642305,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,501.2,9.62,0.01919393456,0.019193934557063,Modelo_5,0.633664261416349,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,529.1,11.07,0.02092232092,0.0209223209223209,Modelo_1,0.31143093964283,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,529.1,11.07,0.02092232092,0.0209223209223209,Modelo_2,0.146920352648632,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,529.1,11.07,0.02092232092,0.0209223209223209,Modelo_3,0.32580626930902,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,529.1,11.07,0.02092232092,0.0209223209223209,Modelo_4,0.134443523472233,NaN,NaN,NaN,NaN
+Estudo_CG,Terra Nortenha,Confinamento,Crescimento,Boi,529.1,11.07,0.02092232092,0.0209223209223209,Modelo_5,0.338600030140909,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,558.0,10.43,0.01869175627,0.0186917562724014,Modelo_1,0.369848484848485,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,558.0,10.43,0.01869175627,0.0186917562724014,Modelo_2,0.446582575757576,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,558.0,10.43,0.01869175627,0.0186917562724014,Modelo_3,0.310485984848485,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,558.0,10.43,0.01869175627,0.0186917562724014,Modelo_4,0.170340909090909,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,558.0,10.43,0.01869175627,0.0186917562724014,Modelo_5,0.289895075757576,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,594.0,8.1,0.01363636364,0.0136363636363636,Modelo_1,0.379372197309417,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,594.0,8.1,0.01363636364,0.0136363636363636,Modelo_2,0.444511210762332,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,594.0,8.1,0.01363636364,0.0136363636363636,Modelo_3,0.322657847533632,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,594.0,8.1,0.01363636364,0.0136363636363636,Modelo_4,0.237219730941704,NaN,NaN,NaN,NaN
+Estudo_BQ,Baixo Reino,Confinamento,Crescimento,Novilha,594.0,8.1,0.01363636364,0.0136363636363636,Modelo_5,0.262325112107623,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,513.3,8.57,0.01669588934,0.0166958893434639,Modelo_1,0.281494661921708,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,513.3,8.57,0.01669588934,0.0166958893434639,Modelo_2,0.141973309608541,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,513.3,8.57,0.01669588934,0.0166958893434639,Modelo_3,0.255266903914591,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,513.3,8.57,0.01669588934,0.0166958893434639,Modelo_4,0.0369395017793594,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,513.3,8.57,0.01669588934,0.0166958893434639,Modelo_5,0.299036298932384,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,512.2,8.12,0.01585318235,0.0158531823506443,Modelo_1,0.109569685292229,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,512.2,8.12,0.01585318235,0.0158531823506443,Modelo_2,0.203180475272961,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,512.2,8.12,0.01585318235,0.0158531823506443,Modelo_3,0.131971740526654,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,512.2,8.12,0.01585318235,0.0158531823506443,Modelo_4,0.290738599871548,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,512.2,8.12,0.01585318235,0.0158531823506443,Modelo_5,0.0955868978805395,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,506.9,10.2,0.02012231209,0.020122312093115,Modelo_1,0.0218613366645846,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,506.9,10.2,0.02012231209,0.020122312093115,Modelo_2,0.101136789506558,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,506.9,10.2,0.02012231209,0.020122312093115,Modelo_3,0.0156652092442224,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,506.9,10.2,0.02012231209,0.020122312093115,Modelo_4,0.133541536539663,NaN,NaN,NaN,NaN
+Estudo_CL,Terra Nortenha,Confinamento,Terminação,Boi,506.9,10.2,0.02012231209,0.020122312093115,Modelo_5,0.0230683322923173,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,447.7,7.4,0.01652892562,0.0165289256198347,Modelo_1,0.150326797385621,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,447.7,7.4,0.01652892562,0.0165289256198347,Modelo_2,0.234013071895425,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,447.7,7.4,0.01652892562,0.0165289256198347,Modelo_3,0.115326797385621,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,447.7,7.4,0.01652892562,0.0165289256198347,Modelo_4,0.015686274509804,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,447.7,7.4,0.01652892562,0.0165289256198347,Modelo_5,0.112902483660131,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,443.5,7.4,0.0166854566,0.0166854565952649,Modelo_1,0.185973700688791,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,443.5,7.4,0.0166854566,0.0166854565952649,Modelo_2,0.266149029430182,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,443.5,7.4,0.0166854566,0.0166854565952649,Modelo_3,0.134564809016907,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,443.5,7.4,0.0166854566,0.0166854565952649,Modelo_4,0.0269254852849091,NaN,NaN,NaN,NaN
+Estudo_BV,Vale do Indus Novo,Confinamento,Maturo,Novilha,443.5,7.4,0.0166854566,0.0166854565952649,Modelo_5,0.135299937382592,NaN,NaN,NaN,NaN
+Estudo_CV,Terra Nortenha,Confinamento,Crescimento,Boi,421.0,11.46,0.02722090261,0.0272209026128266,Modelo_1,0.413924050632911,NaN,NaN,NaN,NaN
+Estudo_CV,Terra Nortenha,Confinamento,Crescimento,Boi,421.0,11.46,0.02722090261,0.0272209026128266,Modelo_2,0.233610759493671,NaN,NaN,NaN,NaN
+Estudo_CV,Terra Nortenha,Confinamento,Crescimento,Boi,421.0,11.46,0.02722090261,0.0272209026128266,Modelo_3,0.415779272151899,NaN,NaN,NaN,NaN
+Estudo_CV,Terra Nortenha,Confinamento,Crescimento,Boi,421.0,11.46,0.02722090261,0.0272209026128266,Modelo_4,0.233037974683544,NaN,NaN,NaN,NaN
+Estudo_CV,Terra Nortenha,Confinamento,Crescimento,Boi,421.0,11.46,0.02722090261,0.0272209026128266,Modelo_5,0.338584651898734,NaN,NaN,NaN,NaN
+Estudo_CH,Vale do Indus Novo,Confinamento,Crescimento,Novilha,200.0,5.98,0.0299,0.0299,Modelo_1,0.74887753522217,NaN,NaN,NaN,NaN
+Estudo_CH,Vale do Indus Novo,Confinamento,Crescimento,Novilha,200.0,5.98,0.0299,0.0299,Modelo_2,0.604725189657842,NaN,NaN,NaN,NaN
+Estudo_CH,Vale do Indus Novo,Confinamento,Crescimento,Novilha,200.0,5.98,0.0299,0.0299,Modelo_3,0.938008979718223,NaN,NaN,NaN,NaN
+Estudo_CH,Vale do Indus Novo,Confinamento,Crescimento,Novilha,200.0,5.98,0.0299,0.0299,Modelo_4,0.944263817928472,NaN,NaN,NaN,NaN
+Estudo_CH,Vale do Indus Novo,Confinamento,Crescimento,Novilha,200.0,5.98,0.0299,0.0299,Modelo_5,0.600309645455953,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.19,0.02730848861,0.0273084886128364,Modelo_1,0.177842805918477,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.19,0.02730848861,0.0273084886128364,Modelo_2,0.289318715740016,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.19,0.02730848861,0.0273084886128364,Modelo_3,0.0826571322589951,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.19,0.02730848861,0.0273084886128364,Modelo_4,0.141614804434736,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.19,0.02730848861,0.0273084886128364,Modelo_5,0.113068870296336,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.51,0.02797101449,0.0279710144927536,Modelo_1,0.250433179723502,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.51,0.02797101449,0.0279710144927536,Modelo_2,0.353049216589862,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.51,0.02797101449,0.0279710144927536,Modelo_3,0.174189861751152,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.51,0.02797101449,0.0279710144927536,Modelo_4,0.0459354838709677,NaN,NaN,NaN,NaN
+Estudo_BW,Campo Rico,Confinamento,Terminação,Boi,483.0,13.51,0.02797101449,0.0279710144927536,Modelo_5,0.203381382488479,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,678.0,8.6,0.01268436578,0.0126843657817109,Modelo_1,0.479508196721312,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,678.0,8.6,0.01268436578,0.0126843657817109,Modelo_2,0.318073770491803,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,678.0,8.6,0.01268436578,0.0126843657817109,Modelo_3,0.460202868852459,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,678.0,8.6,0.01268436578,0.0126843657817109,Modelo_4,0.198360655737705,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,678.0,8.6,0.01268436578,0.0126843657817109,Modelo_5,0.677842213114754,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,682.0,8.5,0.01246334311,0.0124633431085044,Modelo_1,0.344600938967136,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,682.0,8.5,0.01246334311,0.0124633431085044,Modelo_2,0.198967136150235,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,682.0,8.5,0.01246334311,0.0124633431085044,Modelo_3,0.325246009389671,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,682.0,8.5,0.01246334311,0.0124633431085044,Modelo_4,0.0854460093896713,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,682.0,8.5,0.01246334311,0.0124633431085044,Modelo_5,0.530235680751174,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,675.0,9.1,0.01348148148,0.0134814814814815,Modelo_1,0.263865546218487,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,675.0,9.1,0.01348148148,0.0134814814814815,Modelo_2,0.121126050420168,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,675.0,9.1,0.01348148148,0.0134814814814815,Modelo_3,0.253073949579832,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,675.0,9.1,0.01348148148,0.0134814814814815,Modelo_4,0.04,NaN,NaN,NaN,NaN
+Estudo_AC,Grandvale,Confinamento,Terminação,Boi,675.0,9.1,0.01348148148,0.0134814814814815,Modelo_5,0.421080672268908,NaN,NaN,NaN,NaN
+Estudo_AU,Planalto Sol,Confinamento,Crescimento,Novilha,242.0,5.57,0.02301652893,0.0230165289256198,Modelo_1,0.246057222609909,NaN,NaN,NaN,NaN
+Estudo_AU,Planalto Sol,Confinamento,Crescimento,Novilha,242.0,5.57,0.02301652893,0.0230165289256198,Modelo_2,0.303993021632938,NaN,NaN,NaN,NaN
+Estudo_AU,Planalto Sol,Confinamento,Crescimento,Novilha,242.0,5.57,0.02301652893,0.0230165289256198,Modelo_3,0.139936496859735,NaN,NaN,NaN,NaN
+Estudo_AU,Planalto Sol,Confinamento,Crescimento,Novilha,242.0,5.57,0.02301652893,0.0230165289256198,Modelo_4,0.18374040474529,NaN,NaN,NaN,NaN
+Estudo_AU,Planalto Sol,Confinamento,Crescimento,Novilha,242.0,5.57,0.02301652893,0.0230165289256198,Modelo_5,0.258116538729937,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.54,0.0275483871,0.0275483870967742,Modelo_1,0.0262857142857143,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.54,0.0275483871,0.0275483870967742,Modelo_2,0.0852028571428572,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.54,0.0275483871,0.0275483870967742,Modelo_3,0.1458045,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.54,0.0275483871,0.0275483870967742,Modelo_4,0.281,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.54,0.0275483871,0.0275483870967742,Modelo_5,0.0332657857142857,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.63,0.02783870968,0.0278387096774194,Modelo_1,0.064857881136951,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.63,0.02783870968,0.0278387096774194,Modelo_2,0.167117571059432,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.63,0.02783870968,0.0278387096774194,Modelo_3,0.0454071705426355,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.63,0.02783870968,0.0278387096774194,Modelo_4,0.170736434108527,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.63,0.02783870968,0.0278387096774194,Modelo_5,0.0575128552971577,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.36,0.02696774194,0.0269677419354839,Modelo_1,0.18760045924225,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.36,0.02696774194,0.0269677419354839,Modelo_2,0.274659012629162,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.36,0.02696774194,0.0269677419354839,Modelo_3,0.0901640068886338,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.36,0.02696774194,0.0269677419354839,Modelo_4,0.00780711825487953,NaN,NaN,NaN,NaN
+Estudo_I,Planalto Sol,Confinamento,Crescimento,Novilha,310.0,8.36,0.02696774194,0.0269677419354839,Modelo_5,0.178709471871412,NaN,NaN,NaN,NaN
+Estudo_J,Grandvale,Confinamento,Terminação,Boi,419.0,9.94,0.02372315036,0.0237231503579952,Modelo_1,0.021523077861106,NaN,NaN,NaN,NaN
+Estudo_J,Grandvale,Confinamento,Terminação,Boi,419.0,9.94,0.02372315036,0.0237231503579952,Modelo_2,0.137689165294799,NaN,NaN,NaN,NaN
+Estudo_J,Grandvale,Confinamento,Terminação,Boi,419.0,9.94,0.02372315036,0.0237231503579952,Modelo_3,0.0364368026339857,NaN,NaN,NaN,NaN
+Estudo_J,Grandvale,Confinamento,Terminação,Boi,419.0,9.94,0.02372315036,0.0237231503579952,Modelo_4,0.175757575757576,NaN,NaN,NaN,NaN
+Estudo_J,Grandvale,Confinamento,Terminação,Boi,419.0,9.94,0.02372315036,0.0237231503579952,Modelo_5,0.07940735321017,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,9.69,0.02752840909,0.0275284090909091,Modelo_1,0.0429139072847681,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,9.69,0.02752840909,0.0275284090909091,Modelo_2,0.0791880794701987,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,9.69,0.02752840909,0.0275284090909091,Modelo_3,0.134390728476821,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,9.69,0.02752840909,0.0275284090909091,Modelo_4,0.347615894039735,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,9.69,0.02752840909,0.0275284090909091,Modelo_5,0.0439814569536424,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,10.3,0.02926136364,0.0292613636363636,Modelo_1,0.30464135021097,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,10.3,0.02926136364,0.0292613636363636,Modelo_2,0.388767932489452,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,10.3,0.02926136364,0.0292613636363636,Modelo_3,0.243270042194093,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,10.3,0.02926136364,0.0292613636363636,Modelo_4,0.0873417721518987,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,10.3,0.02926136364,0.0292613636363636,Modelo_5,0.305762869198312,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Terminação,Boi,352.0,11.5,0.03267045455,0.0326704545454545,Modelo_1,0.289208633093525,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Terminação,Boi,352.0,11.5,0.03267045455,0.0326704545454545,Modelo_2,0.124532374100719,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Terminação,Boi,352.0,11.5,0.03267045455,0.0326704545454545,Modelo_3,0.280971223021583,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Terminação,Boi,352.0,11.5,0.03267045455,0.0326704545454545,Modelo_4,0.125179856115108,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Terminação,Boi,352.0,11.5,0.03267045455,0.0326704545454545,Modelo_5,0.161037410071942,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,12.2,0.03465909091,0.0346590909090909,Modelo_1,0.221576763485477,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,12.2,0.03465909091,0.0346590909090909,Modelo_2,0.323701244813278,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,12.2,0.03465909091,0.0346590909090909,Modelo_3,0.17545643153527,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,12.2,0.03465909091,0.0346590909090909,Modelo_4,0.0630705394190871,NaN,NaN,NaN,NaN
+Estudo_CF,Grandvale,Confinamento,Crescimento,Boi,352.0,12.2,0.03465909091,0.0346590909090909,Modelo_5,0.251310373443983,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,10.3,0.02939497717,0.0293949771689498,Modelo_1,0.396610169491525,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,10.3,0.02939497717,0.0293949771689498,Modelo_2,0.22764406779661,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,10.3,0.02939497717,0.0293949771689498,Modelo_3,0.397446610169491,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,10.3,0.02939497717,0.0293949771689498,Modelo_4,0.187118644067797,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,10.3,0.02939497717,0.0293949771689498,Modelo_5,0.273582542372881,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,9.63,0.02748287671,0.0274828767123288,Modelo_1,0.465046728971963,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,9.63,0.02748287671,0.0274828767123288,Modelo_2,0.294114018691589,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,9.63,0.02748287671,0.0274828767123288,Modelo_3,0.458455140186916,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,9.63,0.02748287671,0.0274828767123288,Modelo_4,0.224,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,9.63,0.02748287671,0.0274828767123288,Modelo_5,0.333754579439252,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,7.92,0.02260273973,0.0226027397260274,Modelo_1,0.0643750000000001,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,7.92,0.02260273973,0.0226027397260274,Modelo_2,0.04565,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,7.92,0.02260273973,0.0226027397260274,Modelo_3,0.04283359375,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,7.92,0.02260273973,0.0226027397260274,Modelo_4,0.1585,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,7.92,0.02260273973,0.0226027397260274,Modelo_5,0.03602546875,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,8.66,0.02471461187,0.0247146118721461,Modelo_1,0.170322580645161,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,8.66,0.02471461187,0.0247146118721461,Modelo_2,0.0420677419354838,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,8.66,0.02471461187,0.0247146118721461,Modelo_3,0.155247580645161,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,8.66,0.02471461187,0.0247146118721461,Modelo_4,0.0501935483870968,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Terminação,Boi,350.4,8.66,0.02471461187,0.0247146118721461,Modelo_5,0.0625059677419356,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,13.7,0.02991266376,0.0299126637554585,Modelo_1,0.094273127753304,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,13.7,0.02991266376,0.0299126637554585,Modelo_2,0.21895154185022,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,13.7,0.02991266376,0.0299126637554585,Modelo_3,0.0751101321585904,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,13.7,0.02991266376,0.0299126637554585,Modelo_4,0.17920704845815,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,13.7,0.02991266376,0.0299126637554585,Modelo_5,0.120762995594714,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,14.3,0.03122270742,0.0312227074235808,Modelo_1,0.184674329501916,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,14.3,0.03122270742,0.0312227074235808,Modelo_2,0.298766283524904,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,14.3,0.03122270742,0.0312227074235808,Modelo_3,0.165249042145594,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,14.3,0.03122270742,0.0312227074235808,Modelo_4,0.254865900383142,NaN,NaN,NaN,NaN
+Estudo_AE,Planalto Sol,Confinamento,Maturo,Boi,458.0,14.3,0.03122270742,0.0312227074235808,Modelo_5,0.209322605363985,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.36,0.009111747851,0.00911174785100287,Modelo_1,0.00743243243243251,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.36,0.009111747851,0.00911174785100287,Modelo_2,0.0939662162162163,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.36,0.009111747851,0.00911174785100287,Modelo_3,0.0995945945945946,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.36,0.009111747851,0.00911174785100287,Modelo_4,0.128040540540541,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.36,0.009111747851,0.00911174785100287,Modelo_5,0.328199324324324,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.58,0.009426934097,0.0094269340974212,Modelo_1,0.152011291460833,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.58,0.009426934097,0.0094269340974212,Modelo_2,0.228135497529993,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.58,0.009426934097,0.0094269340974212,Modelo_3,0.0607198306280874,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.58,0.009426934097,0.0094269340974212,Modelo_4,0.0248412138320394,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.58,0.009426934097,0.0094269340974212,Modelo_5,0.127345095271701,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.86,0.009828080229,0.00982808022922636,Modelo_1,0.182528127068167,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.86,0.009828080229,0.00982808022922636,Modelo_2,0.258475181998676,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.86,0.009828080229,0.00982808022922636,Modelo_3,0.094692256783587,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.86,0.009828080229,0.00982808022922636,Modelo_4,0.0465916611515552,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.86,0.009828080229,0.00982808022922636,Modelo_5,0.078152217074785,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.64,0.009512893983,0.00951289398280802,Modelo_1,0.242606516290727,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.64,0.009512893983,0.00951289398280802,Modelo_2,0.311117794486216,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.64,0.009512893983,0.00951289398280802,Modelo_3,0.161102756892231,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.64,0.009512893983,0.00951289398280802,Modelo_4,0.126315789473684,NaN,NaN,NaN,NaN
+Estudo_CO,Costa Austral,Confinamento,Maturo,Boi,698.0,6.64,0.009512893983,0.00951289398280802,Modelo_5,0.00515538847117795,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,6.5,0.02372262774,0.0237226277372263,Modelo_1,0.0539682539682539,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,6.5,0.02372262774,0.0237226277372263,Modelo_2,0.138015873015873,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,6.5,0.02372262774,0.0237226277372263,Modelo_3,0.0705952380952382,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,6.5,0.02372262774,0.0237226277372263,Modelo_4,0.0833333333333333,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,6.5,0.02372262774,0.0237226277372263,Modelo_5,0.0524174603174604,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,8.4,0.03065693431,0.0306569343065693,Modelo_1,0.0897435897435897,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,8.4,0.03065693431,0.0306569343065693,Modelo_2,0.187589743589744,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,8.4,0.03065693431,0.0306569343065693,Modelo_3,0.0254807692307692,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,8.4,0.03065693431,0.0306569343065693,Modelo_4,0.130769230769231,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Crescimento,Boi,274.0,8.4,0.03065693431,0.0306569343065693,Modelo_5,0.0970166666666667,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.4,0.02818428184,0.0281842818428184,Modelo_1,0.443478260869565,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.4,0.02818428184,0.0281842818428184,Modelo_2,0.267965217391304,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.4,0.02818428184,0.0281842818428184,Modelo_3,0.471695652173913,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.4,0.02818428184,0.0281842818428184,Modelo_4,0.899130434782609,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.4,0.02818428184,0.0281842818428184,Modelo_5,0.358412173913043,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.8,0.02926829268,0.0292682926829268,Modelo_1,0.293939393939394,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.8,0.02926829268,0.0292682926829268,Modelo_2,0.133575757575758,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.8,0.02926829268,0.0292682926829268,Modelo_3,0.322159090909091,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.8,0.02926829268,0.0292682926829268,Modelo_4,0.718181818181818,NaN,NaN,NaN,NaN
+Estudo_BI,Grandvale,Confinamento,Terminação,Boi,369.0,10.8,0.02926829268,0.0292682926829268,Modelo_5,0.217707575757576,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,185.0,8.66,0.04681081081,0.0468108108108108,Modelo_1,0.18079739625712,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,185.0,8.66,0.04681081081,0.0468108108108108,Modelo_2,0.0513946297803091,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,185.0,8.66,0.04681081081,0.0468108108108108,Modelo_3,0.28313262815297,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,185.0,8.66,0.04681081081,0.0468108108108108,Modelo_4,0.479739625711961,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,185.0,8.66,0.04681081081,0.0468108108108108,Modelo_5,0.0526362896663954,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,229.0,8.89,0.0388209607,0.03882096069869,Modelo_1,0.214121510673235,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,229.0,8.89,0.0388209607,0.03882096069869,Modelo_2,0.0789047619047618,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,229.0,8.89,0.0388209607,0.03882096069869,Modelo_3,0.319646962233169,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,229.0,8.89,0.0388209607,0.03882096069869,Modelo_4,0.532758620689655,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Crescimento,Vaca,229.0,8.89,0.0388209607,0.03882096069869,Modelo_5,0.119461412151067,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,350.0,10.8,0.03085714286,0.0308571428571429,Modelo_1,0.176308539944904,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,350.0,10.8,0.03085714286,0.0308571428571429,Modelo_2,0.0305234159779615,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,350.0,10.8,0.03085714286,0.0308571428571429,Modelo_3,0.172469008264463,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,350.0,10.8,0.03085714286,0.0308571428571429,Modelo_4,0.0115702479338843,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,350.0,10.8,0.03085714286,0.0308571428571429,Modelo_5,0.0652031680440772,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,374.0,10.5,0.02807486631,0.0280748663101604,Modelo_1,0.3376,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,374.0,10.5,0.02807486631,0.0280748663101604,Modelo_2,0.17416,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,374.0,10.5,0.02807486631,0.0280748663101604,Modelo_3,0.33026,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,374.0,10.5,0.02807486631,0.0280748663101604,Modelo_4,0.1424,NaN,NaN,NaN,NaN
+Estudo_BH,Grandvale,Confinamento,Terminação,Vaca,374.0,10.5,0.02807486631,0.0280748663101604,Modelo_5,0.2293432,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.6,0.02644628099,0.0264462809917355,Modelo_1,0.202854230377166,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.6,0.02644628099,0.0264462809917355,Modelo_2,0.295698267074414,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.6,0.02644628099,0.0264462809917355,Modelo_3,0.118450560652395,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.6,0.02644628099,0.0264462809917355,Modelo_4,0.0275229357798165,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.6,0.02644628099,0.0264462809917355,Modelo_5,0.181932721712538,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.7,0.02672176309,0.0267217630853994,Modelo_1,0.226692836113837,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.7,0.02672176309,0.0267217630853994,Modelo_2,0.317281648675172,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.7,0.02672176309,0.0267217630853994,Modelo_3,0.144847890088322,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.7,0.02672176309,0.0267217630853994,Modelo_4,0.000490677134445646,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Crescimento,Boi,363.0,9.7,0.02672176309,0.0267217630853994,Modelo_5,0.206894995093229,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,481.0,12.0,0.02494802495,0.0249480249480249,Modelo_1,0.117682558841279,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,481.0,12.0,0.02494802495,0.0249480249480249,Modelo_2,0.0278817139408568,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,481.0,12.0,0.02494802495,0.0249480249480249,Modelo_3,0.114393482196741,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,481.0,12.0,0.02494802495,0.0249480249480249,Modelo_4,0.0150875075437538,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,481.0,12.0,0.02494802495,0.0249480249480249,Modelo_5,0.0855920337960169,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,479.0,11.8,0.02463465553,0.0246346555323591,Modelo_1,0.0835803200948431,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,479.0,11.8,0.02463465553,0.0246346555323591,Modelo_2,0.0564789567279193,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,479.0,11.8,0.02463465553,0.0246346555323591,Modelo_3,0.0789270895080024,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,479.0,11.8,0.02463465553,0.0246346555323591,Modelo_4,0.0487255483106105,NaN,NaN,NaN,NaN
+Estudo_BL,Grandvale,Confinamento,Terminação,Boi,479.0,11.8,0.02463465553,0.0246346555323591,Modelo_5,0.0517095435684647,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.37,0.01486678508,0.014866785079929,Modelo_1,0.322296650717703,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.37,0.01486678508,0.014866785079929,Modelo_2,0.394977033492823,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.37,0.01486678508,0.014866785079929,Modelo_3,0.236464114832536,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.37,0.01486678508,0.014866785079929,Modelo_4,0.158995215311005,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.37,0.01486678508,0.014866785079929,Modelo_5,0.1899004784689,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.53,0.01515097691,0.0151509769094139,Modelo_1,0.113827160493827,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.53,0.01515097691,0.0151509769094139,Modelo_2,0.210023456790123,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.53,0.01515097691,0.0151509769094139,Modelo_3,0.00190740740740739,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.53,0.01515097691,0.0151509769094139,Modelo_4,0.105740740740741,NaN,NaN,NaN,NaN
+Estudo_A,Terra Nortenha,Confinamento,Crescimento,Novilha,563.0,8.53,0.01515097691,0.0151509769094139,Modelo_5,0.0562888888888888,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,244.0,5.26,0.02155737705,0.0215573770491803,Modelo_1,0.16544,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,244.0,5.26,0.02155737705,0.0215573770491803,Modelo_2,0.2257568,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,244.0,5.26,0.02155737705,0.0215573770491803,Modelo_3,0.211664,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,244.0,5.26,0.02155737705,0.0215573770491803,Modelo_4,0.427712,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,244.0,5.26,0.02155737705,0.0215573770491803,Modelo_5,0.3367968,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,249.0,5.14,0.02064257028,0.0206425702811245,Modelo_1,0.254492753623188,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,249.0,5.14,0.02064257028,0.0206425702811245,Modelo_2,0.306988405797101,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,249.0,5.14,0.02064257028,0.0206425702811245,Modelo_3,0.214652173913043,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,249.0,5.14,0.02064257028,0.0206425702811245,Modelo_4,0.217826086956522,NaN,NaN,NaN,NaN
+Estudo_CD,Alpes Neutros,Confinamento,Terminação,Novilho,249.0,5.14,0.02064257028,0.0206425702811245,Modelo_5,0.324765217391304,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,355.0,11.0,0.03098591549,0.0309859154929577,Modelo_1,0.212727272727273,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,355.0,11.0,0.03098591549,0.0309859154929577,Modelo_2,0.311181818181818,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,355.0,11.0,0.03098591549,0.0309859154929577,Modelo_3,0.194704545454545,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,355.0,11.0,0.03098591549,0.0309859154929577,Modelo_4,0.05,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,355.0,11.0,0.03098591549,0.0309859154929577,Modelo_5,0.265440909090909,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,357.0,11.3,0.03165266106,0.0316526610644258,Modelo_1,0.0221238938053097,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,357.0,11.3,0.03165266106,0.0316526610644258,Modelo_2,0.146006637168142,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,357.0,11.3,0.03165266106,0.0316526610644258,Modelo_3,0.00179756637168135,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,357.0,11.3,0.03165266106,0.0316526610644258,Modelo_4,0.3125,NaN,NaN,NaN,NaN
+Estudo_Y,Grandvale,Confinamento,Crescimento e Terminação,Vaca,357.0,11.3,0.03165266106,0.0316526610644258,Modelo_5,0.0863263274336283,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,8.7,0.02959183673,0.0295918367346939,Modelo_1,0.329032258064516,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,8.7,0.02959183673,0.0295918367346939,Modelo_2,0.402774193548387,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,8.7,0.02959183673,0.0295918367346939,Modelo_3,0.234276958525346,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,8.7,0.02959183673,0.0295918367346939,Modelo_4,0.158064516129032,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,8.7,0.02959183673,0.0295918367346939,Modelo_5,0.316038248847926,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.9,0.03367346939,0.0336734693877551,Modelo_1,0.26605504587156,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.9,0.03367346939,0.0336734693877551,Modelo_2,0.353,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.9,0.03367346939,0.0336734693877551,Modelo_3,0.165914678899083,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.9,0.03367346939,0.0336734693877551,Modelo_4,0.0463302752293578,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.9,0.03367346939,0.0336734693877551,Modelo_5,0.257740366972477,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.8,0.03333333333,0.0333333333333333,Modelo_1,0.291071428571429,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.8,0.03333333333,0.0333333333333333,Modelo_2,0.374589285714286,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.8,0.03333333333,0.0333333333333333,Modelo_3,0.194149107142857,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.8,0.03333333333,0.0333333333333333,Modelo_4,0.0812499999999999,NaN,NaN,NaN,NaN
+Estudo_AX,Reino Litoral,Confinamento,Crescimento,Boi,294.0,9.8,0.03333333333,0.0333333333333333,Modelo_5,0.282666964285714,NaN,NaN,NaN,NaN
+Estudo_BT,Grandvale,Confinamento,Terminação,Boi,309.0,7.09,0.02294498382,0.0229449838187702,Modelo_1,0.786896844488468,NaN,NaN,NaN,NaN
+Estudo_BT,Grandvale,Confinamento,Terminação,Boi,309.0,7.09,0.02294498382,0.0229449838187702,Modelo_2,0.616507711900382,NaN,NaN,NaN,NaN
+Estudo_BT,Grandvale,Confinamento,Terminação,Boi,309.0,7.09,0.02294498382,0.0229449838187702,Modelo_3,0.736210556105844,NaN,NaN,NaN,NaN
+Estudo_BT,Grandvale,Confinamento,Terminação,Boi,309.0,7.09,0.02294498382,0.0229449838187702,Modelo_4,0.364426206311023,NaN,NaN,NaN,NaN
+Estudo_BT,Grandvale,Confinamento,Terminação,Boi,309.0,7.09,0.02294498382,0.0229449838187702,Modelo_5,0.557285977076553,NaN,NaN,NaN,NaN
+Estudo_BN,Campo Rico,Confinamento,Terminação,Novilho,366.0,10.6,0.02896174863,0.0289617486338798,Modelo_1,0.153424657534247,NaN,NaN,NaN,NaN
+Estudo_BN,Campo Rico,Confinamento,Terminação,Novilho,366.0,10.6,0.02896174863,0.0289617486338798,Modelo_2,0.0118082191780821,NaN,NaN,NaN,NaN
+Estudo_BN,Campo Rico,Confinamento,Terminação,Novilho,366.0,10.6,0.02896174863,0.0289617486338798,Modelo_3,0.161650684931507,NaN,NaN,NaN,NaN
+Estudo_BN,Campo Rico,Confinamento,Terminação,Novilho,366.0,10.6,0.02896174863,0.0289617486338798,Modelo_4,0.0126027397260274,NaN,NaN,NaN,NaN
+Estudo_BN,Campo Rico,Confinamento,Terminação,Novilho,366.0,10.6,0.02896174863,0.0289617486338798,Modelo_5,0.068154794520548,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,12.0,0.01901743265,0.0190174326465927,Modelo_1,0.380809093948512,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,12.0,0.01901743265,0.0190174326465927,Modelo_2,0.461451019725844,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,12.0,0.01901743265,0.0190174326465927,Modelo_3,0.300217084587095,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,12.0,0.01901743265,0.0190174326465927,Modelo_4,0.157472417251755,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,12.0,0.01901743265,0.0190174326465927,Modelo_5,0.268243764627215,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,11.6,0.01838351823,0.0183835182250396,Modelo_1,0.408136482939633,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,11.6,0.01838351823,0.0183835182250396,Modelo_2,0.484041994750656,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,11.6,0.01838351823,0.0183835182250396,Modelo_3,0.334635400262467,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,11.6,0.01838351823,0.0183835182250396,Modelo_4,0.200787401574803,NaN,NaN,NaN,NaN
+Estudo_K,Planalto Sol,Confinamento,Maturo,Novilha,631.0,11.6,0.01838351823,0.0183835182250396,Modelo_5,0.300668274278215,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,498.53,10.46,0.02098168616,0.0209816861573025,Modelo_1,0.677263581488934,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,498.53,10.46,0.02098168616,0.0209816861573025,Modelo_2,0.472720321931589,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,498.53,10.46,0.02098168616,0.0209816861573025,Modelo_3,0.710633802816901,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,498.53,10.46,0.02098168616,0.0209816861573025,Modelo_4,1.20985915492958,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,498.53,10.46,0.02098168616,0.0209816861573025,Modelo_5,0.708215171026157,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.05,0.02493112948,0.024931129476584,Modelo_1,0.166666666666667,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.05,0.02493112948,0.024931129476584,Modelo_2,0.0353348909657321,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.05,0.02493112948,0.024931129476584,Modelo_3,0.179322429906542,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.05,0.02493112948,0.024931129476584,Modelo_4,0.480140186915888,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.05,0.02493112948,0.024931129476584,Modelo_5,0.0931838006230529,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,502.63,10.71,0.02130792034,0.0213079203390168,Modelo_1,0.269409124906507,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,502.63,10.71,0.02130792034,0.0213079203390168,Modelo_2,0.112740463724757,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,502.63,10.71,0.02130792034,0.0213079203390168,Modelo_3,0.296462228870606,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,502.63,10.71,0.02130792034,0.0213079203390168,Modelo_4,0.682198952879581,NaN,NaN,NaN,NaN
+Estudo_BE,Grandvale,Confinamento,Terminação,Boi,502.63,10.71,0.02130792034,0.0213079203390168,Modelo_5,0.294165654450262,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,10.25,0.0282369146,0.028236914600551,Modelo_1,0.0256089943785134,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,10.25,0.0282369146,0.028236914600551,Modelo_2,0.098157401623985,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,10.25,0.0282369146,0.028236914600551,Modelo_3,0.0447532792004996,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,10.25,0.0282369146,0.028236914600551,Modelo_4,0.344472204871955,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,10.25,0.0282369146,0.028236914600551,Modelo_5,0.0385708931917551,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,8.8,0.02424242424,0.0242424242424242,Modelo_1,0.204336043360434,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,8.8,0.02424242424,0.0242424242424242,Modelo_2,0.29240108401084,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,8.8,0.02424242424,0.0242424242424242,Modelo_3,0.115140921409214,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,8.8,0.02424242424,0.0242424242424242,Modelo_4,0.00162601626016266,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,8.8,0.02424242424,0.0242424242424242,Modelo_5,0.174524119241192,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.18,0.0252892562,0.0252892561983471,Modelo_1,0.191020844468199,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.18,0.0252892562,0.0252892561983471,Modelo_2,0.282858364510957,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.18,0.0252892562,0.0252892561983471,Modelo_3,0.100628006413682,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.18,0.0252892562,0.0252892561983471,Modelo_4,0.030358097274185,NaN,NaN,NaN,NaN
+Estudo_BD,Grandvale,Confinamento,Terminação,Boi,363.0,9.18,0.0252892562,0.0252892561983471,Modelo_5,0.163044895777659,NaN,NaN,NaN,NaN
+Estudo_P,Costa Austral,Confinamento,Crescimento,Boi,390.0,11.81,0.03028205128,0.0302820512820513,Modelo_1,0.227859856479527,NaN,NaN,NaN,NaN
+Estudo_P,Costa Austral,Confinamento,Crescimento,Boi,390.0,11.81,0.03028205128,0.0302820512820513,Modelo_2,0.327701983959477,NaN,NaN,NaN,NaN
+Estudo_P,Costa Austral,Confinamento,Crescimento,Boi,390.0,11.81,0.03028205128,0.0302820512820513,Modelo_3,0.219071338117349,NaN,NaN,NaN,NaN
+Estudo_P,Costa Austral,Confinamento,Crescimento,Boi,390.0,11.81,0.03028205128,0.0302820512820513,Modelo_4,0.322009286618826,NaN,NaN,NaN,NaN
+Estudo_P,Costa Austral,Confinamento,Crescimento,Boi,390.0,11.81,0.03028205128,0.0302820512820513,Modelo_5,0.276247361756015,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.53,0.0124109589,0.0124109589041096,Modelo_1,0.336757357023876,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.53,0.0124109589,0.0124109589041096,Modelo_2,0.376622709605775,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.53,0.0124109589,0.0124109589041096,Modelo_3,0.343309272626319,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.53,0.0124109589,0.0124109589041096,Modelo_4,0.339741810105497,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.53,0.0124109589,0.0124109589041096,Modelo_5,0.359571071626874,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.57,0.01252054795,0.0125205479452055,Modelo_1,0.339022711631108,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.57,0.01252054795,0.0125205479452055,Modelo_2,0.379230557467309,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.57,0.01252054795,0.0125205479452055,Modelo_3,0.345189263592567,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.57,0.01252054795,0.0125205479452055,Modelo_4,0.339504473503097,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.57,0.01252054795,0.0125205479452055,Modelo_5,0.361837577426015,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_1,0.356816348480774,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_2,0.395592901317558,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_3,0.363081473514386,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_4,0.359101909115354,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_5,0.37895939768755,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_1,0.372836916622968,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_2,0.410647614053487,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_3,0.378945988463555,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_4,0.375065547981122,NaN,NaN,NaN,NaN
+Estudo_S,Grandvale,Confinamento,Crescimento,Boi,365.0,4.54,0.01243835616,0.0124383561643836,Modelo_5,0.394428421604615,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.522,0.02334794521,0.0233479452054795,Modelo_1,0.420435643564356,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.522,0.02334794521,0.0233479452054795,Modelo_2,0.266335445544554,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.522,0.02334794521,0.0233479452054795,Modelo_3,0.390677227722772,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.522,0.02334794521,0.0233479452054795,Modelo_4,0.147516831683168,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.522,0.02334794521,0.0233479452054795,Modelo_5,0.294045544554455,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,7.543,0.02066575342,0.0206657534246575,Modelo_1,0.0537280000000001,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,7.543,0.02066575342,0.0206657534246575,Modelo_2,0.05151824,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,7.543,0.02066575342,0.0206657534246575,Modelo_3,0.1207808,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,7.543,0.02066575342,0.0206657534246575,Modelo_4,0.267224,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,7.543,0.02066575342,0.0206657534246575,Modelo_5,0.0551192000000001,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.045,0.02204109589,0.022041095890411,Modelo_1,0.165212121212121,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.045,0.02204109589,0.022041095890411,Modelo_2,0.252428484848485,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.045,0.02204109589,0.022041095890411,Modelo_3,0.110763636363636,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.045,0.02204109589,0.022041095890411,Modelo_4,0.0239090909090909,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.045,0.02204109589,0.022041095890411,Modelo_5,0.166287878787879,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.649,0.02369589041,0.0236958904109589,Modelo_1,0.166735632183908,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.649,0.02369589041,0.0236958904109589,Modelo_2,0.257980114942529,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.649,0.02369589041,0.0236958904109589,Modelo_3,0.110937931034483,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.649,0.02369589041,0.0236958904109589,Modelo_4,0.0438448275862068,NaN,NaN,NaN,NaN
+Estudo_CT,Grandvale,Confinamento,Crescimento,Boi,365.0,8.649,0.02369589041,0.0236958904109589,Modelo_5,0.170185632183908,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,725.0,20.0,0.0275862069,0.0275862068965517,Modelo_1,0.4376,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,725.0,20.0,0.0275862069,0.0275862068965517,Modelo_2,0.5252,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,725.0,20.0,0.0275862069,0.0275862068965517,Modelo_3,0.3847732,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,725.0,20.0,0.0275862069,0.0275862068965517,Modelo_4,0.16,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,725.0,20.0,0.0275862069,0.0275862068965517,Modelo_5,0.3769644,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,695.0,20.0,0.02877697842,0.0287769784172662,Modelo_1,0.4376,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,695.0,20.0,0.02877697842,0.0287769784172662,Modelo_2,0.5252,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,695.0,20.0,0.02877697842,0.0287769784172662,Modelo_3,0.3847732,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,695.0,20.0,0.02877697842,0.0287769784172662,Modelo_4,0.16,NaN,NaN,NaN,NaN
+Estudo_AG,Grandvale,Confinamento,Terminação,Novilha,695.0,20.0,0.02877697842,0.0287769784172662,Modelo_5,0.3829404,NaN,NaN,NaN,NaN
+Estudo_CC,Costa Austral,Confinamento,Terminação,Boi,477.0,9.0,0.01886792453,0.0188679245283019,Modelo_1,0.507070707070707,NaN,NaN,NaN,NaN
+Estudo_CC,Costa Austral,Confinamento,Terminação,Boi,477.0,9.0,0.01886792453,0.0188679245283019,Modelo_2,0.337979797979798,NaN,NaN,NaN,NaN
+Estudo_CC,Costa Austral,Confinamento,Terminação,Boi,477.0,9.0,0.01886792453,0.0188679245283019,Modelo_3,0.488503434343434,NaN,NaN,NaN,NaN
+Estudo_CC,Costa Austral,Confinamento,Terminação,Boi,477.0,9.0,0.01886792453,0.0188679245283019,Modelo_4,0.236363636363636,NaN,NaN,NaN,NaN
+Estudo_CC,Costa Austral,Confinamento,Terminação,Boi,477.0,9.0,0.01886792453,0.0188679245283019,Modelo_5,0.493277575757576,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,307.0,9.87,0.03214983713,0.0321498371335505,Modelo_1,0.0994490358126722,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,307.0,9.87,0.03214983713,0.0321498371335505,Modelo_2,0.0305798898071624,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,307.0,9.87,0.03214983713,0.0321498371335505,Modelo_3,0.0977548209366392,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,307.0,9.87,0.03214983713,0.0321498371335505,Modelo_4,0.0755371900826446,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,307.0,9.87,0.03214983713,0.0321498371335505,Modelo_5,0.0270785123966941,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.48,0.02779840849,0.0277984084880637,Modelo_1,0.0941022280471823,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.48,0.02779840849,0.0277984084880637,Modelo_2,0.0394547837483618,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.48,0.02779840849,0.0277984084880637,Modelo_3,0.0918988204456095,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.48,0.02779840849,0.0277984084880637,Modelo_4,0.066002621231979,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.48,0.02779840849,0.0277984084880637,Modelo_5,0.0113441677588467,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,308.0,9.85,0.03198051948,0.0319805194805195,Modelo_1,0.00441083805923136,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,308.0,9.85,0.03198051948,0.0319805194805195,Modelo_2,0.114247006931317,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,308.0,9.85,0.03198051948,0.0319805194805195,Modelo_3,0.00270951480781353,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,308.0,9.85,0.03198051948,0.0319805194805195,Modelo_4,0.155891619407687,NaN,NaN,NaN,NaN
+Estudo_CK,Campo Rico,Confinamento,Crescimento,Novilho,308.0,9.85,0.03198051948,0.0319805194805195,Modelo_5,0.11063768115942,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.63,0.02819628647,0.0281962864721485,Modelo_1,0.085807150595883,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.63,0.02819628647,0.0281962864721485,Modelo_2,0.198211267605634,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.63,0.02819628647,0.0281962864721485,Modelo_3,0.0866535211267606,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.63,0.02819628647,0.0281962864721485,Modelo_4,0.216858071505959,NaN,NaN,NaN,NaN
+Estudo_CJ,Campo Rico,Confinamento,Terminação,Novilho,377.0,10.63,0.02819628647,0.0281962864721485,Modelo_5,0.154788082340195,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.13,0.0175,0.0175,Modelo_1,0.266713189113747,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.13,0.0175,0.0175,Modelo_2,0.200281926029309,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.13,0.0175,0.0175,Modelo_3,0.151207257501744,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.13,0.0175,0.0175,Modelo_4,0.216078157711096,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.13,0.0175,0.0175,Modelo_5,0.0478632240055827,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.01,0.01699152542,0.0169915254237288,Modelo_1,0.0355942028985506,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.01,0.01699152542,0.0169915254237288,Modelo_2,0.0161692753623188,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.01,0.01699152542,0.0169915254237288,Modelo_3,0.0620289855072463,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.01,0.01699152542,0.0169915254237288,Modelo_4,0.367698550724638,NaN,NaN,NaN,NaN
+Estudo_BR,Grandvale,Confinamento,Crescimento,Boi,236.0,4.01,0.01699152542,0.0169915254237288,Modelo_5,0.224758260869565,NaN,NaN,NaN,NaN
+Estudo_V,Grandvale,Confinamento,Terminação,Boi,612.55,10.59,0.01728838462,0.0172883846216635,Modelo_1,0.529497287927082,NaN,NaN,NaN,NaN
+Estudo_V,Grandvale,Confinamento,Terminação,Boi,612.55,10.59,0.01728838462,0.0172883846216635,Modelo_2,0.587237599955265,NaN,NaN,NaN,NaN
+Estudo_V,Grandvale,Confinamento,Terminação,Boi,612.55,10.59,0.01728838462,0.0172883846216635,Modelo_3,0.524464659173517,NaN,NaN,NaN,NaN
+Estudo_V,Grandvale,Confinamento,Terminação,Boi,612.55,10.59,0.01728838462,0.0172883846216635,Modelo_4,0.597315886596209,NaN,NaN,NaN,NaN
+Estudo_V,Grandvale,Confinamento,Terminação,Boi,612.55,10.59,0.01728838462,0.0172883846216635,Modelo_5,0.493960828720013,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,6.6,0.01486486486,0.0148648648648649,Modelo_1,0.0947368421052631,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,6.6,0.01486486486,0.0148648648648649,Modelo_2,0.17621052631579,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,6.6,0.01486486486,0.0148648648648649,Modelo_3,0.0402255639097744,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,6.6,0.01486486486,0.0148648648648649,Modelo_4,0.0421052631578947,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,6.6,0.01486486486,0.0148648648648649,Modelo_5,0.0293052631578948,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,8.8,0.01981981982,0.0198198198198198,Modelo_1,0.0715328467153285,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,8.8,0.01981981982,0.0198198198198198,Modelo_2,0.047065693430657,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,8.8,0.01981981982,0.0198198198198198,Modelo_3,0.143722627737226,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,8.8,0.01981981982,0.0198198198198198,Modelo_4,0.348905109489051,NaN,NaN,NaN,NaN
+Estudo_AJ,Campo Rico,Confinamento,Crescimento,Novilho,444.0,8.8,0.01981981982,0.0198198198198198,Modelo_5,0.123813138686131,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,331.5,6.2,0.01870286576,0.0187028657616893,Modelo_1,0.0745491727086819,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,331.5,6.2,0.01870286576,0.0187028657616893,Modelo_2,0.0170291875813348,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,331.5,6.2,0.01870286576,0.0187028657616893,Modelo_3,0.0844023052612009,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,331.5,6.2,0.01870286576,0.0187028657616893,Modelo_4,0.210262130507529,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,331.5,6.2,0.01870286576,0.0187028657616893,Modelo_5,0.00211377579475742,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,343.5,5.5,0.01601164483,0.0160116448326055,Modelo_1,0.0526315789473684,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,343.5,5.5,0.01601164483,0.0160116448326055,Modelo_2,0.0271995286724274,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,343.5,5.5,0.01601164483,0.0160116448326055,Modelo_3,0.0547918303220738,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,343.5,5.5,0.01601164483,0.0160116448326055,Modelo_4,0.134131971720346,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,343.5,5.5,0.01601164483,0.0160116448326055,Modelo_5,0.00733896307934013,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,344.3,4.0,0.0116177752,0.01161777519605,Modelo_1,0.134571355889087,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,344.3,4.0,0.0116177752,0.01161777519605,Modelo_2,0.0780971762910201,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,344.3,4.0,0.0116177752,0.01161777519605,Modelo_3,0.114474688374459,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,344.3,4.0,0.0116177752,0.01161777519605,Modelo_4,0.0684304248282879,NaN,NaN,NaN,NaN
+Estudo_BC,Monção Dourada,Confinamento,Maturo,Novilho,344.3,4.0,0.0116177752,0.01161777519605,Modelo_5,0.0712576952429406,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_1,0.276410746891575,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_2,0.135136075123902,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_3,0.243248413181462,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_4,0.040605164768281,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_5,0.230247804538736,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_1,0.241227699332037,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_2,0.103847129449565,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_3,0.20897945379217,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_4,0.0119218736788705,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_5,0.196337194554832,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_1,0.275191104933982,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_2,0.134051424600417,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_3,0.242060458651841,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_4,0.0396108408617095,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,8.8,0.01942604857,0.0194260485651214,Modelo_5,0.229072272411397,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,9.2,0.02030905077,0.0203090507726269,Modelo_1,0.290322580645161,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,9.2,0.02030905077,0.0203090507726269,Modelo_2,0.143654779130139,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,9.2,0.02030905077,0.0203090507726269,Modelo_3,0.261945697506171,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,9.2,0.02030905077,0.0203090507726269,Modelo_4,0.0649416971657163,NaN,NaN,NaN,NaN
+Estudo_AM,Grandvale,Confinamento,Terminação,Vaca,453.0,9.2,0.02030905077,0.0203090507726269,Modelo_5,0.242750872414674,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.9,0.01493383743,0.0149338374291115,Modelo_1,0.39917695473251,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.9,0.01493383743,0.0149338374291115,Modelo_2,0.254794238683127,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.9,0.01493383743,0.0149338374291115,Modelo_3,0.554434156378601,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.9,0.01493383743,0.0149338374291115,Modelo_4,0.70679012345679,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.9,0.01493383743,0.0149338374291115,Modelo_5,0.629479423868313,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.84,0.01482041588,0.014820415879017,Modelo_1,0.3528,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.84,0.01482041588,0.014820415879017,Modelo_2,0.213936,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.84,0.01482041588,0.014820415879017,Modelo_3,0.50299,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.84,0.01482041588,0.014820415879017,Modelo_4,0.6464,NaN,NaN,NaN,NaN
+Estudo_BK,Grandvale,Confinamento,Crescimento,Boi,529.0,7.84,0.01482041588,0.014820415879017,Modelo_5,0.577074,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,11.9,0.0224952741,0.0224952741020794,Modelo_1,0.508196721311475,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,11.9,0.0224952741,0.0224952741020794,Modelo_2,0.312508196721312,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,11.9,0.0224952741,0.0224952741020794,Modelo_3,0.549549180327869,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,11.9,0.0224952741,0.0224952741020794,Modelo_4,1.0483606557377,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,11.9,0.0224952741,0.0224952741020794,Modelo_5,0.550027868852459,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,12.7,0.02400756144,0.024007561436673,Modelo_1,0.5125,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,12.7,0.02400756144,0.024007561436673,Modelo_2,0.310609375,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,12.7,0.02400756144,0.024007561436673,Modelo_3,0.5594140625,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,12.7,0.02400756144,0.024007561436673,Modelo_4,1.08359375,NaN,NaN,NaN,NaN
+Estudo_BJ,Grandvale,Confinamento,Terminação,Boi,529.0,12.7,0.02400756144,0.024007561436673,Modelo_5,0.5479953125,NaN,NaN,NaN,NaN
+Estudo_M,Ilha Verdejante,Confinamento,Terminação,Novilha,456.7,10.22,0.02237792862,0.022377928618349,Modelo_1,0.244976958525346,NaN,NaN,NaN,NaN
+Estudo_M,Ilha Verdejante,Confinamento,Terminação,Novilha,456.7,10.22,0.02237792862,0.022377928618349,Modelo_2,0.335950230414746,NaN,NaN,NaN,NaN
+Estudo_M,Ilha Verdejante,Confinamento,Terminação,Novilha,456.7,10.22,0.02237792862,0.022377928618349,Modelo_3,0.209967741935484,NaN,NaN,NaN,NaN
+Estudo_M,Ilha Verdejante,Confinamento,Terminação,Novilha,456.7,10.22,0.02237792862,0.022377928618349,Modelo_4,0.0109677419354838,NaN,NaN,NaN,NaN
+Estudo_M,Ilha Verdejante,Confinamento,Terminação,Novilha,456.7,10.22,0.02237792862,0.022377928618349,Modelo_5,0.228689769585253,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,190.0,6.31,0.03321052632,0.0332105263157895,Modelo_1,0.359342465753425,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,190.0,6.31,0.03321052632,0.0332105263157895,Modelo_2,0.414808767123288,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,190.0,6.31,0.03321052632,0.0332105263157895,Modelo_3,0.274591780821918,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,190.0,6.31,0.03321052632,0.0332105263157895,Modelo_4,0.273917808219178,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,190.0,6.31,0.03321052632,0.0332105263157895,Modelo_5,0.403386301369863,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,189.3,6.19,0.03269941891,0.0326994189117802,Modelo_1,0.0878357030015797,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,189.3,6.19,0.03269941891,0.0326994189117802,Modelo_2,0.165461295418641,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,189.3,6.19,0.03269941891,0.0326994189117802,Modelo_3,0.0331990521327014,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,189.3,6.19,0.03269941891,0.0326994189117802,Modelo_4,0.0267772511848342,NaN,NaN,NaN,NaN
+Estudo_AI,Ilha Verdejante,Confinamento,Crescimento,Novilho,189.3,6.19,0.03269941891,0.0326994189117802,Modelo_5,0.151214218009479,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,324.6,5.6,0.01725200246,0.0172520024645718,Modelo_1,0.266079891672309,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,324.6,5.6,0.01725200246,0.0172520024645718,Modelo_2,0.322789438050102,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,324.6,5.6,0.01725200246,0.0172520024645718,Modelo_3,0.170995260663507,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,324.6,5.6,0.01725200246,0.0172520024645718,Modelo_4,0.203791469194313,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,324.6,5.6,0.01725200246,0.0172520024645718,Modelo_5,0.230141096817874,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,325.7,5.96,0.0182990482,0.0182990482038686,Modelo_1,0.180218181818182,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,325.7,5.96,0.0182990482,0.0182990482038686,Modelo_2,0.247575272727273,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,325.7,5.96,0.0182990482,0.0182990482038686,Modelo_3,0.0749381818181818,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,325.7,5.96,0.0182990482,0.0182990482038686,Modelo_4,0.0897454545454546,NaN,NaN,NaN,NaN
+Estudo_AD,Império Central,Confinamento,Terminação,Novilho,325.7,5.96,0.0182990482,0.0182990482038686,Modelo_5,0.142649309090909,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.33,0.02210900474,0.0221090047393365,Modelo_1,0.231124497991968,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.33,0.02210900474,0.0221090047393365,Modelo_2,0.3192359437751,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.33,0.02210900474,0.0221090047393365,Modelo_3,0.149618473895582,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.33,0.02210900474,0.0221090047393365,Modelo_4,0.0164156626506023,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.33,0.02210900474,0.0221090047393365,Modelo_5,0.180069277108434,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.37,0.02220379147,0.0222037914691943,Modelo_1,0.161353711790393,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.37,0.02220379147,0.0222037914691943,Modelo_2,0.257697598253275,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.37,0.02220379147,0.0222037914691943,Modelo_3,0.0724672489082969,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.37,0.02220379147,0.0222037914691943,Modelo_4,0.0740720524017468,NaN,NaN,NaN,NaN
+Estudo_BS,Ilha Verdejante,Confinamento,Crescimento e Terminação,Vaca,422.0,9.37,0.02220379147,0.0222037914691943,Modelo_5,0.105992358078603,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,528.0,10.7,0.02026515152,0.0202651515151515,Modelo_1,0.116666666666667,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,528.0,10.7,0.02026515152,0.0202651515151515,Modelo_2,0.225635416666667,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,528.0,10.7,0.02026515152,0.0202651515151515,Modelo_3,0.1068125,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,528.0,10.7,0.02026515152,0.0202651515151515,Modelo_4,0.242083333333333,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,528.0,10.7,0.02026515152,0.0202651515151515,Modelo_5,0.0949333333333334,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,534.0,10.3,0.01928838951,0.0192883895131086,Modelo_1,0.00722891566265053,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,534.0,10.3,0.01928838951,0.0192883895131086,Modelo_2,0.12733734939759,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,534.0,10.3,0.01928838951,0.0192883895131086,Modelo_3,0.00127710843373487,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,534.0,10.3,0.01928838951,0.0192883895131086,Modelo_4,0.156144578313253,NaN,NaN,NaN,NaN
+Estudo_AA,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,534.0,10.3,0.01928838951,0.0192883895131086,Modelo_5,0.0231951807228916,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,10.2,0.025,0.025,Modelo_1,0.230075187969925,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,10.2,0.025,0.025,Modelo_2,0.0820150375939849,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,10.2,0.025,0.025,Modelo_3,0.188270676691729,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,10.2,0.025,0.025,Modelo_4,0.0430075187969925,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,10.2,0.025,0.025,Modelo_5,0.123960902255639,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,9.43,0.0231127451,0.0231127450980392,Modelo_1,0.202180685358256,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,9.43,0.0231127451,0.0231127450980392,Modelo_2,0.063568535825545,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,9.43,0.0231127451,0.0231127450980392,Modelo_3,0.151682242990654,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,9.43,0.0231127451,0.0231127450980392,Modelo_4,0.00118380062305308,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,9.43,0.0231127451,0.0231127450980392,Modelo_5,0.0964626168224298,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,6.44,0.01578431373,0.0157843137254902,Modelo_1,0.150291262135922,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,6.44,0.01578431373,0.0157843137254902,Modelo_2,0.0489087378640776,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,6.44,0.01578431373,0.0157843137254902,Modelo_3,0.052504854368932,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,6.44,0.01578431373,0.0157843137254902,Modelo_4,0.149669902912621,NaN,NaN,NaN,NaN
+Estudo_CM,Grandvale,Confinamento,Crescimento,Novilho,408.0,6.44,0.01578431373,0.0157843137254902,Modelo_5,0.0388233009708738,NaN,NaN,NaN,NaN
+Estudo_H,Campo Rico,Confinamento,Terminação,Novilho,502.0,11.8,0.0235059761,0.0235059760956175,Modelo_1,0.29645390070922,NaN,NaN,NaN,NaN
+Estudo_H,Campo Rico,Confinamento,Terminação,Novilho,502.0,11.8,0.0235059761,0.0235059760956175,Modelo_2,0.128879432624113,NaN,NaN,NaN,NaN
+Estudo_H,Campo Rico,Confinamento,Terminação,Novilho,502.0,11.8,0.0235059761,0.0235059760956175,Modelo_3,0.31113475177305,NaN,NaN,NaN,NaN
+Estudo_H,Campo Rico,Confinamento,Terminação,Novilho,502.0,11.8,0.0235059761,0.0235059760956175,Modelo_4,0.138156028368794,NaN,NaN,NaN,NaN
+Estudo_H,Campo Rico,Confinamento,Terminação,Novilho,502.0,11.8,0.0235059761,0.0235059760956175,Modelo_5,0.294320567375887,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Crescimento,Novilho,244.0,9.0,0.0368852459,0.0368852459016393,Modelo_1,0.246464646464647,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Crescimento,Novilho,244.0,9.0,0.0368852459,0.0368852459016393,Modelo_2,0.331010101010101,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Crescimento,Novilho,244.0,9.0,0.0368852459,0.0368852459016393,Modelo_3,0.157813131313131,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Crescimento,Novilho,244.0,9.0,0.0368852459,0.0368852459016393,Modelo_4,0.0454545454545455,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Crescimento,Novilho,244.0,9.0,0.0368852459,0.0368852459016393,Modelo_5,0.275033333333333,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,582.0,10.7,0.01838487973,0.0183848797250859,Modelo_1,0.220143884892086,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,582.0,10.7,0.01838487973,0.0183848797250859,Modelo_2,0.0696258992805755,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,582.0,10.7,0.01838487973,0.0183848797250859,Modelo_3,0.266618705035971,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,582.0,10.7,0.01838487973,0.0183848797250859,Modelo_4,0.616546762589928,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,582.0,10.7,0.01838487973,0.0183848797250859,Modelo_5,0.320915107913669,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,550.0,11.0,0.02,0.02,Modelo_1,0.124675324675325,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,550.0,11.0,0.02,0.02,Modelo_2,0.015974025974026,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,550.0,11.0,0.02,0.02,Modelo_3,0.168961038961039,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,550.0,11.0,0.02,0.02,Modelo_4,0.5,NaN,NaN,NaN,NaN
+Estudo_AY,Grandvale,Confinamento,Terminação,Novilho,550.0,11.0,0.02,0.02,Modelo_5,0.193571428571429,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.5,0.02698863636,0.0269886363636364,Modelo_1,0.339574468085106,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.5,0.02698863636,0.0269886363636364,Modelo_2,0.416042553191489,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.5,0.02698863636,0.0269886363636364,Modelo_3,0.342024680851064,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.5,0.02698863636,0.0269886363636364,Modelo_4,0.450212765957447,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.5,0.02698863636,0.0269886363636364,Modelo_5,0.397103829787234,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.54,0.02710227273,0.0271022727272727,Modelo_1,0.374779116465863,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.54,0.02710227273,0.0271022727272727,Modelo_2,0.44734297188755,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.54,0.02710227273,0.0271022727272727,Modelo_3,0.376898795180723,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.54,0.02710227273,0.0271022727272727,Modelo_4,0.478939759036145,NaN,NaN,NaN,NaN
+Estudo_C,Campo Rico,Confinamento,Crescimento,Novilho,352.0,9.54,0.02710227273,0.0271022727272727,Modelo_5,0.429186345381526,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,443.0,7.98,0.01801354402,0.0180135440180587,Modelo_1,0.247885777045579,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,443.0,7.98,0.01801354402,0.0180135440180587,Modelo_2,0.326034047226798,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,443.0,7.98,0.01801354402,0.0180135440180587,Modelo_3,0.146926963207029,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,443.0,7.98,0.01801354402,0.0180135440180587,Modelo_4,0.0797364085667215,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,443.0,7.98,0.01801354402,0.0180135440180587,Modelo_5,0.155172981878089,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,440.0,9.73,0.02211363636,0.0221136363636364,Modelo_1,0.0438256658595641,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,440.0,9.73,0.02211363636,0.0221136363636364,Modelo_2,0.156027845036319,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,440.0,9.73,0.02211363636,0.0221136363636364,Modelo_3,0.0227966101694916,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,440.0,9.73,0.02211363636,0.0221136363636364,Modelo_4,0.236864406779661,NaN,NaN,NaN,NaN
+Estudo_CI,Campo Rico,Confinamento,Terminação,Novilho,440.0,9.73,0.02211363636,0.0221136363636364,Modelo_5,0.00682203389830497,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,451.0,10.25,0.02272727273,0.0227272727272727,Modelo_1,0.0775280898876405,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,451.0,10.25,0.02272727273,0.0227272727272727,Modelo_2,0.188848314606742,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,451.0,10.25,0.02272727273,0.0227272727272727,Modelo_3,0.0125095505617977,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,451.0,10.25,0.02272727273,0.0227272727272727,Modelo_4,0.209269662921348,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,451.0,10.25,0.02272727273,0.0227272727272727,Modelo_5,0.0149803370786518,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,423.0,9.11,0.02153664303,0.0215366430260047,Modelo_1,0.0351282051282051,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,423.0,9.11,0.02153664303,0.0215366430260047,Modelo_2,0.144170512820513,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,423.0,9.11,0.02153664303,0.0215366430260047,Modelo_3,0.0588378205128205,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,423.0,9.11,0.02153664303,0.0215366430260047,Modelo_4,0.226346153846154,NaN,NaN,NaN,NaN
+Estudo_BX,Campo Rico,Confinamento,Crescimento e Terminação,Novilho,423.0,9.11,0.02153664303,0.0215366430260047,Modelo_5,0.0234788461538462,NaN,NaN,NaN,NaN

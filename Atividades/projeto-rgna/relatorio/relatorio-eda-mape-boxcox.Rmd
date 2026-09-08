@@ -1,0 +1,947 @@
+---
+title: "Previsão do MAPE em modelos de metano entérico"
+subtitle: "IME0546 — Tópicos em Matemática Aplicada · Rede Global de Nutrição Animal (treino)"
+author: "Relatório consolidado das fases 01–05"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    theme: null
+    css: estilo.css
+    toc: true
+    toc_depth: 3
+    toc_float: false
+    number_sections: true
+    df_print: kable
+    self_contained: true
+    includes:
+      after_body: toc-nav.html
+    fig_width: 8
+    fig_height: 4.6
+    fig_retina: 2
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_width: 7
+    fig_height: 4.2
+    highlight: tango
+    keep_tex: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  dpi = 140
+)
+options(knitr.kable.NA = "—")
+
+tab <- function(x, ...) {
+  k <- knitr::kable(
+    x,
+    format = "html",
+    escape = TRUE,
+    table.attr = 'class="rgna"',
+    ...
+  )
+  knitr::raw_html(
+    paste0('<div class="table-wrap">', paste(as.character(k), collapse = "\n"), "</div>")
+  )
+}
+root <- normalizePath("..")
+source(file.path(root, "scripts", "tema_rgna.R"), encoding = "UTF-8")
+df <- ler_treino(root)
+theme_set(theme_rgna())
+
+fmt_pct <- function(x, d = 1) paste0(format(round(100 * x, d), decimal.mark = ",", nsmall = d), "%")
+fmt_n <- function(x, d = 3) format(round(x, d), decimal.mark = ",", nsmall = d)
+fmt_p <- function(p) {
+  if (is.na(p)) return("—")
+  if (p < 0.001) "< 0,001" else format(round(p, 3), decimal.mark = ",", nsmall = 3)
+}
+
+mape_modelo <- df |>
+  group_by(Modelo) |>
+  summarise(
+    n = n(),
+    media = mean(MAPE),
+    mediana = median(MAPE),
+    desvio = sd(MAPE),
+    q1 = quantile(MAPE, 0.25),
+    q3 = quantile(MAPE, 0.75),
+    minimo = min(MAPE),
+    maximo = max(MAPE),
+    .groups = "drop"
+  ) |>
+  arrange(mediana)
+
+campeao <- as.character(mape_modelo$Modelo[1])
+campeao_media <- as.character(mape_modelo$Modelo[which.min(mape_modelo$media)])
+
+win_id <- df |>
+  group_by(ID_Observacao) |>
+  slice_min(MAPE, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+vitorias <- win_id |>
+  count(Modelo, name = "n_vitorias") |>
+  mutate(fracao = n_vitorias / sum(n_vitorias)) |>
+  arrange(desc(n_vitorias))
+
+tab_pais <- df |>
+  group_by(Pais_Estudo, Modelo) |>
+  summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+
+win_pais <- tab_pais |>
+  group_by(Pais_Estudo) |>
+  slice_min(mediana, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+tab_status <- df |>
+  group_by(Status_Metabolico, Modelo) |>
+  summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+
+win_status <- tab_status |>
+  group_by(Status_Metabolico) |>
+  slice_min(mediana, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+tab_sexo <- df |>
+  group_by(Sexo_Animal, Modelo) |>
+  summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+
+win_sexo <- tab_sexo |>
+  group_by(Sexo_Animal) |>
+  slice_min(mediana, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+estudos_pais <- df |>
+  group_by(Pais_Estudo) |>
+  summarise(
+    n_estudo = n_distinct(Estudo),
+    n_id = n_distinct(ID_Observacao),
+    n_linhas = n(),
+    .groups = "drop"
+  ) |>
+  arrange(desc(n_id))
+
+aov_est <- aov(MAPE ~ Estudo, data = df)
+ss <- summary(aov_est)[[1]]
+ms <- ss[["Mean Sq"]]
+n_por_estudo <- df |> count(Estudo)
+n0 <- (sum(n_por_estudo$n) - sum(n_por_estudo$n^2) / sum(n_por_estudo$n)) / (nrow(n_por_estudo) - 1)
+sigma2_w <- ms[2]
+sigma2_b <- max(0, (ms[1] - ms[2]) / n0)
+icc <- sigma2_b / (sigma2_b + sigma2_w)
+
+mape_wide <- df |>
+  select(ID_Observacao, Modelo, MAPE) |>
+  tidyr::pivot_wider(names_from = Modelo, values_from = MAPE)
+fried <- friedman.test(as.matrix(mape_wide |> select(starts_with("Modelo"))))
+
+kw_status <- kruskal.test(MAPE ~ Status_Metabolico, data = df)
+kw_sexo <- kruskal.test(MAPE ~ Sexo_Animal, data = df)
+kw_pais <- kruskal.test(MAPE ~ Pais_Estudo, data = df)
+
+num_sum <- df |>
+  distinct(ID_Observacao, .keep_all = TRUE) |>
+  summarise(across(
+    c(Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B),
+    list(media = mean, mediana = median, desvio = sd, min = min, max = max)
+  ))
+
+cors <- cor(
+  df |> select(MAPE, Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B),
+  use = "complete.obs"
+)
+
+path_04 <- file.path(root, "data", "processed", "04_metricas_resumo.csv")
+tem_04 <- file.exists(path_04)
+if (tem_04) resumo_04 <- read.csv(path_04, check.names = FALSE)
+path_vif <- file.path(root, "data", "processed", "04_vif.csv")
+tem_vif <- file.exists(path_vif)
+if (tem_vif) vif_04 <- read.csv(path_vif, check.names = FALSE)
+path_boot <- file.path(root, "data", "processed", "04_bootstrap_ic.csv")
+tem_boot <- file.exists(path_boot)
+if (tem_boot) boot_04 <- read.csv(path_boot, check.names = FALSE)
+```
+
+```{r load-model-data}
+path_modelagem <- file.path(root, "data", "processed", "03_modelagem.csv")
+tem_modelagem <- file.exists(path_modelagem)
+if (tem_modelagem) {
+  df_modelagem <- read.csv(path_modelagem, check.names = FALSE)
+}
+```
+
+Este documento reúne a exploração, as hipóteses do case e o desenho de modelagem sobre o **conjunto de treino** (`dados_treino.xlsx`). O arquivo de teste permanece **lacrado**: nenhuma decisão abaixo usa `dados_teste.xlsx`.
+
+O objeto de previsão **não** é a emissão de metano. Para cada animal, cinco modelos empíricos (`Modelo_1` … `Modelo_5`) já tentaram prever essa emissão; o que a planilha registra é o **MAPE** (erro percentual absoluto médio) de cada tentativa. Quanto menor o MAPE, melhor aquele modelo empírico foi naquela observação.
+
+# Problema e recorte
+
+## O que o case pede
+
+A base mascarada da Rede Global de Nutrição Animal reúne estudos de confinamento em 16 países. Cinco países tiveram **um estudo inteiro** retirado do treino (Campo Rico, Ilha Verdejante, Terra Nortenha, Monção Dourada, Costa Austral). Esse estudo só existe no teste.
+
+Perguntas do enunciado, a responder **antes** de abrir o teste:
+
+1. Existe um modelo empírico melhor na maioria dos países, ou o campeão muda?
+2. Sexo, status metabólico e peso se relacionam com quem erra menos?
+3. Qual modelo apostaríamos no estudo oculto de cada um dos cinco países?
+
+Há ainda o horizonte da **competição da disciplina**: um modelo nosso que, para cada linha, preveja o MAPE contínuo. São dois alvos:
+
+| Superfície | Pergunta                                              | Métrica            |
+|------------|-------------------------------------------------------|--------------------|
+| Case       | Qual dos cinco empíricos errará menos no estudo novo? | Ranking / Top-1    |
+| Competição | Qual o valor do MAPE daquela linha?                   | MAE, RMSE, \(R^2\) |
+
+Acertar o número do MAPE não garante acertar **quem** é o melhor dos cinco no mesmo animal. Por isso o relatório trata os dois.
+
+## Unidade de análise
+
+Cada linha é o par \((\text{animal}, \text{modelo empírico})\). Os cinco MAPEs do mesmo `ID_Observacao` são **dependentes**. Animais do mesmo `Estudo` compartilham protocolo, dieta e país. Cortar treino/validação por linha (ou só por animal) vaza informação que o teste real não terá: lá some um **estudo completo**.
+
+# Dicionário e integridade
+
+| Coluna                              | Papel neste trabalho                                                      |
+|-------------------------------------|---------------------------------------------------------------------------|
+| `ID_Observacao`                     | Animal. Cinco linhas compartilham o mesmo ID.                             |
+| `Estudo`                            | Grupo de validação. **Não** entra como preditor (estudos novos no teste). |
+| `Pais_Estudo`                       | Pode entrar: os cinco países do case **existem** no treino.               |
+| `Sistema_Producao`                  | Enunciado: só confinamento nesta base.                                    |
+| `Status_Metabolico`                 | Crescimento, Terminação, Maturo, Crescimento e Terminação.                |
+| `Sexo_Animal`                       | Boi, Vaca, Novilho, Novilha, Touro, Não especificado.                     |
+| `Peso_Corporal_kg`, `Consumo_MS_kg` | Covariáveis contínuas do animal.                                          |
+| `Fracao_Perda_A`, `Fracao_Perda_B`  | Frações de energia perdida como metano.                                   |
+| `Modelo`                            | Qual dos cinco empíricos gerou aquele MAPE.                               |
+| `MAPE`                              | Alvo. Estritamente positivo no treino.                                    |
+
+```{r tab-nulos}
+nulos <- tibble::tibble(
+  coluna = names(df),
+  classe = vapply(df, function(x) paste(class(x)[1], collapse = ","), character(1)),
+  n_na = colSums(is.na(df)),
+  n_distintos = vapply(df, dplyr::n_distinct, integer(1))
+)
+tab(
+  nulos,
+  col.names = c("Coluna", "Tipo", "Nulos", "Valores distintos"),
+  align = c("l", "l", "r", "r"),
+  caption = "Estrutura das colunas usadas na análise (colunas vazias da planilha original foram descartadas na leitura)."
+)
+```
+
+Contagens: **`r nrow(df)`** linhas, **`r n_distinct(df$ID_Observacao)`** animais, **`r n_distinct(df$Estudo)`** estudos, **`r n_distinct(df$Pais_Estudo)`** países, **`r n_distinct(df$Modelo)`** modelos. Mínimo e máximo de linhas por ID: **`r min(dplyr::count(df, ID_Observacao)$n)`** e **`r max(dplyr::count(df, ID_Observacao)$n)`** (sempre 5).
+
+`Sistema_Producao` é só **`r paste(unique(df$Sistema_Producao), collapse = ", ")`**. A coluna é constante; **não entra no modelo**. Na pecuária real existem outros sistemas (por exemplo terminação a pasto); este recorte foi filtrado de propósito, não é falha de dicionário.
+
+Correlação de `Fracao_Perda_A` com `Fracao_Perda_B`: **`r fmt_n(cors["Fracao_Perda_A", "Fracao_Perda_B"], 6)`**. No treino as duas séries são indistinguíveis. Na engenharia de features permanece **uma** delas.
+
+# O alvo (MAPE)
+
+## Forma da distribuição
+
+```{r hist-mape, fig.cap="Histograma do MAPE no treino (1.115 linhas). A linha tracejada é a mediana."}
+assimetria <- mean((df$MAPE - mean(df$MAPE))^3) / (sd(df$MAPE)^3)
+ggplot(df, aes(x = MAPE)) +
+  geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
+  geom_vline(xintercept = median(df$MAPE), linetype = "22", color = ink, linewidth = 0.4) +
+  labs(
+    title = "Distribuição do MAPE",
+    subtitle = paste0(
+      "Média ", fmt_n(mean(df$MAPE), 3),
+      " · mediana ", fmt_n(median(df$MAPE), 3),
+      " · assimetria ", fmt_n(assimetria, 2)
+    ),
+    x = "MAPE",
+    y = "Frequência",
+    caption = "Fonte: dados_treino.xlsx. Treino apenas."
+  )
+```
+
+```{r hist-mape-boxcox, fig.cap="Histograma do MAPE-BOXCOX no treino (1.115 linhas). A linha tracejada é a mediana."}
+assimetria <- mean((df_modelagem$MAPE_boxcox - mean(df_modelagem$MAPE_boxcox))^3) / (sd(df_modelagem$MAPE_boxcox)^3)
+ggplot(df_modelagem, aes(x = MAPE_boxcox)) +
+  geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
+  geom_vline(xintercept = median(df_modelagem$MAPE_boxcox), linetype = "22", color = ink, linewidth = 0.4) +
+  labs(
+    title = "Distribuição do MAPE_boxcox",
+    subtitle = paste0(
+      "Média ", fmt_n(mean(df_modelagem$MAPE_boxcox), 3),
+      " · mediana ", fmt_n(median(df_modelagem$MAPE_boxcox), 3),
+      " · assimetria ", fmt_n(assimetria, 2)
+    ),
+    x = "MAPE_boxcox",
+    y = "Frequência",
+    caption = "Fonte: dados_treino.xlsx. Treino apenas."
+  )
+```
+
+```{r tab-mape-global}
+mape_global <- df |>
+  summarise(
+    n = n(),
+    media = mean(MAPE),
+    mediana = median(MAPE),
+    desvio = sd(MAPE),
+    q1 = as.numeric(quantile(MAPE, 0.25)),
+    q3 = as.numeric(quantile(MAPE, 0.75)),
+    minimo = min(MAPE),
+    maximo = max(MAPE),
+    assimetria = mean((MAPE - mean(MAPE))^3) / (sd(MAPE)^3),
+    n_nao_positivo = sum(MAPE <= 0)
+  )
+tab(
+  mape_global |> mutate(across(-c(n, n_nao_positivo), ~fmt_n(.x, 3))),
+  caption = "Resumo univariado do MAPE no treino.",
+  align = "r"
+)
+```
+
+```{r tab-MAPE_boxcox-global}
+mape_global <- df_modelagem |>
+  summarise(
+    n = n(),
+    media = mean(MAPE_boxcox),
+    mediana = median(MAPE_boxcox),
+    desvio = sd(MAPE_boxcox),
+    q1 = as.numeric(quantile(MAPE_boxcox, 0.25)),
+    q3 = as.numeric(quantile(MAPE_boxcox, 0.75)),
+    minimo = min(MAPE_boxcox),
+    maximo = max(MAPE_boxcox),
+    assimetria = mean((MAPE_boxcox - mean(MAPE_boxcox))^3) / (sd(MAPE_boxcox)^3),
+    n_nao_positivo = sum(MAPE_boxcox <= 0)
+  )
+tab(
+  mape_global |> mutate(across(-c(n, n_nao_positivo), ~fmt_n(.x, 3))),
+  caption = "Resumo univariado do MAPE_boxcox no treino.",
+  align = "r"
+)
+```
+
+A média (`r fmt_n(mean(df$MAPE), 3)`) está acima da mediana (`r fmt_n(median(df$MAPE), 3)`): cauda direita. O máximo (`r fmt_n(max(df$MAPE), 3)`) ultrapassa 100% de erro percentual. Não há MAPE ≤ 0; \(\ln(\text{MAPE})\) é definido, mas qualquer modelo treinado no log tem de **inverter** antes da métrica da competição, que é na escala original.
+
+```{r dens-modelo, fig.cap="Densidade do MAPE por modelo empírico. A cauda longa é comum aos cinco; o centro de massa não."}
+ggplot(df, aes(x = MAPE, color = Modelo)) +
+  geom_density(adjust = 1.1, linewidth = 0.55) +
+  scale_color_manual(values = pal_modelo) +
+  labs(
+    title = "Densidade do MAPE por modelo",
+    x = "MAPE",
+    y = "Densidade",
+    caption = "Fonte: dados_treino.xlsx. Kernel gaussiano."
+  )
+```
+
+```{r dens-modelo-boxcox, fig.cap="Densidade do MAPE_boxcox por modelo empírico. A cauda longa é comum aos cinco; o centro de massa não."}
+ggplot(df_modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
+  geom_density(adjust = 1.1, linewidth = 0.55) +
+  scale_color_manual(values = pal_modelo) +
+  labs(
+    title = "Densidade do MAPE_boxcox por modelo",
+    x = "MAPE_boxcox",
+    y = "Densidade",
+    caption = "Fonte: dados_treino.xlsx. Kernel gaussiano."
+  )
+```
+
+## Desempenho global dos cinco modelos empíricos
+
+O **baseline** da metodologia é o modelo com **menor mediana** de MAPE no treino. Por esse critério o campeão é **`r campeao`**. Pela **média**, o menor valor é o de **`r campeao_media`**: o Modelo_5 sofre menos com extremos, o Modelo_4 ganha no centro da distribuição. A métrica de desempate combinada foi a mediana, mais robusta à cauda.
+
+```{r box-modelo, fig.cap="Boxplot do MAPE por modelo empírico (n = 223 por modelo)."}
+ggplot(df, aes(x = Modelo, y = MAPE)) +
+  geom_boxplot(
+    fill = fill_soft, color = fill_main, outlier.colour = muted,
+    outlier.alpha = 0.45, outlier.size = 1.1, width = 0.55, linewidth = 0.45
+  ) +
+  labs(
+    title = "MAPE por modelo empírico",
+    subtitle = "Traço interno = mediana; pontos = observações fora de 1,5×IIQ",
+    x = NULL,
+    y = "MAPE",
+    caption = "Fonte: dados_treino.xlsx."
+  )
+```
+
+```{r tab-modelo}
+tab(
+  mape_modelo |>
+    mutate(across(c(media, mediana, desvio, q1, q3, minimo, maximo), ~fmt_n(.x, 3))),
+  col.names = c("Modelo", "n", "Média", "Mediana", "Desvio", "Q1", "Q3", "Mín.", "Máx."),
+  align = c("l", rep("r", 8)),
+  caption = "MAPE por modelo empírico, ordenado pela mediana."
+)
+```
+
+Como os cinco MAPEs são do **mesmo** animal, o teste adequado de diferença entre modelos é o de Friedman (blocos = `ID_Observacao`): estatística \(\chi^2 = `r fmt_n(unname(fried$statistic), 2)`\), gl = `r fried$parameter`, \(p\) = `r fmt_p(fried$p.value)`. Rejeita-se a hipótese de que os cinco tenham a mesma distribuição de MAPE.
+
+## Quem vence animal a animal (Top-1 observado)
+
+Para cada ID, o “vencedor” é o modelo de menor MAPE **real**. Empates foram quebrados pela primeira ocorrência (`slice_min(..., with_ties = FALSE)`); no treino o total de vitórias soma 223, ou seja, não houve empate residual nesse critério.
+
+```{r tab-vitorias}
+tab(
+  vitorias |> mutate(fracao = fmt_pct(fracao, 1)),
+  col.names = c("Modelo", "Vitórias", "Fração dos animais"),
+  align = c("l", "r", "r"),
+  caption = "Quantas vezes cada modelo empírico tem o menor MAPE no animal."
+)
+```
+
+O `r campeao` vence em `r fmt_pct(vitorias$fracao[vitorias$Modelo == campeao])` dos animais — é o mais frequente, mas **não** é maioria absoluta. Há nicho real para os outros quatro.
+
+# Covariáveis do animal
+
+## Contínuas (um registro por animal)
+
+```{r tab-num}
+anim <- df |> distinct(ID_Observacao, .keep_all = TRUE)
+num_tab <- anim |>
+  tidyr::pivot_longer(
+    c(Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B),
+    names_to = "variavel", values_to = "valor"
+  ) |>
+  group_by(variavel) |>
+  summarise(
+    n = n(),
+    media = mean(valor),
+    mediana = median(valor),
+    desvio = sd(valor),
+    minimo = min(valor),
+    maximo = max(valor),
+    .groups = "drop"
+  )
+tab(
+  num_tab |> mutate(across(c(media, mediana, desvio, minimo, maximo), ~fmt_n(.x, 3))),
+  col.names = c("Variável", "n", "Média", "Mediana", "Desvio", "Mín.", "Máx."),
+  align = c("l", rep("r", 6)),
+  caption = "Resumo das covariáveis contínuas (223 animais)."
+)
+```
+
+Peso e consumo correlacionam entre si (`r fmt_n(cors["Peso_Corporal_kg", "Consumo_MS_kg"], 2)`), o que é esperado zootecnicamente. Com o MAPE, as correlações de Pearson são fracas: peso `r fmt_n(cors["MAPE", "Peso_Corporal_kg"], 3)`, consumo `r fmt_n(cors["MAPE", "Consumo_MS_kg"], 3)`, fração A `r fmt_n(cors["MAPE", "Fracao_Perda_A"], 3)`. Sozinhas, essas variáveis não “explicam” o erro; ainda assim podem importar **em interação com o modelo empírico**.
+
+```{r tab-cor}
+tab(
+  as.data.frame(round(cors, 3)) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~format(.x, decimal.mark = ","))),
+  caption = "Correlação de Pearson (linhas do treino, n = 1.115)."
+)
+```
+
+```{r scatter-peso, fig.cap="MAPE contra peso corporal, por modelo. A nuvem é dispersa: não há reta óbvia."}
+ggplot(df, aes(x = Peso_Corporal_kg, y = MAPE)) +
+  geom_point(alpha = 0.28, size = 1.1, color = fill_main) +
+  facet_wrap(~Modelo, nrow = 1) +
+  labs(
+    title = "MAPE vs peso corporal",
+    x = "Peso corporal (kg)",
+    y = "MAPE",
+    caption = "Fonte: dados_treino.xlsx. Um ponto por linha (animal × modelo)."
+  )
+```
+
+```{r scatter-consumo, fig.cap="MAPE contra consumo de matéria seca, por modelo."}
+ggplot(df, aes(x = Consumo_MS_kg, y = MAPE)) +
+  geom_point(alpha = 0.28, size = 1.1, color = fill_main) +
+  facet_wrap(~Modelo, nrow = 1) +
+  labs(
+    title = "MAPE vs consumo de matéria seca",
+    x = "Consumo de MS (kg/dia)",
+    y = "MAPE",
+    caption = "Fonte: dados_treino.xlsx."
+  )
+```
+
+```{r scatter-fracao-perda, fig.cap="MAPE contra Fracao_Perda_A, por modelo."}
+ggplot(df, aes(x = Fracao_Perda_A, y = MAPE)) +
+  geom_point(alpha = 0.28, size = 1.1, color = fill_main) +
+  facet_wrap(~Modelo, nrow = 1) +
+  labs(
+    title = "MAPE vs Fracao_Perda_A",
+    x = "Fracao_Perda_A (Consumo/Peso Corporal)",
+    y = "MAPE",
+    caption = "Fonte: dados_treino.xlsx."
+  )
+```
+A taxa `Consumo_MS_kg / Peso_Corporal_kg` entra depois como feature zootécnica (consumo relativo ao peso).
+
+## Status metabólico
+
+Kruskal–Wallis do MAPE entre status (ignorando o pareamento por modelo): \(p\) = `r fmt_p(kw_status$p.value)`. O nível de erro não é o mesmo nas fases produtivas, mas o que o case pergunta é se o **vencedor** muda.
+
+```{r tab-win-status}
+tab(
+  win_status |>
+    mutate(mediana = fmt_n(mediana, 3), media = fmt_n(media, 3)),
+  col.names = c("Status", "Vencedor (mediana)", "n", "Média", "Mediana"),
+  align = c("l", "l", "r", "r", "r"),
+  caption = "Modelo de menor mediana de MAPE em cada status metabólico."
+)
+```
+
+```{r tab-status-full}
+tab(
+  tab_status |>
+    mutate(across(c(media, mediana), ~fmt_n(.x, 3))) |>
+    arrange(Status_Metabolico, mediana),
+  col.names = c("Status", "Modelo", "n", "Média", "Mediana"),
+  align = c("l", "l", "r", "r", "r"),
+  caption = "MAPE completo: status × modelo."
+)
+```
+
+Crescimento (n = `r n_distinct(df$ID_Observacao[df$Status_Metabolico == "Crescimento"])` animais) favorece o **Modelo_3** na mediana. Terminação favorece o **Modelo_4**. “Crescimento e Terminação” e Maturo têm n pequeno (8 e 17 animais): o vencedor local é instável.
+
+```{r box-status, fig.height=5.2, fig.cap="Distribuição do MAPE por status, um painel por modelo empírico."}
+ggplot(df, aes(x = Status_Metabolico, y = MAPE)) +
+  geom_boxplot(
+    fill = fill_soft, color = fill_main, outlier.colour = muted,
+    outlier.alpha = 0.4, outlier.size = 0.9, width = 0.55, linewidth = 0.4
+  ) +
+  facet_wrap(~Modelo, nrow = 1) +
+  labs(
+    title = "MAPE segundo o status metabólico",
+    x = NULL,
+    y = "MAPE",
+    caption = "Fonte: dados_treino.xlsx."
+  ) +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+```
+
+## Sexo
+
+Kruskal–Wallis: \(p\) = `r fmt_p(kw_sexo$p.value)`.
+
+```{r tab-sexo-n}
+sexo_n <- df |>
+  distinct(ID_Observacao, Sexo_Animal) |>
+  count(Sexo_Animal, name = "n_animais") |>
+  arrange(desc(n_animais))
+tab(
+  sexo_n,
+  col.names = c("Sexo", "Animais"),
+  align = c("l", "r"),
+  caption = "Tamanho amostral por sexo (um registro por animal)."
+)
+```
+
+Boi concentra 136/223 animais. Touro e Não especificado têm **4** animais cada: qualquer “nicho” nessas células é ruído.
+
+```{r tab-win-sexo}
+tab(
+  win_sexo |>
+    mutate(mediana = fmt_n(mediana, 3), media = fmt_n(media, 3)),
+  col.names = c("Sexo", "Vencedor (mediana)", "n linhas", "Média", "Mediana"),
+  align = c("l", "l", "r", "r", "r"),
+  caption = "Modelo de menor mediana de MAPE em cada sexo."
+)
+```
+
+```{r box-sexo, fig.height=5.2, fig.cap="MAPE por sexo do animal, facetas por modelo empírico."}
+ggplot(df, aes(x = Sexo_Animal, y = MAPE)) +
+  geom_boxplot(
+    fill = fill_soft, color = fill_main, outlier.colour = muted,
+    outlier.alpha = 0.35, outlier.size = 0.9, width = 0.55, linewidth = 0.4
+  ) +
+  facet_wrap(~Modelo, nrow = 1) +
+  labs(title = "MAPE segundo o sexo", x = NULL, y = "MAPE", caption = "Fonte: dados_treino.xlsx.") +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+```
+
+Novilho puxa o **Modelo_5**; Boi, Vaca e Novilha, o **Modelo_4**. Isso reforça a necessidade de interação `Modelo ×` características, e também o risco de overfit se o encoding de sexo for ingênuo nas classes raras.
+
+# Geografia: países e estudos
+
+Kruskal–Wallis do MAPE entre países: \(p\) = `r fmt_p(kw_pais$p.value)`. O nível de erro **não** é o mesmo em todo lugar.
+
+## Tamanho amostral por país
+
+Grandvale sozinho tem **90** dos 223 animais (cerca de `r fmt_pct(90/223)`). O campeão global é, em boa parte, o campeão de Grandvale. Países com 2–3 animais não sustentam uma aposta estável.
+
+```{r tab-pais-n}
+tab(
+  estudos_pais,
+  col.names = c("País", "Estudos no treino", "Animais", "Linhas"),
+  align = c("l", "r", "r", "r"),
+  caption = "Cobertura do treino por país. Os cinco do case não são os menores."
+)
+```
+
+## Mediana país × modelo
+
+```{r heat-pais, fig.height=7.4, fig.cap="Mediana do MAPE por país e modelo. Células escuras = erro maior. Países ordenados pela melhor mediana entre os cinco."}
+ord_pais <- tab_pais |>
+  group_by(Pais_Estudo) |>
+  summarise(m = min(mediana), .groups = "drop") |>
+  arrange(m) |>
+  pull(Pais_Estudo)
+heat <- tab_pais |>
+  mutate(Pais_Estudo = factor(Pais_Estudo, levels = ord_pais))
+ggplot(heat, aes(x = Modelo, y = Pais_Estudo, fill = mediana)) +
+  geom_tile(color = paper, linewidth = 0.6) +
+  geom_text(aes(label = sprintf("%.2f", mediana), color = mediana > 0.22), size = 2.6) +
+  scale_fill_gradient(low = "#eef1ee", high = fill_main, name = "Mediana") +
+  scale_color_manual(values = c("TRUE" = "white", "FALSE" = ink), guide = "none") +
+  labs(
+    title = "Mediana do MAPE: país × modelo",
+    x = NULL,
+    y = NULL,
+    caption = "Fonte: dados_treino.xlsx."
+  ) +
+  theme(
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "right"
+  )
+```
+
+```{r tab-win-pais}
+tab(
+  win_pais |>
+    left_join(estudos_pais, by = "Pais_Estudo") |>
+    transmute(
+      País = Pais_Estudo,
+      Vencedor = as.character(Modelo),
+      Mediana = fmt_n(mediana, 3),
+      Estudos = n_estudo,
+      Animais = n_id
+    ) |>
+    arrange(País),
+  align = c("l", "l", "r", "r", "r"),
+  caption = "Vencedor por mediana em cada país (treino). Estudos e animais restantes naquele país."
+)
+```
+
+O vencedor local **não** é único: aparecem Modelo_1, 3, 4 e 5. A resposta à primeira pergunta do case é: **o campeão muda de país para país**.
+
+## Fração de vitórias (Top-1) nos cinco países do case
+
+A mediana e o Top-1 podem discordar. Campo Rico é o exemplo: a mediana favorece o Modelo_1, mas a fração de vitórias favorece o Modelo_5.
+
+```{r tab-winrate-5}
+win5 <- win_id |>
+  filter(Pais_Estudo %in% paises_ocultos) |>
+  count(Pais_Estudo, Modelo, name = "vitorias") |>
+  group_by(Pais_Estudo) |>
+  mutate(fracao = vitorias / sum(vitorias)) |>
+  ungroup() |>
+  tidyr::complete(Pais_Estudo, Modelo, fill = list(vitorias = 0, fracao = 0))
+tab(
+  win5 |>
+    mutate(fracao = fmt_pct(fracao, 0)) |>
+    select(Pais_Estudo, Modelo, vitorias, fracao) |>
+    arrange(Pais_Estudo, Modelo),
+  col.names = c("País", "Modelo", "Vitórias", "Fração"),
+  align = c("l", "l", "r", "r"),
+  caption = "Top-1 observado nos animais do treino, só nos cinco países com estudo oculto."
+)
+```
+
+```{r tab-5-full}
+tab(
+  tab_pais |>
+    filter(Pais_Estudo %in% paises_ocultos) |>
+    mutate(across(c(media, mediana), ~fmt_n(.x, 3))) |>
+    arrange(Pais_Estudo, mediana),
+  col.names = c("País", "Modelo", "n", "Média", "Mediana"),
+  align = c("l", "l", "r", "r", "r"),
+  caption = "MAPE médio e mediano nos cinco países (estudos que restaram no treino)."
+)
+```
+
+# Variância entre estudos
+
+Se o MAPE fosse i.i.d. entre linhas, K-fold simples bastaria. A ANOVA de um fator `MAPE ~ Estudo` decompõe a soma de quadrados:
+
+```{r tab-anova}
+anova_tab <- tibble::tibble(
+  Fonte = c("Estudo", "Residual (dentro do estudo)"),
+  gl = ss[["Df"]],
+  `Soma de quadrados` = fmt_n(ss[["Sum Sq"]], 3),
+  `Fração da SQ` = fmt_pct(ss[["Sum Sq"]] / sum(ss[["Sum Sq"]]), 1)
+)
+tab(anova_tab, align = c("l", "r", "r", "r"), caption = "ANOVA one-way do MAPE em Estudo.")
+```
+
+O ICC (método dos momentos, desbalanceado) usa o \(n_0\) de Searle:
+
+\[
+n_0 = \frac{N - \sum_i n_i^2 / N}{k - 1}, \quad
+\hat\sigma^2_b = \max\bigl(0, (MS_E - MS_R)/n_0\bigr), \quad
+\widehat{\mathrm{ICC}} = \hat\sigma^2_b / (\hat\sigma^2_b + \hat\sigma^2_w).
+\]
+
+Aqui \(k = `r nrow(n_por_estudo)`\) estudos, \(n_0 \approx `r fmt_n(n0, 2)`\), \(\hat\sigma^2_b = `r fmt_n(sigma2_b, 4)`\), \(\hat\sigma^2_w = `r fmt_n(sigma2_w, 4)`\), **ICC = `r fmt_n(icc, 3)`**. Cerca de metade da variância do MAPE está **entre estudos**. Por isso a validação da competição tem de ser `GroupKFold` / leave-one-study-out, e `Estudo` não pode ser dummy no preditor.
+
+Tamanho dos estudos no treino: mínimo `r min(n_por_estudo$n)` linhas, mediana `r median(n_por_estudo$n)`, máximo `r max(n_por_estudo$n)` (sempre múltiplo de 5).
+
+# Engenharia de features (fase 03)
+
+A tabela `data/processed/03_modelagem.csv` é o insumo do Python. Regras aplicadas:
+
+1. **Fora:** `Sistema_Producao` (constante), `Fracao_Perda_B` (cópia de A), `Estudo` como *feature*.
+2. **Dentro, só para cortar CV:** `Estudo`, `ID_Observacao`.
+3. **Derivada retirada:** `Consumo_sobre_peso = Consumo_MS_kg / Peso_Corporal_kg` coincidia com `Fracao_Perda_A` no treino (VIF infinito). Saiu do 03 e do 04.
+4. **Consumo fora do estimador:** `Consumo_MS_kg` permanece no CSV, mas o script 04 **não** o usa (multicolinearidade biológica com peso e fração A). Os numéricos efetivos são `Peso_Corporal_kg` e `Fracao_Perda_A` (VIF ≈ 1,26).
+5. **Interações em texto** (viram dummies no fold): `Modelo|Status_Metabolico`, `Modelo|Sexo_Animal`. Sem isso o regressor tende a aprender só o campeão global.
+6. **País:** one-hot **dentro do fold**, `handle_unknown = ignore`. Não usamos target encoding (vaza o alvo do grupo se for mal feito).
+7. **Alvo:** pontuação na escala original do `MAPE`. Os regressores de ML treinam no log e reconstroem com `exp`; o baseline permanece na mediana bruta.
+
+Preditores efetivos no 04: peso e fração A; categóricos país, status, sexo, modelo e as duas interações. `cluster` existe no CSV e não entra no estimador.
+
+# Validação e modelos (fases 04–05)
+
+## Protocolo
+
+- **GroupKFold** com grupos = `Estudo` (cinco folds).
+- **Leave-one-study-out** restrito aos estudos dos cinco países do case: imita “país já visto, estudo novo”.
+- **Baseline:** mediana de MAPE daquele `Modelo` no fold de treino (escala original; um único estágio).
+- **Regressores (OLS, splines, Ridge, Lasso, ElasticNet):** regressão em **dois estágios** no log, para não tratar as cinco linhas do mesmo animal como independentes. O estágio 1 (Ridge, \(\alpha = 10\)) prediz o **patamar** do animal (mediana de `MAPE_log`, sem a coluna `Modelo`). O estágio 2 prediz o **resíduo relativo** de cada modelo empírico em torno desse patamar. A reconstrução é \(\widehat{\mathrm{MAPE}} = \exp(\widehat{\mathrm{patamar}} + \widehat{\mathrm{resíduo}})\). Splines: `SplineTransformer` só em `Peso_Corporal_kg` (4 nós, grau 3); fração A linear. Penalização: no GroupKFold, \(\alpha\) (e `l1_ratio` no ElasticNet) por CV interna; no LOSO, valores padrão (Ridge \(\alpha = 10\); Lasso/ElasticNet \(\alpha = 0{,}01\)).
+- Diagnóstico de multicolinearidade: **VIF** nos numéricos usados. Incerteza do erro: **bootstrap** por estudo (IC 95% de MAE e RMSE no OOF do GroupKFold).
+- Métricas: MAE, RMSE, \(R^2\) no MAPE; **Top-1** = fração de animais em que \(\arg\min_m \widehat{\mathrm{MAPE}}_{i,m}\) acerta o empírico de menor MAPE real. A referência de ranking é **sempre o campeão do fold** (mediana local no treino).
+
+O seletor de ML substitui “ficar com o campeão do fold” quando o Top-1 no protocolo que imita o teste (LOSO dos cinco países) é **estritamente maior**. Essa regra **foi atendida** pelo Ridge.
+
+
+```{r tab-04, eval=tem_04}
+tab(
+  resumo_04 |>
+    arrange(protocolo, mape) |>
+    mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 3))),
+  caption = "Média das métricas entre folds (saída de 04_metricas_resumo.csv)."
+)
+```
+
+```{r tab-vif, eval=exists("tem_vif") && tem_vif}
+tab(
+  vif_04 |>
+    dplyr::filter(bloco == "numericos_brutos") |>
+    mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 2))),
+  caption = "VIF nos preditores numéricos (diagnóstico de multicolinearidade)."
+)
+```
+
+```{r tab-boot, eval=exists("tem_boot") && tem_boot}
+tab(
+  boot_04 |>
+    mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 3))),
+  caption = "IC 95% do MAE e do RMSE via bootstrap agrupado por Estudo (OOF do GroupKFold, 2000 réplicas)."
+)
+```
+
+```{r figs-04, eval=tem_04, echo=FALSE, fig.cap="Figuras da validação (script 06_figuras_modelagem.R)."}
+fig04 <- file.path(root, "data", "processed", "figuras")
+arqs <- c(
+  "04_mae_bootstrap.png",
+  "04_mae_protocolos.png",
+  "04_mae_por_fold.png",
+  "04_mae_box_folds.png",
+  "04_rmse_bootstrap.png",
+  "04_top1.png",
+  "04_vif.png",
+  "04_previsto_vs_observado.png",
+  "04_residuos_oof.png"
+)
+arqs <- file.path(fig04, arqs)
+arqs <- arqs[file.exists(arqs)]
+if (length(arqs)) knitr::include_graphics(arqs)
+```
+
+```{r sem-04, eval=!tem_04, results='asis'}
+cat(paste0(
+  "> As tabelas `04_metricas_resumo.csv` ainda não estão em `data/processed/`. ",
+  "Rode `python3 scripts/04_modelagem_validacao.py` e `python3 scripts/05_avaliacao_recomendacao.py` ",
+  "a partir da pasta do projeto e volte a tecer este relatório.\n\n",
+  "Na última execução completa, o Ridge em dois estágios superou o Top-1 do campeão do fold no LOSO ",
+  "(0,445 contra 0,439); OLS e splines lideraram o Top-1 no GroupKFold (0,359 contra 0,266 do baseline). ",
+  "O MAE contínuo ainda favorece o baseline no GroupKFold; o R² permanece negativo pelas caudas e pelo ICC entre estudos.\n"
+))
+```
+
+**Interpretação.** Prever o **valor** do MAPE em um estudo novo continua difícil: o ICC entre estudos é alto (`r fmt_n(icc, 3)`), o \(R^2\) dos lineares é negativo e, no GroupKFold, o baseline ainda tem o menor MAE (0,140 contra 0,145–0,149 dos regressores; os ICs bootstrap se sobrepõem). Isso é o alvo da **competição** (erro contínuo).
+
+O alvo do **case** é outro: **ranking** (qual dos cinco empíricos usar). Com a regressão em dois estágios e o VIF controlado em 1,26, o seletor de ML **superou o baseline de forma consistente** nessa métrica. No protocolo que mais se parece com o teste (`LOSO_paises_case`), o **Ridge** atingiu Top-1 de **0,445** contra **0,439** do campeão do fold. No GroupKFold, **OLS e splines** atingiram **0,359**, contra **0,266** da escolha ingênua. Lasso e ElasticNet **não** repetem esse ganho de ranking (Top-1 abaixo do campeão no LOSO). A leitura operacional, portanto, não é “qualquer penalizado serve”: o seletor a levar adiante é o **Ridge em dois estágios**.
+
+# Apostas do case (teste lacrado)
+
+O teste permanece lacrado: nenhuma aposta abaixo usa `dados_teste.xlsx`.
+
+A mediana local no treino foi, na versão anterior do fluxo, o único critério estável. Com o Ridge em dois estágios (Top-1 0,445 no LOSO), as apostas para o estudo oculto de cada país passam a ter **duas leituras**:
+
+1. **Baseline (conservadora):** menor mediana de MAPE nos estudos **ainda presentes** no treino daquele país. É a tabela abaixo, registrada antes de abrir o teste.
+2. **Seletor de ML (recomendado para o ranking):** Ridge em dois estágios, usando peso corporal e fração A (e as categorias do animal) para escolher o empírico de menor MAPE previsto. Esse seletor **não** foi aplicado aos animais do arquivo de teste — o arquivo continua fechado. Ele entra na confrontação oficial, quando o teste for aberto, como desempate baseado nas covariáveis do estudo oculto (não só na história do país).
+
+```{r tab-apostas}
+apostas <- win_pais |>
+  filter(Pais_Estudo %in% paises_ocultos) |>
+  left_join(estudos_pais, by = "Pais_Estudo") |>
+  transmute(
+    País = Pais_Estudo,
+    `Modelo apostado` = as.character(Modelo),
+    `Mediana no treino` = fmt_n(mediana, 3),
+    `Animais no treino` = n_id,
+    `Estudos no treino` = n_estudo
+  ) |>
+  arrange(País)
+tab(
+  apostas,
+  align = c("l", "l", "r", "r", "r"),
+  caption = "Apostas registradas antes de abrir dados_teste.xlsx."
+)
+```
+
+- **Campo Rico** (14 estudos, 25 animais no treino). Único dos cinco em que a mediana aponta o **Modelo_1**. O Top-1 observado no treino concentra-se no Modelo_5 (`r fmt_pct(mean(win_id$Modelo[win_id$Pais_Estudo == "Campo Rico"] == "Modelo_5"))`). Aqui as duas leituras mais provavelmente **divergem**: a tabela conservadora fica com o 1; o Ridge, ao ver peso e fração A do estudo oculto, pode desempatar a favor do 5. Esse é o país em que o seletor mais agrega em relação à mediana.
+- **Costa Austral** (4 estudos, 10 animais). **Modelo_4**, alinhado ao global; amostra pequena.
+- **Ilha Verdejante** (9 estudos, 16 animais). **Modelo_4**, e o Top-1 local é muito concentrado nesse modelo (`r fmt_pct(mean(win_id$Modelo[win_id$Pais_Estudo == "Ilha Verdejante"] == "Modelo_4"))`).
+- **Monção Dourada** (5 estudos, 12 animais). **Modelo_3**, nicho (não o campeão global); Top-1 também puxa o 3.
+- **Terra Nortenha** (6 estudos, 12 animais). **Modelo_4**, coerente com mediana e com vitórias.
+
+A aposta pode falhar se o estudo removido for atípico em relação aos que restaram (composição de sexo/status, protocolo, cauda de MAPE). Isso é exatamente o que o case pede para discutir **depois** de abrir o teste.
+
+# Limitações
+
+- n efetivo ≈ 223 animais e 93 estudos, não 1.115 linhas independentes.
+- Desbalanceamento extremo (Grandvale).
+- Classes raras de sexo e o status “Crescimento e Terminação”.
+- Frações A/B idênticas: ou são a mesma variável mascarada duas vezes, ou o recorte colapsou as duas.
+- ICC alto implica que um estudo novo pode deslocar o nível do MAPE de um jeito que covariáveis do animal não capturam (efeito de publicação / protocolo).
+- Não olhamos o teste; generalização oficial da competição pode usar outro recorte.
+
+# O que fica amarrado
+
+1. Validar por `Estudo`; nunca por linha.
+2. Não usar `Estudo` como feature; país sim.
+3. Baseline obrigatório: mediana de MAPE por modelo (e, no case, `r campeao` como campeão global).
+4. Interação modelo empírico × animal; dois estágios no log para o ML (patamar do animal + resíduo do empírico).
+5. **Dualidade de alvos.** Na *competição* (MAPE contínuo), o baseline de mediana permanece competitivo: menor MAE no GroupKFold e robustez às caudas (\(R^2\) negativo nos lineares). No *case* (ranking do melhor empírico por animal), o **Ridge em dois estágios** superou o campeão do fold no LOSO e é o seletor a usar quando o teste for aberto.
+6. Case: apostas da mediana local registradas acima (teste lacrado), com o Ridge como regra de ranking validada no LOSO.
+
+Reprodução: na pasta do `projeto-rgna.Rproj`, `Rscript` nos scripts 01–03, `python3` nos 04–05, e `rmarkdown::render("relatorio/relatorio-eda.Rmd")`.
+
+```{r teste}
+library(dplyr)
+library(plotly)
+library(crosstalk)
+
+# 1. Carregamento e Verificação do Objeto 'oof'
+path_oof <- file.path(root, "data", "processed", "04_oof_predicoes.csv")
+
+if (file.exists(path_oof)) {
+  oof <- read.csv(path_oof, check.names = FALSE)
+} else if (exists("df_modelagem") && "pred" %in% colnames(df_modelagem)) {
+  oof <- df_modelagem
+} else {
+  oof <- NULL
+}
+
+# 2. Renderização Condicional (evita quebrar o Knitr se o arquivo não existir)
+if (!is.null(oof) && "pred" %in% colnames(oof)) {
+
+  # Função auxiliar para tratar nomes se não existir no ambiente
+  if (!exists("limpar_nome")) {
+    limpar_nome <- function(x) gsub("_", " ", x)
+  }
+
+  oof_interativo <- oof %>%
+    filter(!is.na(pred)) %>%
+    mutate(
+      modelo_ml = if ("modelo_ml" %in% colnames(.)) modelo_ml else "Modelo Base",
+      rotulo = limpar_nome(modelo_ml),
+      alvo_val = if ("MAPE" %in% colnames(.)) MAPE else if ("mape" %in% colnames(.)) mape else y_true,
+      protocolo = if ("protocolo" %in% colnames(.)) protocolo else "GroupKFold",
+      fold = if ("fold" %in% colnames(.)) fold else 1,
+      residuo_abs = pred - alvo_val,
+      residuo_rel = (pred - alvo_val) / alvo_val,
+      texto_tooltip = paste0(
+        "<b>Modelo:</b> ", rotulo, "<br>",
+        "<b>Fold:</b> ", fold, "<br>",
+        "<b>Protocolo:</b> ", protocolo, "<br>",
+        "<b>Observado (MAPE):</b> ", round(alvo_val, 4), "<br>",
+        "<b>Previsto (MAPE):</b> ", round(pred, 4), "<br>",
+        "<b>Erro Relativo:</b> ", paste0(round(residuo_rel * 100, 2), "%")
+      )
+    )
+
+  # Amostragem para manter performance do Plotly
+  set.seed(42)
+  if (nrow(oof_interativo) > 4000) {
+    oof_interativo <- oof_interativo %>% sample_n(4000)
+  }
+
+  # 3. Base Crosstalk
+  sd_oof <- SharedData$new(oof_interativo)
+
+  # 4. Filtros
+  filtro_modelo <- filter_select(
+    id = "filter_modelo",
+    label = "Selecione o Modelo:",
+    shared_data = sd_oof,
+    group = ~rotulo,
+    multiple = TRUE
+  )
+
+  filtro_protocolo <- filter_select(
+    id = "filter_protocolo",
+    label = "Selecione o Protocolo:",
+    shared_data = sd_oof,
+    group = ~protocolo,
+    multiple = FALSE
+  )
+
+  # 5. Gráficos Plotly
+  fig_scatter <- plot_ly(sd_oof, x = ~alvo_val, y = ~pred, color = ~rotulo, colors = "Viridis") %>%
+    add_markers(text = ~texto_tooltip, hoverinfo = "text", opacity = 0.6, marker = list(size = 6)) %>%
+    add_lines(
+      x = c(min(oof_interativo$alvo_val, na.rm = TRUE), max(oof_interativo$alvo_val, na.rm = TRUE)),
+      y = c(min(oof_interativo$alvo_val, na.rm = TRUE), max(oof_interativo$alvo_val, na.rm = TRUE)),
+      line = list(dash = "dash", color = "gray"),
+      showlegend = FALSE,
+      inherit = FALSE
+    ) %>%
+    layout(
+      title = "Previsto vs Observado",
+      xaxis = list(title = "MAPE Observado"),
+      yaxis = list(title = "MAPE Previsto"),
+      showlegend = TRUE
+    )
+
+  fig_residuos <- plot_ly(sd_oof, x = ~alvo_val, y = ~residuo_rel, color = ~rotulo, colors = "Viridis") %>%
+    add_markers(text = ~texto_tooltip, hoverinfo = "text", opacity = 0.6, marker = list(size = 6), showlegend = FALSE) %>%
+    add_lines(
+      x = c(min(oof_interativo$alvo_val, na.rm = TRUE), max(oof_interativo$alvo_val, na.rm = TRUE)),
+      y = c(0, 0),
+      line = list(dash = "dash", color = "red"),
+      showlegend = FALSE,
+      inherit = FALSE
+    ) %>%
+    layout(
+      title = "Erro Relativo (%)",
+      xaxis = list(title = "MAPE Observado"),
+      yaxis = list(title = "Erro Relativo", tickformat = ".0%")
+    )
+
+  painel_graficos <- subplot(fig_scatter, fig_residuos, nrows = 1, titleX = TRUE, titleY = TRUE, margin = 0.06)
+
+  bscols(
+    widths = c(12),
+    list(
+      div(
+        style = "display: flex; gap: 20px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 15px;",
+        div(style = "flex: 1;", filtro_modelo),
+        div(style = "flex: 1;", filtro_protocolo)
+      ),
+      painel_graficos
+    )
+  )
+
+} else {
+  cat("> **Nota:** O objeto ou arquivo de predições Out-Of-Fold (`04_oof_predicoes.csv`) não foi encontrado em `data/processed/`. Execute os scripts de modelagem em Python para gerar os resultados e habilitar este painel interativo.")
+}
+```

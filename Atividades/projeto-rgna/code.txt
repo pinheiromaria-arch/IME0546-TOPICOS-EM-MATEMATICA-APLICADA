@@ -1,0 +1,1848 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+The content has been processed where empty lines have been removed.
+
+================================================================
+File Summary
+================================================================
+
+Purpose:
+--------
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/**/*
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Empty lines have been removed from all files
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+
+================================================================
+Directory Structure
+================================================================
+/
+  Users/
+    m.pinheiro/
+      Library/
+        CloudStorage/
+          OneDrive-Pessoal/
+            Aplicativos/
+              remotely-save/
+                AutoGestão/
+                  02. Areas/
+                    UFG/
+                      IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/
+                        Atividades/
+                          projeto-rgna/
+                            scripts/
+                              01_eda_diagnostico.R
+                              01-2_eda_diagnostico.R
+                              02_analise_bivariada.R
+                              02-1_analise_bivariada.R
+                              03_engenharia_features.R
+                              04_modelagem_validacao.py
+                              05_avaliacao_recomendacao.py
+                              06_figuras_modelagem.R
+                              render_relatorio.R
+                              tema_rgna.R
+data/
+  processed/
+    figuras/
+    group_kfold_folds/
+      fold_1/
+      fold_2/
+      fold_3/
+      fold_4/
+      fold_5/
+  raw/
+docs/
+relatorio/
+scripts/
+
+================================================================
+Files
+================================================================
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/01_eda_diagnostico.R
+================
+# Fase 1 — EDA e inspeção do alvo (treino apenas)
+# Relatório consolidado: relatorio/relatorio-eda.Rmd
+
+locate_tema <- function() {
+  cands <- character()
+  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
+  for (i in seq_len(max(1L, sys.nframe()))) {
+    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(ofile) && nzchar(ofile)) {
+      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
+    }
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", args[grepl("^--file=", args)])
+  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
+  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  d <- wd
+  for (i in seq_len(12)) {
+    push(file.path(d, "tema_rgna.R"))
+    push(file.path(d, "scripts", "tema_rgna.R"))
+    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
+    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  cands <- unique(cands[file.exists(cands)])
+  cands <- cands[!grepl("projeto-rgna3", cands)]
+  if (!length(cands)) {
+    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
+  }
+  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
+}
+source(locate_tema(), encoding = "UTF-8")
+
+root <- find_root()
+df <- ler_treino(root)
+theme_set(theme_rgna())
+out_dir <- file.path(root, "data", "processed")
+fig_dir <- file.path(out_dir, "figuras")
+dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
+
+nulos <- tibble(
+  coluna = names(df),
+  n_na = colSums(is.na(df)),
+  classe = vapply(df, function(x) paste(class(x), collapse = ","), character(1))
+)
+
+contagens <- tibble(
+  n_linhas = nrow(df),
+  n_id = n_distinct(df$ID_Observacao),
+  n_estudo = n_distinct(df$Estudo),
+  n_pais = n_distinct(df$Pais_Estudo),
+  n_modelo = n_distinct(df$Modelo),
+  linhas_por_id_min = min(count(df, ID_Observacao)$n),
+  linhas_por_id_max = max(count(df, ID_Observacao)$n)
+)
+
+sistema <- as.data.frame(table(df$Sistema_Producao, useNA = "ifany"), stringsAsFactors = FALSE)
+names(sistema) <- c("Sistema_Producao", "n")
+sistema$constante <- nrow(sistema) == 1L
+
+mape_global <- df |>
+  summarise(
+    n = n(),
+    media = mean(MAPE),
+    mediana = median(MAPE),
+    desvio = sd(MAPE),
+    minimo = min(MAPE),
+    maximo = max(MAPE),
+    q1 = quantile(MAPE, 0.25),
+    q3 = quantile(MAPE, 0.75),
+    assimetria = mean((MAPE - mean(MAPE))^3) / (sd(MAPE)^3),
+    n_nao_positivo = sum(MAPE <= 0)
+  )
+
+mape_modelo <- df |>
+  group_by(Modelo) |>
+  summarise(
+    n = n(),
+    media = mean(MAPE),
+    mediana = median(MAPE),
+    desvio = sd(MAPE),
+    .groups = "drop"
+  ) |>
+  arrange(mediana)
+
+campeao <- as.character(mape_modelo$Modelo[which.min(mape_modelo$mediana)])
+
+estudos_pais <- df |>
+  group_by(Pais_Estudo) |>
+  summarise(
+    n_estudo = n_distinct(Estudo),
+    n_id = n_distinct(ID_Observacao),
+    n_linhas = n(),
+    .groups = "drop"
+  ) |>
+  arrange(n_estudo, Pais_Estudo)
+
+write.csv(nulos, file.path(out_dir, "01_nulos_tipos.csv"), row.names = FALSE)
+write.csv(contagens, file.path(out_dir, "01_contagens.csv"), row.names = FALSE)
+write.csv(sistema, file.path(out_dir, "01_sistema_producao.csv"), row.names = FALSE)
+write.csv(mape_global, file.path(out_dir, "01_mape_global.csv"), row.names = FALSE)
+write.csv(mape_modelo, file.path(out_dir, "01_mape_por_modelo.csv"), row.names = FALSE)
+write.csv(estudos_pais, file.path(out_dir, "01_estudos_por_pais.csv"), row.names = FALSE)
+writeLines(campeao, file.path(out_dir, "01_campeao_global.txt"))
+
+p_hist <- ggplot(df, aes(x = MAPE)) +
+  geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
+  geom_vline(xintercept = median(df$MAPE), linetype = "22", color = ink, linewidth = 0.4) +
+  labs(title = "Distribuição do MAPE", x = "MAPE", y = "Frequência")
+ggsave(file.path(fig_dir, "01_hist_mape.png"), p_hist, width = 8, height = 4.5, dpi = 140)
+
+p_box <- ggplot(df, aes(x = Modelo, y = MAPE)) +
+  geom_boxplot(
+    fill = fill_soft, color = fill_main, outlier.colour = muted,
+    outlier.alpha = 0.45, outlier.size = 1.1, width = 0.55, linewidth = 0.45
+  ) +
+  labs(title = "MAPE por modelo empírico", x = NULL, y = "MAPE")
+ggsave(file.path(fig_dir, "01_box_mape_modelo.png"), p_box, width = 8, height = 4.5, dpi = 140)
+
+message("Campeão global (menor mediana de MAPE): ", campeao)
+message("Sistema_Producao constante? ", sistema$constante[1], " -> ", paste(sistema$Sistema_Producao, collapse = ", "))
+message("Saídas em ", out_dir)
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/01-2_eda_diagnostico.R
+================
+# Fase 1 — EDA e inspeção do alvo (treino apenas)
+# Relatório consolidado: relatorio/relatorio-eda.Rmd
+
+locate_tema <- function() {
+  cands <- character()
+  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
+  for (i in seq_len(max(1L, sys.nframe()))) {
+    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(ofile) && nzchar(ofile)) {
+      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
+    }
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", args[grepl("^--file=", args)])
+  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
+  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  d <- wd
+  for (i in seq_len(12)) {
+    push(file.path(d, "tema_rgna.R"))
+    push(file.path(d, "scripts", "tema_rgna.R"))
+    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
+    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  cands <- unique(cands[file.exists(cands)])
+  cands <- cands[!grepl("projeto-rgna3", cands)]
+  if (!length(cands)) {
+    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
+  }
+  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
+}
+source(locate_tema(), encoding = "UTF-8")
+
+root <- find_root()
+df <- ler_treino(root)
+theme_set(theme_rgna())
+out_dir <- file.path(root, "data", "processed")
+fig_dir <- file.path(out_dir, "figuras")
+dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Estima o lambda ótimo para o MAPE por verossimilhança
+box_result <- boxcox(MAPE ~ 1, data = df, lambda = seq(-2, 2, 0.1))
+
+# Extrai o lambda que maximiza a log-verossimilhança
+best_lambda <- box_result$x[which.max(box_result$y)]
+# best_lambda <- 0.5
+
+# Transforma a variável aplicando a fórmula matematicamente
+if (best_lambda == 0) {
+  df$MAPE_boxcox <- log(df$MAPE)
+} else {
+  df$MAPE_boxcox <- (df$MAPE^best_lambda - 1) / best_lambda
+}
+
+nulos <- tibble(
+  coluna = names(df),
+  n_na = colSums(is.na(df)),
+  classe = vapply(df, function(x) paste(class(x), collapse = ","), character(1))
+)
+
+contagens <- tibble(
+  n_linhas = nrow(df),
+  n_id = n_distinct(df$ID_Observacao),
+  n_estudo = n_distinct(df$Estudo),
+  n_pais = n_distinct(df$Pais_Estudo),
+  n_modelo = n_distinct(df$Modelo),
+  linhas_por_id_min = min(count(df, ID_Observacao)$n),
+  linhas_por_id_max = max(count(df, ID_Observacao)$n)
+)
+
+sistema <- as.data.frame(table(df$Sistema_Producao, useNA = "ifany"), stringsAsFactors = FALSE)
+names(sistema) <- c("Sistema_Producao", "n")
+sistema$constante <- nrow(sistema) == 1L
+
+mape_global <- df |>
+  summarise(
+    n = n(),
+    media = mean(MAPE_boxcox),
+    mediana = median(MAPE_boxcox),
+    desvio = sd(MAPE_boxcox),
+    minimo = min(MAPE_boxcox),
+    maximo = max(MAPE_boxcox),
+    q1 = quantile(MAPE_boxcox, 0.25),
+    q3 = quantile(MAPE_boxcox, 0.75),
+    assimetria = mean((MAPE_boxcox - mean(MAPE_boxcox))^3) / (sd(MAPE_boxcox)^3),
+    n_nao_positivo = sum(MAPE_boxcox <= 0)
+  )
+
+mape_modelo <- df |>
+  group_by(Modelo) |>
+  summarise(
+    n = n(),
+    media = mean(MAPE_boxcox),
+    mediana = median(MAPE_boxcox),
+    desvio = sd(MAPE_boxcox),
+    .groups = "drop"
+  ) |>
+  arrange(mediana)
+
+campeao <- as.character(mape_modelo$Modelo[which.min(mape_modelo$mediana)])
+
+estudos_pais <- df |>
+  group_by(Pais_Estudo) |>
+  summarise(
+    n_estudo = n_distinct(Estudo),
+    n_id = n_distinct(ID_Observacao),
+    n_linhas = n(),
+    .groups = "drop"
+  ) |>
+  arrange(n_estudo, Pais_Estudo)
+
+write.csv(nulos, file.path(out_dir, "01_nulos_tipos.csv"), row.names = FALSE)
+write.csv(contagens, file.path(out_dir, "01_contagens.csv"), row.names = FALSE)
+write.csv(sistema, file.path(out_dir, "01_sistema_producao.csv"), row.names = FALSE)
+write.csv(mape_global, file.path(out_dir, "01_mape_global.csv"), row.names = FALSE)
+write.csv(mape_modelo, file.path(out_dir, "01_mape_por_modelo.csv"), row.names = FALSE)
+write.csv(estudos_pais, file.path(out_dir, "01_estudos_por_pais.csv"), row.names = FALSE)
+writeLines(campeao, file.path(out_dir, "01_campeao_global.txt"))
+
+p_hist <- ggplot(df, aes(x = MAPE_boxcox)) +
+  geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
+  geom_vline(xintercept = median(df$MAPE_boxcox), linetype = "22", color = ink, linewidth = 0.4) +
+  labs(title = "Distribuição do MAPE_boxcox", x = "MAPE_boxcox", y = "Frequência")
+ggsave(file.path(fig_dir, "01_hist_mape.png"), p_hist, width = 8, height = 4.5, dpi = 140)
+
+p_box <- ggplot(df, aes(x = Modelo, y = MAPE_boxcox)) +
+  geom_boxplot(
+    fill = fill_soft, color = fill_main, outlier.colour = muted,
+    outlier.alpha = 0.45, outlier.size = 1.1, width = 0.55, linewidth = 0.45
+  ) +
+  labs(title = "MAPE_boxcox por modelo empírico", x = NULL, y = "MAPE")
+ggsave(file.path(fig_dir, "01_box_mape_modelo.png"), p_box, width = 8, height = 4.5, dpi = 140)
+
+message("Campeão global (menor mediana de MAPE_boxcox): ", campeao)
+message("Sistema_Producao constante? ", sistema$constante[1], " -> ", paste(sistema$Sistema_Producao, collapse = ", "))
+message("Saídas em ", out_dir)
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/02_analise_bivariada.R
+================
+# Fase 2 — Nichos e variação entre estudos (treino apenas)
+# Relatório consolidado: relatorio/relatorio-eda.Rmd
+
+locate_tema <- function() {
+  cands <- character()
+  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
+  for (i in seq_len(max(1L, sys.nframe()))) {
+    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(ofile) && nzchar(ofile)) {
+      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
+    }
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", args[grepl("^--file=", args)])
+  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
+  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  d <- wd
+  for (i in seq_len(12)) {
+    push(file.path(d, "tema_rgna.R"))
+    push(file.path(d, "scripts", "tema_rgna.R"))
+    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
+    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  cands <- unique(cands[file.exists(cands)])
+  cands <- cands[!grepl("projeto-rgna3", cands)]
+  if (!length(cands)) {
+    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
+  }
+  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
+}
+source(locate_tema(), encoding = "UTF-8")
+
+root <- find_root()
+df <- ler_treino(root)
+theme_set(theme_rgna())
+out_dir <- file.path(root, "data", "processed")
+fig_dir <- file.path(out_dir, "figuras")
+dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
+
+resumo_grupo <- function(data, grupo) {
+  data |>
+    group_by({{ grupo }}, Modelo) |>
+    summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+}
+
+vencedor <- function(tab, grupo) {
+  tab |>
+    group_by({{ grupo }}) |>
+    slice_min(mediana, n = 1, with_ties = TRUE) |>
+    ungroup()
+}
+
+tab_pais <- resumo_grupo(df, Pais_Estudo)
+tab_status <- resumo_grupo(df, Status_Metabolico)
+tab_sexo <- resumo_grupo(df, Sexo_Animal)
+
+win_pais <- vencedor(tab_pais, Pais_Estudo)
+win_status <- vencedor(tab_status, Status_Metabolico)
+win_sexo <- vencedor(tab_sexo, Sexo_Animal)
+
+# Ranking dentro do animal: quem tem o menor MAPE observado
+win_id <- df |>
+  group_by(ID_Observacao) |>
+  slice_min(MAPE, n = 1, with_ties = TRUE) |>
+  ungroup()
+
+vitorias_modelo <- win_id |>
+  count(Modelo, name = "n_vitorias") |>
+  mutate(fracao = n_vitorias / sum(n_vitorias)) |>
+  arrange(desc(n_vitorias))
+
+vitorias_pais_modelo <- win_id |>
+  distinct(ID_Observacao, Pais_Estudo, Modelo) |>
+  count(Pais_Estudo, Modelo, name = "n_vitorias") |>
+  group_by(Pais_Estudo) |>
+  mutate(fracao = n_vitorias / sum(n_vitorias)) |>
+  ungroup()
+
+tab_pais_oculto <- tab_pais |>
+  filter(Pais_Estudo %in% paises_ocultos) |>
+  arrange(Pais_Estudo, mediana)
+
+win_pais_oculto <- win_pais |>
+  filter(Pais_Estudo %in% paises_ocultos)
+
+num <- df |>
+  select(MAPE, Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B)
+cors <- as.data.frame(cor(num, use = "complete.obs"))
+cors$variavel <- rownames(cors)
+
+# Variância entre vs dentro de estudo (ANOVA one-way)
+aov_est <- aov(MAPE ~ Estudo, data = df)
+ss <- summary(aov_est)[[1]]
+var_estudo <- tibble(
+  fonte = c("Estudo", "Residual (dentro)"),
+  gl = ss[["Df"]],
+  soma_quadrados = ss[["Sum Sq"]],
+  fracao_ss = ss[["Sum Sq"]] / sum(ss[["Sum Sq"]])
+)
+
+# ICC aproximado: componentes de variância (método dos momentos)
+ms <- ss[["Mean Sq"]]
+n_por_estudo <- df |> count(Estudo)
+n0 <- (sum(n_por_estudo$n) - sum(n_por_estudo$n^2) / sum(n_por_estudo$n)) / (nrow(n_por_estudo) - 1)
+sigma2_w <- ms[2]
+sigma2_b <- max(0, (ms[1] - ms[2]) / n0)
+icc <- sigma2_b / (sigma2_b + sigma2_w)
+icc_tab <- tibble(icc_estudo = icc, sigma2_entre = sigma2_b, sigma2_dentro = sigma2_w, n0 = n0)
+
+write.csv(tab_pais, file.path(out_dir, "02_mape_pais_modelo.csv"), row.names = FALSE)
+write.csv(tab_status, file.path(out_dir, "02_mape_status_modelo.csv"), row.names = FALSE)
+write.csv(tab_sexo, file.path(out_dir, "02_mape_sexo_modelo.csv"), row.names = FALSE)
+write.csv(win_pais, file.path(out_dir, "02_vencedor_pais.csv"), row.names = FALSE)
+write.csv(win_status, file.path(out_dir, "02_vencedor_status.csv"), row.names = FALSE)
+write.csv(win_sexo, file.path(out_dir, "02_vencedor_sexo.csv"), row.names = FALSE)
+write.csv(vitorias_modelo, file.path(out_dir, "02_vitorias_por_modelo.csv"), row.names = FALSE)
+write.csv(vitorias_pais_modelo, file.path(out_dir, "02_vitorias_pais_modelo.csv"), row.names = FALSE)
+write.csv(tab_pais_oculto, file.path(out_dir, "02_mape_paises_estudo_oculto.csv"), row.names = FALSE)
+write.csv(win_pais_oculto, file.path(out_dir, "02_vencedor_paises_estudo_oculto.csv"), row.names = FALSE)
+write.csv(cors, file.path(out_dir, "02_correlacao_numericas.csv"), row.names = FALSE)
+write.csv(var_estudo, file.path(out_dir, "02_anova_estudo.csv"), row.names = FALSE)
+write.csv(icc_tab, file.path(out_dir, "02_icc_estudo.csv"), row.names = FALSE)
+
+p_status <- ggplot(df, aes(x = Status_Metabolico, y = MAPE)) +
+  geom_boxplot(fill = fill_soft, color = fill_main, outlier.alpha = 0.35, width = 0.55, linewidth = 0.4) +
+  facet_wrap(~ Modelo, nrow = 1) +
+  labs(title = "MAPE por status metabólico", x = NULL, y = "MAPE") +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+ggsave(file.path(fig_dir, "02_mediana_status_modelo.png"), p_status, width = 9, height = 5, dpi = 140)
+
+p_sexo <- ggplot(df, aes(x = Sexo_Animal, y = MAPE)) +
+  geom_boxplot(fill = fill_soft, color = fill_main, outlier.alpha = 0.35, width = 0.55, linewidth = 0.4) +
+  facet_wrap(~ Modelo, nrow = 1) +
+  labs(title = "MAPE por sexo", x = NULL, y = "MAPE") +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+ggsave(file.path(fig_dir, "02_mediana_sexo_modelo.png"), p_sexo, width = 9, height = 5, dpi = 140)
+
+ord_pais <- tab_pais |>
+  group_by(Pais_Estudo) |>
+  summarise(m = min(mediana), .groups = "drop") |>
+  arrange(m) |>
+  pull(Pais_Estudo)
+heat <- tab_pais |>
+  mutate(Pais_Estudo = factor(Pais_Estudo, levels = ord_pais))
+p_heat <- ggplot(heat, aes(x = Modelo, y = Pais_Estudo, fill = mediana)) +
+  geom_tile(color = paper, linewidth = 0.6) +
+  geom_text(aes(label = sprintf("%.2f", mediana), color = mediana > 0.22), size = 2.7) +
+  scale_fill_gradient(low = "#eef1ee", high = fill_main, name = "Mediana") +
+  scale_color_manual(values = c("TRUE" = "white", "FALSE" = ink), guide = "none") +
+  labs(title = "Mediana do MAPE: país × modelo", x = NULL, y = NULL) +
+  theme(panel.grid = element_blank(), axis.line = element_blank(), axis.ticks = element_blank(), legend.position = "right")
+ggsave(file.path(fig_dir, "02_heatmap_pais_modelo.png"), p_heat, width = 8, height = 7.2, dpi = 140)
+
+message("ICC (fração da variância do MAPE entre estudos): ", round(icc, 3))
+message("Vencedores (mediana) nos 5 países do case:")
+print(win_pais_oculto)
+message("Saídas em ", out_dir)
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/02-1_analise_bivariada.R
+================
+# Fase 2 — Nichos e variação entre estudos (treino apenas)
+# Relatório consolidado: relatorio/relatorio-eda.Rmd
+library(MASS)
+
+locate_tema <- function() {
+  cands <- character()
+  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
+  for (i in seq_len(max(1L, sys.nframe()))) {
+    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(ofile) && nzchar(ofile)) {
+      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
+    }
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", args[grepl("^--file=", args)])
+  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
+  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  d <- wd
+  for (i in seq_len(12)) {
+    push(file.path(d, "tema_rgna.R"))
+    push(file.path(d, "scripts", "tema_rgna.R"))
+    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
+    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  cands <- unique(cands[file.exists(cands)])
+  cands <- cands[!grepl("projeto-rgna3", cands)]
+  if (!length(cands)) {
+    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
+  }
+  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
+}
+source(locate_tema(), encoding = "UTF-8")
+
+root <- find_root()
+df <- ler_treino(root)
+theme_set(theme_rgna())
+out_dir <- file.path(root, "data", "processed")
+fig_dir <- file.path(out_dir, "figuras")
+dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Estima o lambda ótimo para o MAPE por verossimilhança
+box_result <- boxcox(MAPE ~ 1, data = df, lambda = seq(-2, 2, 0.1))
+
+# Extrai o lambda que maximiza a log-verossimilhança
+best_lambda <- box_result$x[which.max(box_result$y)]
+# best_lambda <- 0.5
+
+# Transforma a variável aplicando a fórmula matematicamente
+if (best_lambda == 0) {
+  df$MAPE_boxcox <- log(df$MAPE)
+} else {
+  df$MAPE_boxcox <- (df$MAPE^best_lambda - 1) / best_lambda
+}
+
+resumo_grupo <- function(data, grupo) {
+  data |>
+    group_by({{ grupo }}, Modelo) |>
+    summarise(n = n(), media = mean(MAPE_boxcox), mediana = median(MAPE_boxcox), .groups = "drop")
+}
+
+vencedor <- function(tab, grupo) {
+  tab |>
+    group_by({{ grupo }}) |>
+    slice_min(mediana, n = 1, with_ties = TRUE) |>
+    ungroup()
+}
+
+tab_pais <- resumo_grupo(df, Pais_Estudo)
+tab_status <- resumo_grupo(df, Status_Metabolico)
+tab_sexo <- resumo_grupo(df, Sexo_Animal)
+
+win_pais <- vencedor(tab_pais, Pais_Estudo)
+win_status <- vencedor(tab_status, Status_Metabolico)
+win_sexo <- vencedor(tab_sexo, Sexo_Animal)
+
+# Ranking dentro do animal: quem tem o menor MAPE_boxcox observado
+win_id <- df |>
+  group_by(ID_Observacao) |>
+  slice_min(MAPE_boxcox, n = 1, with_ties = TRUE) |>
+  ungroup()
+
+vitorias_modelo <- win_id |>
+  count(Modelo, name = "n_vitorias") |>
+  mutate(fracao = n_vitorias / sum(n_vitorias)) |>
+  arrange(desc(n_vitorias))
+
+vitorias_pais_modelo <- win_id |>
+  distinct(ID_Observacao, Pais_Estudo, Modelo) |>
+  count(Pais_Estudo, Modelo, name = "n_vitorias") |>
+  group_by(Pais_Estudo) |>
+  mutate(fracao = n_vitorias / sum(n_vitorias)) |>
+  ungroup()
+
+tab_pais_oculto <- tab_pais |>
+  filter(Pais_Estudo %in% paises_ocultos) |>
+  arrange(Pais_Estudo, mediana)
+
+win_pais_oculto <- win_pais |>
+  filter(Pais_Estudo %in% paises_ocultos)
+
+num <- df |>
+  select(MAPE_boxcox, Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B)
+cors <- as.data.frame(cor(num, use = "complete.obs"))
+cors$variavel <- rownames(cors)
+
+# Variância entre vs dentro de estudo (ANOVA one-way)
+aov_est <- aov(MAPE_boxcox ~ Estudo, data = df)
+ss <- summary(aov_est)[[1]]
+var_estudo <- tibble(
+  fonte = c("Estudo", "Residual (dentro)"),
+  gl = ss[["Df"]],
+  soma_quadrados = ss[["Sum Sq"]],
+  fracao_ss = ss[["Sum Sq"]] / sum(ss[["Sum Sq"]])
+)
+
+# ICC aproximado: componentes de variância (método dos momentos)
+ms <- ss[["Mean Sq"]]
+n_por_estudo <- df |> count(Estudo)
+n0 <- (sum(n_por_estudo$n) - sum(n_por_estudo$n^2) / sum(n_por_estudo$n)) / (nrow(n_por_estudo) - 1)
+sigma2_w <- ms[2]
+sigma2_b <- max(0, (ms[1] - ms[2]) / n0)
+icc <- sigma2_b / (sigma2_b + sigma2_w)
+icc_tab <- tibble(icc_estudo = icc, sigma2_entre = sigma2_b, sigma2_dentro = sigma2_w, n0 = n0)
+
+write.csv(tab_pais, file.path(out_dir, "02_mape_pais_modelo.csv"), row.names = FALSE)
+write.csv(tab_status, file.path(out_dir, "02_mape_status_modelo.csv"), row.names = FALSE)
+write.csv(tab_sexo, file.path(out_dir, "02_mape_sexo_modelo.csv"), row.names = FALSE)
+write.csv(win_pais, file.path(out_dir, "02_vencedor_pais.csv"), row.names = FALSE)
+write.csv(win_status, file.path(out_dir, "02_vencedor_status.csv"), row.names = FALSE)
+write.csv(win_sexo, file.path(out_dir, "02_vencedor_sexo.csv"), row.names = FALSE)
+write.csv(vitorias_modelo, file.path(out_dir, "02_vitorias_por_modelo.csv"), row.names = FALSE)
+write.csv(vitorias_pais_modelo, file.path(out_dir, "02_vitorias_pais_modelo.csv"), row.names = FALSE)
+write.csv(tab_pais_oculto, file.path(out_dir, "02_mape_paises_estudo_oculto.csv"), row.names = FALSE)
+write.csv(win_pais_oculto, file.path(out_dir, "02_vencedor_paises_estudo_oculto.csv"), row.names = FALSE)
+write.csv(cors, file.path(out_dir, "02_correlacao_numericas.csv"), row.names = FALSE)
+write.csv(var_estudo, file.path(out_dir, "02_anova_estudo.csv"), row.names = FALSE)
+write.csv(icc_tab, file.path(out_dir, "02_icc_estudo.csv"), row.names = FALSE)
+
+p_status <- ggplot(df, aes(x = Status_Metabolico, y = MAPE_boxcox)) +
+  geom_boxplot(fill = fill_soft, color = fill_main, outlier.alpha = 0.35, width = 0.55, linewidth = 0.4) +
+  facet_wrap(~ Modelo, nrow = 1) +
+  labs(title = "MAPE_boxcox por status metabólico", x = NULL, y = "MAPE_boxcox") +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+ggsave(file.path(fig_dir, "02_mediana_status_modelo.png"), p_status, width = 9, height = 5, dpi = 140)
+
+p_sexo <- ggplot(df, aes(x = Sexo_Animal, y = MAPE_boxcox)) +
+  geom_boxplot(fill = fill_soft, color = fill_main, outlier.alpha = 0.35, width = 0.55, linewidth = 0.4) +
+  facet_wrap(~ Modelo, nrow = 1) +
+  labs(title = "MAPE_boxcox por sexo", x = NULL, y = "MAPE_boxcox") +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+ggsave(file.path(fig_dir, "02_mediana_sexo_modelo.png"), p_sexo, width = 9, height = 5, dpi = 140)
+
+ord_pais <- tab_pais |>
+  group_by(Pais_Estudo) |>
+  summarise(m = min(mediana), .groups = "drop") |>
+  arrange(m) |>
+  pull(Pais_Estudo)
+heat <- tab_pais |>
+  mutate(Pais_Estudo = factor(Pais_Estudo, levels = ord_pais))
+p_heat <- ggplot(heat, aes(x = Modelo, y = Pais_Estudo, fill = mediana)) +
+  geom_tile(color = paper, linewidth = 0.6) +
+  geom_text(aes(label = sprintf("%.2f", mediana), color = mediana > 0.22), size = 2.7) +
+  scale_fill_gradient(low = "#eef1ee", high = fill_main, name = "Mediana") +
+  scale_color_manual(values = c("TRUE" = "white", "FALSE" = ink), guide = "none") +
+  labs(title = "Mediana do MAPE_boxcox: país × modelo", x = NULL, y = NULL) +
+  theme(panel.grid = element_blank(), axis.line = element_blank(), axis.ticks = element_blank(), legend.position = "right")
+ggsave(file.path(fig_dir, "02_heatmap_pais_modelo.png"), p_heat, width = 8, height = 7.2, dpi = 140)
+
+message("ICC (fração da variância do MAPE entre estudos): ", round(icc, 3))
+message("Vencedores (mediana) nos 5 países do case:")
+print(win_pais_oculto)
+message("Saídas em ", out_dir)
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/03_engenharia_features.R
+================
+# Fase 3 — Features para modelagem (treino)
+# Estudo permanece só como grupo de validação, não como preditor.
+library(MASS)
+
+locate_tema <- function() {
+  cands <- character()
+  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
+  for (i in seq_len(max(1L, sys.nframe()))) {
+    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(ofile) && nzchar(ofile)) {
+      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
+    }
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", args[grepl("^--file=", args)])
+  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
+  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  d <- wd
+  for (i in seq_len(12)) {
+    push(file.path(d, "tema_rgna.R"))
+    push(file.path(d, "scripts", "tema_rgna.R"))
+    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
+    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  cands <- unique(cands[file.exists(cands)])
+  cands <- cands[!grepl("projeto-rgna3", cands)]
+  if (!length(cands)) {
+    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
+  }
+  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
+}
+source(locate_tema(), encoding = "UTF-8")
+
+root <- find_root()
+df <- ler_treino(root)
+out_dir <- file.path(root, "data", "processed")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Frações A e B são idênticas no treino; Sistema_Producao é constante.
+stopifnot(isTRUE(all.equal(df$Fracao_Perda_A, df$Fracao_Perda_B)))
+sistema_niveis <- unique(df$Sistema_Producao)
+if (length(sistema_niveis) != 1L) {
+  warning("Sistema_Producao não é constante: ", paste(sistema_niveis, collapse = ", "))
+}
+
+# Estima o lambda ótimo para o MAPE por verossimilhança
+box_result <- boxcox(MAPE ~ 1, data = df, lambda = seq(-2, 2, 0.1))
+
+# Extrai o lambda que maximiza a log-verossimilhança
+best_lambda <- box_result$x[which.max(box_result$y)]
+# best_lambda <- 0.5
+
+# Transforma a variável aplicando a fórmula matematicamente
+if (best_lambda == 0) {
+  df$MAPE_boxcox <- log(df$MAPE)
+} else {
+  df$MAPE_boxcox <- (df$MAPE^best_lambda - 1) / best_lambda
+}
+
+modelagem <- df |>
+  mutate(
+    MAPE_log = log(MAPE)
+  ) |>
+  select(
+    ID_Observacao,
+    Estudo,
+    Pais_Estudo,
+    Status_Metabolico,
+    Sexo_Animal,
+    Peso_Corporal_kg,
+    Consumo_MS_kg,
+    Fracao_Perda_A,
+    Modelo,
+    MAPE,
+    MAPE_log,
+    MAPE_boxcox
+  )
+
+campeao <- df |>
+  group_by(Modelo) |>
+  summarise(mediana = median(MAPE), .groups = "drop") |>
+  arrange(mediana) |>
+  slice(1) |>
+  pull(Modelo) |>
+  as.character()
+
+meta <- tibble(
+  n_linhas = nrow(modelagem),
+  n_id = n_distinct(modelagem$ID_Observacao),
+  n_estudo = n_distinct(modelagem$Estudo),
+  campeao_global = campeao,
+  colunas_excluidas = "Estudo (só grupo); Sistema_Producao; Fracao_Perda_B",
+  encoding_pais = "one-hot no script 04, handle_unknown=ignore (não target-encoding)"
+)
+
+write.csv(modelagem, file.path(out_dir, "03_modelagem.csv"), row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(meta, file.path(out_dir, "03_meta.csv"), row.names = FALSE, fileEncoding = "UTF-8")
+writeLines(campeao, file.path(out_dir, "01_campeao_global.txt"))
+
+
+message("03_modelagem.csv: ", nrow(modelagem), " linhas, campeão global = ", campeao)
+message("Preditores: país, categoria_paises, status, sexo, modelo (+ interações texto), peso, consumo, fração A")
+message("Grupo de CV: Estudo. Alvo: MAPE (MAPE_log disponível).")
+
+# Visualização da densidade do MAPE por modelo
+ggplot(modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
+  geom_density(adjust = 1.1, linewidth = 0.55) +
+  scale_color_manual(values = pal_modelo) +
+  labs(
+    title = "Densidade do MAPE por modelo",
+    x = "MAPE",
+    y = "Densidade",
+    caption = "Fonte: dados_treino.xlsx. Kernel gaussiano."
+  )
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/04_modelagem_validacao.py
+================
+"""Fase 4 — OLS, splines, OLS simples e Splines simples; GroupKFold por Estudo; VIF e bootstrap.
+Testa TODAS as combinações possíveis de variáveis numéricas e categóricas.
+Prevê MAPE na escala original. Encoding de país no fold (sem Estudo como feature).
+"""
+from __future__ import annotations
+from datetime import datetime
+import json
+import os
+from itertools import combinations, product
+from pathlib import Path
+import numpy as np
+import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import GroupKFold
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, SplineTransformer, StandardScaler
+PAISES_OCULTOS = [
+    "Campo Rico",
+    "Ilha Verdejante",
+    "Terra Nortenha",
+    "Monção Dourada",
+    "Costa Austral",
+]
+TARGET = "MAPE_boxcox"  # Note. MAPE na escala logarítmica (Box-Cox) para regressão linear
+BEST_LAMBDA = 0.3434343
+# Candidatos a features para varredura completa
+NUM_CANDIDATES = [
+    "Peso_Corporal_kg",
+    "Consumo_MS_kg",
+    "Fracao_Perda_A",
+]
+CAT_CANDIDATES = [
+    "Pais_Estudo",
+    "Status_Metabolico",
+    "Sexo_Animal",
+    "Modelo",
+]
+N_BOOT = 1000
+BOOT_SEED = 42
+def _is_root(p: Path) -> bool:
+    return (p / "projeto-rgna.Rproj").exists() or (p / "data" / "raw" / "dados_treino.xlsx").exists()
+def find_root() -> Path:
+    env = os.environ.get("RGNA_ROOT", "").strip()
+    if env:
+        p = Path(env).resolve()
+        if _is_root(p):
+            return p
+    starts = [Path(__file__).resolve().parent.parent, Path.cwd().resolve()]
+    seen: set[Path] = set()
+    for here in starts:
+        for p in [here, *here.parents]:
+            if p in seen:
+                continue
+            seen.add(p)
+            if _is_root(p):
+                return p
+            for nested in (p / "projeto-rgna", p / "Atividades" / "projeto-rgna"):
+                if _is_root(nested):
+                    return nested.resolve()
+    raise FileNotFoundError("data/raw/dados_treino.xlsx")
+def load_frame(root: Path) -> pd.DataFrame:
+    csv_path = root / "data" / "processed" / "03_modelagem.csv"
+    if not csv_path.exists():
+        raise FileNotFoundError("Rode antes scripts/03_engenharia_features.R")
+    df = pd.read_csv(csv_path)
+    df["Estudo"] = df["Estudo"].astype(str)
+    return df
+def rmse(y_true, y_pred) -> float:
+    return float(np.sqrt(mean_squared_error(y_true, y_pred)))
+def regression_scores(y_true, y_pred) -> dict:
+    return {
+        "mae": float(mean_absolute_error(y_true, y_pred)),
+        "rmse": rmse(y_true, y_pred),
+        "r2": float(r2_score(y_true, y_pred)),
+        "mape": float(np.mean(np.abs((y_true - y_pred) / y_true))),
+    }
+def top1_accuracy(frame: pd.DataFrame, pred_col: str) -> float:
+    real = frame.loc[frame.groupby("ID_Observacao")["MAPE"].idxmin(), ["ID_Observacao", "Modelo"]]
+    hat = frame.loc[frame.groupby("ID_Observacao")[pred_col].idxmin(), ["ID_Observacao", "Modelo"]]
+    m = real.merge(hat, on="ID_Observacao", suffixes=("_real", "_hat"))
+    return float((m["Modelo_real"] == m["Modelo_hat"]).mean())
+def baseline_predict(train: pd.DataFrame, test: pd.DataFrame) -> np.ndarray:
+    med = train.groupby("Modelo", observed=True)["MAPE"].median()
+    fallback = float(train["MAPE"].median())
+    return test["Modelo"].map(med).fillna(fallback).to_numpy(dtype=float)
+def campeao_do_fold(train: pd.DataFrame) -> str:
+    med = train.groupby("Modelo", observed=True)["MAPE"].median()
+    return str(med.idxmin())
+def generate_feature_sets() -> list[dict]:
+    """Gera todas as combinações possíveis de variáveis numéricas e categóricas."""
+    num_combinations = []
+    for r in range(1, len(NUM_CANDIDATES) + 1):
+        num_combinations.extend(list(combinations(NUM_CANDIDATES, r)))
+    cat_combinations = []
+    for r in range(1, len(CAT_CANDIDATES) + 1):
+        cat_combinations.extend(list(combinations(CAT_CANDIDATES, r)))
+    feature_sets = []
+    for num_cols, cat_cols in product(num_combinations, cat_combinations):
+        num_list = list(num_cols)
+        cat_list = list(cat_cols)
+        feature_sets.append(
+            {
+                "num": num_list,
+                "cat": cat_list,
+                "x_cols": num_list + cat_list,
+                "name": f"num({'_'.join(num_list)})__cat({'_'.join(cat_list)})",
+            }
+        )
+    # Adicionar combinações com apenas uma variável numérica e nenhuma categórica
+    for num_cols in num_combinations:
+        num_list = list(num_cols)
+        feature_sets.append(
+            {
+                "num": num_list,
+                "cat": [],
+                "x_cols": num_list,
+                "name": f"num({'_'.join(num_list)})__cat(none)",
+            }
+        )
+    return feature_sets
+def _cat_encoder() -> Pipeline:
+    return Pipeline(
+        [
+            ("imp", SimpleImputer(strategy="most_frequent")),
+            ("oh", OneHotEncoder(handle_unknown="ignore", sparse_output=True)),
+        ]
+    )
+def _num_linear() -> Pipeline:
+    return Pipeline(
+        [
+            ("imp", SimpleImputer(strategy="median")),
+            ("sc", StandardScaler()),
+        ]
+    )
+def linear_preprocessor(num_cols: list[str], cat_cols: list[str]) -> ColumnTransformer:
+    return ColumnTransformer(
+        [
+            ("num", _num_linear(), num_cols),
+            ("cat", _cat_encoder(), cat_cols),
+        ]
+    )
+def spline_preprocessor(num_cols: list[str], cat_cols: list[str]) -> ColumnTransformer:
+    num_spline = [num_cols[0]]
+    num_linear = num_cols[1:]
+    transformers = [
+        (
+            "spl",
+            Pipeline(
+                [
+                    ("imp", SimpleImputer(strategy="median")),
+                    (
+                        "bs",
+                        SplineTransformer(
+                            n_knots=4,
+                            degree=3,
+                            include_bias=False,
+                            extrapolation="constant",
+                        ),
+                    ),
+                    ("sc", StandardScaler()),
+                ]
+            ),
+            num_spline,
+        ),
+        ("cat", _cat_encoder(), cat_cols),
+    ]
+    if num_linear:
+        transformers.append(("num", _num_linear(), num_linear))
+    return ColumnTransformer(transformers)
+def ols_pipeline(num_cols: list[str], cat_cols: list[str]) -> Pipeline:
+    return Pipeline([("pre", linear_preprocessor(num_cols, cat_cols)), ("model", LinearRegression())])
+def spline_pipeline(num_cols: list[str], cat_cols: list[str]) -> Pipeline:
+    return Pipeline([("pre", spline_preprocessor(num_cols, cat_cols)), ("model", LinearRegression())])
+def inv_boxcox(y_trans: np.ndarray, lambda_param: float) -> np.ndarray:
+    """Reverte a transformação de Box-Cox para a escala original."""
+    if lambda_param == 0:
+        return np.exp(y_trans)
+    else:
+        # Garante que o argumento da potência seja estritamente positivo para evitar NaNs
+        inner = np.maximum(lambda_param * y_trans + 1.0, 1e-12)
+        return inner ** (1.0 / lambda_param)
+def extrair_expressao_pipeline(pipe: Pipeline, nome_modelo: str = "Modelo") -> str:
+    """Extrai a equação matemática de um Pipeline scikit-learn contendo
+    ColumnTransformer + LinearRegression.
+    """
+    preprocessor = pipe.named_steps["pre"]
+    regressor = pipe.named_steps["model"]
+    # 1. Recupera os nomes das variáveis geradas pelo pré-processador (Ex: OHE, Splines)
+    try:
+        feature_names = preprocessor.get_feature_names_out()
+    except AttributeError:
+        feature_names = [f"x_{i}" for i in range(len(regressor.coef_))]
+    # Limpa os prefixos gerados pelo ColumnTransformer (ex: 'cat__Sexo_Animal_M' -> 'Sexo_Animal_M')
+    clean_names = [f.split("__")[-1] for f in feature_names]
+    intercept = regressor.intercept_
+    coefs = regressor.coef_
+    # 2. Monta a string da expressão matemática
+    termos = [f"{intercept:.4f}"]
+    for coef, name in zip(coefs, clean_names):
+        sinal = "+" if coef >= 0 else "-"
+        termos.append(f"{sinal} {abs(coef):.4f} * ({name})")
+    expressao = " ".join(termos)
+    expr = f"{nome_modelo}: y_hat = {expressao}"
+    with open("equacao_modelo.txt", "a", encoding="utf-8") as f:
+        f.write(f"[{datetime.now():%Y-%m-%d %H:%M:%S}]\n {expr}\n")
+def fit_predict_2sls(
+    pipe: Pipeline,
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    x_cols: list[str],
+    num_cols: list[str],
+    cat_cols: list[str],
+    model_name: str = "Modelo_2sls",
+) -> np.ndarray:
+    train = train.copy()
+    test = test.copy()
+    # ── ESTÁGIO 1: Predizer o patamar médio (mediana) do animal
+    train_animal = train.drop_duplicates(subset=["ID_Observacao"]).copy()
+    train_animal["mediana_animal"] = (
+        train.groupby("ID_Observacao")[TARGET].median().loc[train_animal["ID_Observacao"]].values
+    )
+    x_cols_animal = [c for c in x_cols if c != "Modelo"]
+    num_animal = [c for c in num_cols if c != "Modelo"]
+    cat_animal = [c for c in cat_cols if c != "Modelo"]
+    pre_animal = ColumnTransformer(
+        [
+            ("num", _num_linear(), num_animal),
+            ("cat", _cat_encoder(), cat_animal),
+        ]
+    )
+    pipe_median = Pipeline([("pre", pre_animal), ("model", LinearRegression())])
+    pipe_median.fit(train_animal[x_cols_animal], train_animal["mediana_animal"].to_numpy())
+    pred_median_test = pipe_median.predict(test[x_cols_animal])  # Note. Previsão da mediana do animal no teste
+    extrair_expressao_pipeline(pipe_median, f"{model_name}_Stage1")
+    # ── ESTÁGIO 2: Predizer o desvio do modelo empírico (centralizado no animal)
+    mediana_real_train = train.groupby("ID_Observacao")[TARGET].transform("median")
+    y_train_resid = train[TARGET].to_numpy() - mediana_real_train.to_numpy()
+    # Note. O vetor mediana_real_train está correto?
+    pipe.fit(train[x_cols], y_train_resid)
+    pred_resid_test = pipe.predict(test[x_cols])    # Note. Previsão do desvio do modelo empírico no teste
+    extrair_expressao_pipeline(pipe_median, f"{model_name}_Stage2")
+    pred_log = pred_median_test + pred_resid_test
+    return inv_boxcox(pred_log, BEST_LAMBDA)
+def fit_predict_simples(
+    pipe: Pipeline, train: pd.DataFrame, test: pd.DataFrame, x_cols: list[str], model_name: str = "Modelo_Simples"
+) -> np.ndarray:
+    """Ajusta o modelo diretamente na escala original (MAPE), sem estratégia de etapas."""
+    train = train.copy()
+    test = test.copy()
+    pipe.fit(train[x_cols], train[TARGET].to_numpy())
+    extrair_expressao_pipeline(pipe, model_name)
+    return inv_boxcox(pipe.predict(test[x_cols]), BEST_LAMBDA)
+def collect_fold(
+    name: str, protocol: str, fold: str, test: pd.DataFrame, pred: np.ndarray, campeao: str
+) -> tuple[dict, pd.DataFrame]:
+    tmp = test.copy()
+    tmp["pred"] = pred
+    real_win = tmp.loc[tmp.groupby("ID_Observacao")["MAPE"].idxmin(), "Modelo"]
+    scores = regression_scores(tmp["MAPE"], pred)
+    scores.update(
+        {
+            "modelo": name,
+            "protocolo": protocol,
+            "fold": fold,
+            "n": int(len(tmp)),
+            "top1": top1_accuracy(tmp, "pred"),
+            "top1_sempre_campeao": float((real_win.to_numpy() == campeao).mean()),
+        }
+    )
+    return scores, tmp
+def model_predictions(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    ) -> dict[str, np.ndarray]:
+    preds = {
+        "baseline_mediana_modelo": baseline_predict(train, test),
+        }
+    feature_sets = generate_feature_sets()
+    for fset in feature_sets:
+        num_cols = fset["num"]
+        cat_cols = fset["cat"]
+        x_cols = fset["x_cols"]
+        suffix = fset["name"]
+        pipe_ols = ols_pipeline(num_cols, cat_cols)
+        pipe_spl = spline_pipeline(num_cols, cat_cols)
+        preds[f"ols__{suffix}"] = fit_predict_2sls(pipe_ols, train, test, x_cols, num_cols, cat_cols, f"ols__{suffix}")
+        preds[f"splines__{suffix}"] = fit_predict_2sls(
+            pipe_spl, train, test, x_cols, num_cols, cat_cols, f"splines__{suffix}"
+            )
+        preds[f"ols_simples__{suffix}"] = fit_predict_simples(pipe_ols, train, test, x_cols, f"ols_simples__{suffix}")
+        preds[f"splines_simples__{suffix}"] = fit_predict_simples(
+            pipe_spl, train, test, x_cols, f"splines_simples__{suffix}"
+            )
+    return preds
+def run_group_kfold(df: pd.DataFrame, n_splits: int = 5) -> tuple[list[dict], pd.DataFrame]:
+    groups = df["Estudo"].to_numpy()
+    cv = GroupKFold(n_splits=min(n_splits, df["Estudo"].nunique()))
+    # Salvar grupos em pastas separadas para debug. 1 pasta por grupo, e dado de treino e teste dentro de cada pasta.
+    group_dir = Path(find_root()) / "data" / "processed" / "group_kfold_folds"
+    group_dir.mkdir(exist_ok=True)
+    for i, (tr, te) in enumerate(cv.split(df, df["MAPE"], groups), start=1):
+        fold_dir = group_dir / f"fold_{i}"
+        fold_dir.mkdir(exist_ok=True)
+        train, test = df.iloc[tr].copy(), df.iloc[te].copy()
+        train.to_csv(fold_dir / "train.csv", index=False)
+        test.to_csv(fold_dir / "test.csv", index=False)
+    rows = []
+    oof_parts = []
+    for i, (tr, te) in enumerate(cv.split(df, df["MAPE"], groups), start=1):
+        # Note. estou usando MAPE_log para treinar?
+        train, test = df.iloc[tr].copy(), df.iloc[te].copy()
+        g_tr = train["Estudo"].to_numpy()
+        campeao = campeao_do_fold(train)
+        print(f"GroupKFold fold {i}", flush=True)
+        preds = model_predictions(train, test)
+        fold_name = f"gkf{i}"
+        for name, pred in preds.items():
+            scores, _tmp = collect_fold(name, "GroupKFold", fold_name, test, pred, campeao)
+            rows.append(scores)
+            part = test[["ID_Observacao", "Estudo", "Pais_Estudo", "Modelo", "MAPE"]].copy()
+            part["pred"] = pred
+            part["modelo_ml"] = name
+            part["protocolo"] = "GroupKFold"
+            part["fold"] = fold_name
+            oof_parts.append(part)
+    return rows, pd.concat(oof_parts, ignore_index=True)
+def run_loso_paises(df: pd.DataFrame) -> tuple[list[dict], pd.DataFrame]:
+    estudos = (
+        df.loc[df["Pais_Estudo"].isin(PAISES_OCULTOS), "Estudo"].drop_duplicates().tolist()
+    )
+    rows = []
+    oof_parts = []
+    for estudo in estudos:
+        test = df[df["Estudo"] == estudo].copy()
+        train = df[df["Estudo"] != estudo].copy()
+        if test.empty or train.empty:
+            continue
+        campeao = campeao_do_fold(train)
+        preds = model_predictions(train, test)
+        for name, pred in preds.items():
+            print(f"LOSO_paises_case estudo {estudo} modelo {name}", flush=True)
+            scores, _tmp = collect_fold(name, "LOSO_paises_case", str(estudo), test, pred, campeao)
+            rows.append(scores)
+            part = test[["ID_Observacao", "Estudo", "Pais_Estudo", "Modelo", "MAPE"]].copy()
+            part["pred"] = pred
+            part["modelo_ml"] = name
+            part["protocolo"] = "LOSO_paises_case"
+            part["fold"] = str(estudo)
+            oof_parts.append(part)
+    return rows, pd.concat(oof_parts, ignore_index=True) if oof_parts else pd.DataFrame()
+def summarize(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
+    raw = pd.DataFrame(rows)
+    agg = (
+        raw.groupby(["protocolo", "modelo"], as_index=False)
+        .agg(
+            n_folds=("fold", "nunique"),
+            mape=("mape", "mean"),
+            mae=("mae", "mean"),
+            rmse=("rmse", "mean"),
+            r2=("r2", "mean"),
+            top1=("top1", "mean"),
+            top1_sempre_campeao=("top1_sempre_campeao", "mean"),
+        )
+        .sort_values(["protocolo", "mape"])
+    )
+    return raw, agg
+def vif_from_matrix(X: pd.DataFrame) -> pd.DataFrame:
+    X = X.astype(float).copy()
+    keep = [c for c in X.columns if float(X[c].std(ddof=0)) > 1e-12]
+    X = X[keep]
+    rows = []
+    for col in X.columns:
+        y = X[col].to_numpy()
+        Z = X.drop(columns=[col]).to_numpy()
+        if Z.size == 0:
+            vif = float("inf")
+            r2 = float("nan")
+        else:
+            lr = LinearRegression()
+            lr.fit(Z, y)
+            r2 = float(lr.score(Z, y))
+            vif = float("inf") if r2 >= 1.0 - 1e-12 else float(1.0 / (1.0 - r2))
+        rows.append({"bloco": None, "variavel": col, "r2_auxiliar": r2, "VIF": vif})
+    return pd.DataFrame(rows)
+def compute_vif(df: pd.DataFrame) -> pd.DataFrame:
+    """VIF nos numéricos (peso e fração A)."""
+    vif_num = vif_from_matrix(df[NUM_CANDIDATES].copy())
+    vif_num["bloco"] = "numericos_brutos"
+    vif_num["alerta"] = np.where(
+        vif_num["VIF"] >= 10, "VIF>=10", np.where(vif_num["VIF"] >= 5, "VIF>=5", "ok")
+    )
+    return vif_num.sort_values("VIF", ascending=False)
+def cluster_bootstrap_error(
+    oof: pd.DataFrame,
+    n_boot: int = N_BOOT,
+    seed: int = BOOT_SEED,
+) -> pd.DataFrame:
+    """IC 95% do MAE e do RMSE via bootstrap por Estudo (OOF do GroupKFold)."""
+    gkf = oof[oof["protocolo"] == "GroupKFold"].copy()
+    if gkf.empty:
+        return pd.DataFrame()
+    rng = np.random.default_rng(seed)
+    rows = []
+    for name, sub in gkf.groupby("modelo_ml"):
+        studies = sub["Estudo"].unique()
+        buckets = {s: sub[sub["Estudo"] == s] for s in studies}
+        n_g = len(studies)
+        mae_b = np.empty(n_boot)
+        rmse_b = np.empty(n_boot)
+        for b in range(n_boot):
+            draw = rng.choice(studies, size=n_g, replace=True)
+            parts = [buckets[s] for s in draw]
+            y = np.concatenate([p["MAPE"].to_numpy() for p in parts])
+            yhat = np.concatenate([p["pred"].to_numpy() for p in parts])
+            mae_b[b] = mean_absolute_error(y, yhat)
+            rmse_b[b] = rmse(y, yhat)
+        y_obs = sub["MAPE"].to_numpy()
+        yhat_obs = sub["pred"].to_numpy()
+        rows.append(
+            {
+                "protocolo": "GroupKFold",
+                "modelo": name,
+                "n_boot": n_boot,
+                "agrupamento": "Estudo",
+                "mape": float(np.mean(np.abs((y_obs - yhat_obs) / y_obs))),
+                "mape_ic95_inf": float(np.quantile(np.abs((y_obs - yhat_obs) / y_obs), 0.025)),
+                "mape_ic95_sup": float(np.quantile(np.abs((y_obs - yhat_obs) / y_obs), 0.975)),
+                "mae": float(mean_absolute_error(y_obs, yhat_obs)),
+                "mae_ic95_inf": float(np.quantile(mae_b, 0.025)),
+                "mae_ic95_sup": float(np.quantile(mae_b, 0.975)),
+                "rmse": rmse(y_obs, yhat_obs),
+                "rmse_ic95_inf": float(np.quantile(rmse_b, 0.025)),
+                "rmse_ic95_sup": float(np.quantile(rmse_b, 0.975)),
+            }
+        )
+    return pd.DataFrame(rows).sort_values("mae")
+def filter_models(agg: pd.DataFrame, raw: pd.DataFrame, oof: pd.DataFrame, boot: pd.DataFrame) -> tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Filtra modelos com top1 < 0.5 ou com MAE pior que baseline."""
+    baseline_mape = agg[agg["modelo"] == "baseline_mediana_modelo"][["protocolo", "mape"]].set_index("protocolo")[
+        "mape"].to_dict()
+    baseline_mae = agg[agg["modelo"] == "baseline_mediana_modelo"][["protocolo", "mae"]].set_index("protocolo")["mae"].to_dict()
+    agg_filtered_tmp = agg[(
+        agg.apply(lambda row: row["mape"] <= baseline_mape.get(row["protocolo"], float("inf")), axis=1))].copy()
+    models_to_keep = set(agg_filtered_tmp["modelo"])
+    agg_filtered_tmp = agg_filtered_tmp[(
+        agg_filtered_tmp.apply(lambda row: row["mae"] <= baseline_mae.get(row["protocolo"], float("inf")), axis=1))].copy()
+    if not agg_filtered_tmp.empty:
+        models_to_keep = set(agg_filtered_tmp["modelo"])
+    agg_filtered = agg[agg["modelo"].isin(models_to_keep)].copy()
+    raw_filtered = raw[raw["modelo"].isin(models_to_keep)].copy()
+    oof_filtered = oof[oof["modelo_ml"].isin(models_to_keep)].copy()
+    boot_filtered = boot[boot["modelo"].isin(models_to_keep)].copy()
+    return agg_filtered, raw_filtered, oof_filtered, boot_filtered
+def main() -> None:
+    root = find_root()
+    out = root / "data" / "processed"
+    out.mkdir(parents=True, exist_ok=True)
+    df = load_frame(root)
+    print(f"n={len(df)} estudos={df['Estudo'].nunique()}", flush=True)
+    vif = compute_vif(df)
+    print("VIF ok", flush=True)
+    vif.to_csv(out / "04_vif.csv", index=False)
+    rows_g, oof_g = run_group_kfold(df)
+    rows_l, oof_l = run_loso_paises(df)
+    raw, agg = summarize(rows_g + rows_l)
+    oof = pd.concat([oof_g, oof_l], ignore_index=True)
+    boot = cluster_bootstrap_error(oof)
+    agg, raw, oof, boot = filter_models(agg, raw, oof, boot)
+    agg.to_csv(out / "04_metricas_resumo.csv", index=False)
+    raw.to_csv(out / "04_metricas_folds.csv", index=False)
+    oof.to_csv(out / "04_predicoes_oof.csv", index=False)
+    boot.to_csv(out / "04_bootstrap_ic.csv", index=False)
+    (out / "04_resumo.json").write_text(
+        json.dumps(
+            {
+                "metricas": agg.to_dict(orient="records"),
+                # "bootstrap": boot.to_dict(orient="records"),
+                "vif_numericos": vif.loc[vif["bloco"] == "numericos_brutos"].to_dict(
+                    orient="records"
+                ),
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    print("VIF (numéricos):")
+    print(vif.loc[vif["bloco"] == "numericos_brutos"].to_string(index=False))
+    print("\nMétricas (média dos folds):")
+    print(agg.head(10).to_string(index=False))  # Exibe os 10 melhores
+    print("\nBootstrap cluster (IC 95% do erro, GroupKFold):")
+    print(boot.head(10).to_string(index=False))
+    print(f"\nSaídas em {out}")
+if __name__ == "__main__":
+    main()
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/05_avaliacao_recomendacao.py
+================
+"""Fase 5 — consolidar métricas e decidir se o seletor bate o campeão global."""
+from __future__ import annotations
+import json
+import os
+from pathlib import Path
+import pandas as pd
+def _is_root(p: Path) -> bool:
+    return (p / "projeto-rgna.Rproj").exists() or (p / "data" / "raw" / "dados_treino.xlsx").exists()
+def find_root() -> Path:
+    env = os.environ.get("RGNA_ROOT", "").strip()
+    if env:
+        p = Path(env).resolve()
+        if _is_root(p):
+            return p
+    starts = [Path(__file__).resolve().parent.parent, Path.cwd().resolve()]
+    seen: set[Path] = set()
+    for here in starts:
+        for p in [here, *here.parents]:
+            if p in seen:
+                continue
+            seen.add(p)
+            if _is_root(p):
+                return p
+            for nested in (p / "projeto-rgna", p / "Atividades" / "projeto-rgna"):
+                if _is_root(nested):
+                    return nested.resolve()
+    raise FileNotFoundError("data/raw/dados_treino.xlsx")
+def main() -> None:
+    root = find_root()
+    out = root / "data" / "processed"
+    resumo = pd.read_csv(out / "04_metricas_resumo.csv")
+    campeao = (out / "01_campeao_global.txt").read_text(encoding="utf-8").strip()
+    boot_path = out / "04_bootstrap_ic.csv"
+    boot = pd.read_csv(boot_path) if boot_path.exists() else pd.DataFrame()
+    linhas = []
+    for proto in resumo["protocolo"].unique():
+        sub = resumo[resumo["protocolo"] == proto]
+        best = sub.loc[sub["mae"].idxmin()]
+        base = sub[sub["modelo"] == "baseline_mediana_modelo"].iloc[0]
+        seletor_ok = float(best["top1"]) > float(best["top1_sempre_campeao"]) + 1e-9
+        linha = {
+            "protocolo": proto,
+            "melhor_mae": best["modelo"],
+            "mae_melhor": best["mae"],
+            "mae_baseline": base["mae"],
+            "ganho_mae_vs_baseline": float(base["mae"]) - float(best["mae"]),
+            "top1_melhor": best["top1"],
+            "top1_sempre_campeao": best["top1_sempre_campeao"],
+            "seletor_supera_campeao": seletor_ok,
+            "campeao_global_treino": campeao,
+        }
+        for _, row in sub.iterrows():
+            linha[f"mae_{row['modelo']}"] = row["mae"]
+        linhas.append(linha)
+    dec = pd.DataFrame(linhas)
+    dec.to_csv(out / "05_decisao.csv", index=False)
+    payload = {"decisao": linhas}
+    if not boot.empty:
+        payload["bootstrap_ic95"] = boot.to_dict(orient="records")
+    (out / "05_decisao.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    print("Campeao global (mediana no treino completo):", campeao)
+    print(dec.to_string(index=False))
+    if not boot.empty:
+        print("")
+        print("IC 95% bootstrap (MAE, GroupKFold por Estudo):")
+        print(boot.to_string(index=False))
+    print("")
+    print("Regra: o seletor (argmin do MAPE previsto) so substitui")
+    print("sempre o campeao se Top-1 for maior naquele protocolo.")
+    print(f"Saidas em {out}")
+if __name__ == "__main__":
+    main()
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/06_figuras_modelagem.R
+================
+# Fase 4 — Figuras da validação (Versão Refatorada: Suporte Completo a MAPE)
+
+locate_tema <- function() {
+  cands <- character()
+  push <- function(p) if (length(p) && nzchar(p[[1]])) cands <<- c(cands, p)
+  for (i in seq_len(max(1L, sys.nframe()))) {
+    ofile <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(ofile) && nzchar(ofile)) {
+      push(file.path(dirname(normalizePath(ofile, mustWork = FALSE)), "tema_rgna.R"))
+    }
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  f <- sub("^--file=", "", args[grepl("^--file=", args)])
+  if (length(f)) push(file.path(dirname(normalizePath(f[[1]], mustWork = FALSE)), "tema_rgna.R"))
+  wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  d <- wd
+  for (i in seq_len(12)) {
+    push(file.path(d, "tema_rgna.R"))
+    push(file.path(d, "scripts", "tema_rgna.R"))
+    push(file.path(d, "projeto-rgna", "scripts", "tema_rgna.R"))
+    push(file.path(d, "Atividades", "projeto-rgna", "scripts", "tema_rgna.R"))
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  cands <- unique(cands[file.exists(cands)])
+  cands <- cands[!grepl("projeto-rgna3", cands)]
+  if (!length(cands)) {
+    stop("Não achei scripts/tema_rgna.R. Working directory atual: ", wd)
+  }
+  normalizePath(cands[[1]], winslash = "/", mustWork = TRUE)
+}
+
+source(locate_tema(), encoding = "UTF-8")
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+
+root <- find_root()
+theme_set(theme_rgna())
+out_dir <- file.path(root, "data", "processed")
+fig_dir <- file.path(out_dir, "figuras")
+dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
+
+# ── 1. CARREGAR DADOS ──────────────────────────────────────────────────────────
+resumo <- read.csv(file.path(out_dir, "04_metricas_resumo.csv"), check.names = FALSE)
+folds  <- read.csv(file.path(out_dir, "04_metricas_folds.csv"), check.names = FALSE)
+boot   <- read.csv(file.path(out_dir, "04_bootstrap_ic.csv"), check.names = FALSE)
+vif    <- read.csv(file.path(out_dir, "04_vif.csv"), check.names = FALSE)
+oof    <- read.csv(file.path(out_dir, "04_predicoes_oof.csv"), check.names = FALSE)
+
+# ── 1.1 PADRONIZAÇÃO DAS COLUNAS DE BOOTSTRAP ─────────────────────────────────
+colnames(boot) <- tolower(colnames(boot))
+
+obter_coluna_ic <- function(df, prefixo, sufixo) {
+  padroes <- c(
+    paste0(prefixo, "_ic95_", sufixo),
+    paste0(prefixo, "_ic_", sufixo),
+    paste0("ic95_", sufixo),
+    paste0("ic_", sufixo)
+  )
+  col_encontrada <- intersect(padroes, colnames(df))
+  if (length(col_encontrada) > 0) return(df[[col_encontrada[1]]])
+  return(NA_real_)
+}
+
+boot <- boot %>%
+  mutate(
+    mae_ic_inf  = obter_coluna_ic(boot, "mae", "inf"),
+    mae_ic_sup  = obter_coluna_ic(boot, "mae", "sup"),
+    rmse_ic_inf = obter_coluna_ic(boot, "rmse", "inf"),
+    rmse_ic_sup = obter_coluna_ic(boot, "rmse", "sup"),
+    mape_ic_inf = obter_coluna_ic(boot, "mape", "inf"),
+    mape_ic_sup = obter_coluna_ic(boot, "mape", "sup")
+  )
+
+# ── 2. FILTRAGEM DOS TOP MODELOS ───────────────────────────────────────────────
+TOP_N <- 8
+
+# Ordenado pelo alvo principal (MAPE se disponível, fallback para MAE)
+col_ordenacao <- if ("mape" %in% colnames(resumo)) "mape" else "mae"
+
+top_modelos <- resumo %>%
+  filter(protocolo == "GroupKFold") %>%
+  arrange(.data[[col_ordenacao]]) %>%
+  slice_head(n = TOP_N) %>%
+  pull(modelo)
+
+modelos_filtrados <- unique(c("baseline_mediana_modelo", top_modelos))
+
+limpar_nome <- function(x) {
+  x %>%
+    str_replace("baseline_mediana_modelo", "Baseline") %>%
+    str_replace("__num\\(", " [") %>%
+    str_replace("\\)__cat\\(", " | ") %>%
+    str_replace("\\)", "]") %>%
+    str_replace_all("_", " ") %>%
+    str_wrap(width = 28)
+}
+
+resumo_f <- resumo %>% filter(modelo %in% modelos_filtrados) %>% mutate(rotulo = limpar_nome(modelo))
+folds_f  <- folds  %>% filter(modelo %in% modelos_filtrados)  %>% mutate(rotulo = limpar_nome(modelo))
+boot_f   <- boot   %>% filter(modelo %in% modelos_filtrados)   %>% mutate(rotulo = limpar_nome(modelo))
+oof_f    <- oof    %>% filter(modelo_ml %in% modelos_filtrados) %>% mutate(rotulo = limpar_nome(modelo_ml))
+
+ordem_rotulos <- resumo_f %>%
+  filter(protocolo == "GroupKFold") %>%
+  arrange(.data[[col_ordenacao]]) %>%
+  pull(rotulo)
+
+resumo_f$rotulo <- factor(resumo_f$rotulo, levels = ordem_rotulos)
+folds_f$rotulo  <- factor(folds_f$rotulo, levels = ordem_rotulos)
+boot_f$rotulo   <- factor(boot_f$rotulo, levels = ordem_rotulos)
+oof_f$rotulo    <- factor(oof_f$rotulo, levels = ordem_rotulos)
+
+folds_gkf <- folds_f %>% filter(protocolo == "GroupKFold")
+oof_gkf   <- oof_f   %>% filter(protocolo == "GroupKFold")
+
+# ── 3. GRÁFICOS DEDICADOS AO MAPE ──────────────────────────────────────────────
+
+# A. MAPE + IC 95% Bootstrap (Barras com indicação numérica do erro relativo)
+p_mape_boot <- ggplot(boot_f %>% filter(protocolo == "GroupKFold"), aes(x = reorder(rotulo, mape), y = mape)) +
+  geom_col(width = 0.55, fill = fill_main, alpha = 0.85) +
+  {
+    if (!all(is.na(boot_f$mape_ic_inf))) {
+      geom_errorbar(aes(ymin = mape_ic_inf, ymax = mape_ic_sup), width = 0.15, color = ink, linewidth = 0.35)
+    }
+  } +
+  geom_text(aes(label = paste0(round(mape * 100, 1), "%")), hjust = -0.2, size = 3.1, color = ink) +
+  scale_y_continuous(labels = function(x) paste0(round(x * 100, 1), "%"), expand = expansion(mult = c(0, 0.18))) +
+  coord_flip() +
+  labs(
+    title = paste("Top", TOP_N, "Modelos: MAPE no GroupKFold (IC 95% Bootstrap)"),
+    subtitle = "Menor percentual indica melhor ajuste relativo ao valor observado.",
+    x = NULL, y = "MAPE (%)"
+  ) +
+  theme(panel.grid.major.y = element_blank())
+
+ggsave(file.path(fig_dir, "04_mape_bootstrap.png"), p_mape_boot, width = 9.5, height = 6.0, dpi = 140)
+
+# B. MAPE por Pasta (Heatmap de estabilidade das folds)
+p_mape_heatmap <- ggplot(folds_gkf, aes(x = factor(fold), y = rotulo, fill = mape)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  geom_text(aes(label = paste0(round(mape * 100, 1), "%")), color = ink, size = 3.0) +
+  scale_fill_gradient(low = "#e0ede0", high = "#c48874", name = "MAPE", labels = function(x) paste0(round(x * 100), "%")) +
+  labs(
+    title = "MAPE em cada pasta do GroupKFold (Heatmap)",
+    subtitle = "Identificação visual de agrupamentos/folds onde os modelos perdem precisão.",
+    x = "Fold", y = NULL
+  ) +
+  theme(panel.grid = element_blank())
+
+ggsave(file.path(fig_dir, "04_mape_por_pasta_heatmap.png"), p_mape_heatmap, width = 9.5, height = 5.5, dpi = 140)
+
+# C. MAPE por Fold (Linhas de variabilidade)
+p_mape_fold <- ggplot(folds_gkf, aes(x = factor(fold), y = mape, group = rotulo, color = rotulo)) +
+  geom_line(alpha = 0.5, linewidth = 0.6) +
+  geom_point(size = 1.8) +
+  scale_y_continuous(labels = function(x) paste0(round(x * 100, 1), "%")) +
+  scale_color_viridis_d(option = "mako", name = "Modelo") +
+  labs(
+    title = "Variabilidade do MAPE entre Folds",
+    subtitle = "Oscilação do erro percentual absoluto ao longo do GroupKFold.",
+    x = "Número do Fold", y = "MAPE (%)"
+  ) +
+  theme(legend.position = "right", legend.text = element_text(size = 8))
+
+ggsave(file.path(fig_dir, "04_mape_por_fold.png"), p_mape_fold, width = 10.0, height = 5.5, dpi = 140)
+
+# D. Resíduos Relativos OOF: Erro Relativo Percentual vs Alvo Observado
+# Identifica a coluna alvo no OOF (procura 'mape', 'target', 'y' ou 'y_true')
+col_alvo_oof <- intersect(c("mape", "target", "y", "y_true", "observado"), colnames(oof_gkf))[1]
+
+if (!is.na(col_alvo_oof)) {
+  oof_gkf <- oof_gkf %>%
+    mutate(
+      alvo_val = .data[[col_alvo_oof]],
+      residuo_rel = (pred - alvo_val) / alvo_val
+    )
+
+  set.seed(42)
+  oof_sub <- if (nrow(oof_gkf) > 5000) oof_gkf[sample(seq_len(nrow(oof_gkf)), 5000), ] else oof_gkf
+
+  p_residuos_mape <- ggplot(oof_sub, aes(x = alvo_val, y = residuo_rel)) +
+    geom_hline(yintercept = 0, color = "#b56a4a", linetype = "dashed", linewidth = 0.6) +
+    geom_point(alpha = 0.3, size = 1.1, color = fill_main) +
+    geom_smooth(method = "loess", color = ink, se = FALSE, linewidth = 0.5) +
+    scale_y_continuous(labels = function(x) paste0(round(x * 100), "%"), limits = c(-1.5, 1.5)) +
+    facet_wrap(~ rotulo, ncol = 3) +
+    labs(
+      title = "Erro Percentual OOF vs Valor Observado",
+      subtitle = "Erro Relativo ((Previsto - Observado) / Observado). Tendência próxima de 0% indica bom ajuste.",
+      x = "Valor Observado", y = "Erro Relativo (%)"
+    )
+
+  ggsave(file.path(fig_dir, "04_residuos_relativos_mape.png"), p_residuos_mape, width = 11.0, height = 7.5, dpi = 140)
+
+  # E. Previsto vs Observado
+  p_oof_mape <- ggplot(oof_sub, aes(x = alvo_val, y = pred)) +
+    geom_abline(slope = 1, intercept = 0, color = muted, linetype = "22", linewidth = 0.4) +
+    geom_point(alpha = 0.28, size = 1.05, color = fill_main) +
+    facet_wrap(~ rotulo, ncol = 3) +
+    labs(
+      title = "Previsão OOF vs Valor Observado (Top Modelos)",
+      x = "Observado", y = "Previsto"
+    )
+
+  ggsave(file.path(fig_dir, "04_mape_previsto_vs_observado.png"), p_oof_mape, width = 10.0, height = 7.5, dpi = 140)
+}
+
+# ── 4. GRÁFICOS COMPLEMENTARES (MAE E RMSE) ───────────────────────────────────
+
+# MAE Bootstrap
+p_mae_boot <- ggplot(boot_f %>% filter(protocolo == "GroupKFold"), aes(x = reorder(rotulo, mae), y = mae)) +
+  geom_col(width = 0.55, fill = fill_main, alpha = 0.85) +
+  geom_errorbar(aes(ymin = mae_ic_inf, ymax = mae_ic_sup), width = 0.15, color = ink, linewidth = 0.35) +
+  geom_text(aes(label = sprintf("%.3f", mae)), hjust = -0.2, size = 3.1, color = ink) +
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.18))) +
+  labs(title = paste("Top", TOP_N, "Modelos: MAE no GroupKFold (IC 95%)"), x = NULL, y = "MAE") +
+  theme(panel.grid.major.y = element_blank())
+ggsave(file.path(fig_dir, "04_mae_bootstrap.png"), p_mae_boot, width = 9.5, height = 6.0, dpi = 140)
+
+# RMSE Bootstrap
+p_rmse_boot <- ggplot(boot_f %>% filter(protocolo == "GroupKFold"), aes(x = reorder(rotulo, rmse), y = rmse)) +
+  geom_col(width = 0.55, fill = fill_main, alpha = 0.85) +
+  geom_errorbar(aes(ymin = rmse_ic_inf, ymax = rmse_ic_sup), width = 0.15, color = ink, linewidth = 0.35) +
+  geom_text(aes(label = sprintf("%.3f", rmse)), hjust = -0.2, size = 3.1, color = ink) +
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.18))) +
+  labs(title = paste("Top", TOP_N, "Modelos: RMSE no GroupKFold (IC 95%)"), x = NULL, y = "RMSE") +
+  theme(panel.grid.major.y = element_blank())
+ggsave(file.path(fig_dir, "04_rmse_bootstrap.png"), p_rmse_boot, width = 9.5, height = 6.0, dpi = 140)
+
+# VIF
+vif_plot <- vif %>%
+  mutate(
+    VIF_plot = ifelse(!is.finite(VIF) | VIF > 20, 20, VIF),
+    variavel = factor(variavel, levels = rev(variavel))
+  )
+p_vif <- ggplot(vif_plot, aes(x = VIF_plot, y = variavel, fill = alerta)) +
+  geom_col(width = 0.62) +
+  geom_vline(xintercept = 5, linetype = "22", color = muted, linewidth = 0.4) +
+  geom_vline(xintercept = 10, linetype = "22", color = "#b56a4a", linewidth = 0.4) +
+  scale_fill_manual(values = c("ok" = fill_soft, "VIF>=5" = "#c4a574", "VIF>=10" = "#b56a4a"), guide = "none") +
+  labs(title = "VIF dos Preditores Numéricos", x = "VIF", y = NULL)
+ggsave(file.path(fig_dir, "04_vif.png"), p_vif, width = 8, height = 4.2, dpi = 140)
+
+message("Novos gráficos do MAPE gerados com sucesso em: ", fig_dir)
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/render_relatorio.R
+================
+# Gera relatorio/relatorio-eda.html e .pdf (PDF = impressão do HTML no Chrome)
+
+find_root <- function() {
+  env <- Sys.getenv("RGNA_ROOT", unset = "")
+  if (nzchar(env) && file.exists(file.path(env, "projeto-rgna.Rproj"))) {
+    return(normalizePath(env, winslash = "/", mustWork = TRUE))
+  }
+  d <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  for (i in seq_len(12L)) {
+    if (file.exists(file.path(d, "projeto-rgna.Rproj"))) {
+      return(normalizePath(d, winslash = "/", mustWork = TRUE))
+    }
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  stop("Não achei projeto-rgna.Rproj. Rode a partir da pasta do projeto.")
+}
+
+need <- function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    stop("Instale o pacote ", pkg, ": install.packages(\"", pkg, "\")")
+  }
+}
+
+root <- find_root()
+rmd <- file.path(root, "relatorio", "relatorio-eda.Rmd")
+html <- file.path(root, "relatorio", "relatorio-eda.html")
+pdf <- file.path(root, "relatorio", "relatorio-eda.pdf")
+
+need("rmarkdown")
+message("Knit HTML → ", html)
+rmarkdown::render(
+  input = rmd,
+  output_format = "html_document",
+  output_file = basename(html),
+  output_dir = dirname(html),
+  encoding = "UTF-8",
+  quiet = FALSE
+)
+
+need("pagedown")
+chrome <- tryCatch(pagedown::find_chrome(), error = function(e) NULL)
+if (is.null(chrome) || !nzchar(chrome)) {
+  stop(
+    "Chrome/Chromium não encontrado. Instale o Google Chrome ",
+    "ou abra o HTML e use Imprimir → Salvar como PDF."
+  )
+}
+
+message("PDF via Chrome → ", pdf)
+pagedown::chrome_print(
+  input = html,
+  output = pdf,
+  wait = 2,
+  timeout = 120
+)
+
+message("Pronto:\n  ", html, "\n  ", pdf)
+
+================
+File: /Users/m.pinheiro/Library/CloudStorage/OneDrive-Pessoal/Aplicativos/remotely-save/AutoGestão/02. Areas/UFG/IME0546 - TÓPICOS EM MATEMÁTICA APLICADA/Atividades/projeto-rgna/scripts/tema_rgna.R
+================
+# Tema e leitura do treino — compartilhado entre scripts e o relatório
+
+suppressPackageStartupMessages({
+  library(readxl)
+  library(dplyr)
+  library(ggplot2)
+  library(tidyr)
+})
+
+is_project_root <- function(dir) {
+  rproj <- list.files(dir, pattern = "\\.Rproj$", full.names = FALSE)
+  length(rproj) > 0L ||
+    file.exists(file.path(dir, "data", "raw", "dados_treino.xlsx"))
+}
+
+find_root <- function() {
+  env <- Sys.getenv("RGNA_ROOT", unset = "")
+  if (nzchar(env) && is_project_root(env)) {
+    return(normalizePath(env, winslash = "/", mustWork = FALSE))
+  }
+  starts <- character()
+  ofile <- tryCatch(sys.frame(1)$ofile, error = function(e) NULL)
+  if (!is.null(ofile) && nzchar(ofile)) {
+    starts <- c(starts, dirname(normalizePath(ofile, winslash = "/", mustWork = FALSE)))
+  }
+  starts <- c(starts, normalizePath(getwd(), winslash = "/", mustWork = FALSE))
+  for (wd in unique(starts)) {
+    d <- wd
+    for (i in seq_len(12)) {
+      if (is_project_root(d)) {
+        return(normalizePath(d, winslash = "/", mustWork = FALSE))
+      }
+      nested <- file.path(d, "Atividades", "projeto-rgna")
+      if (is_project_root(nested)) {
+        return(normalizePath(nested, winslash = "/", mustWork = FALSE))
+      }
+      nested <- file.path(d, "projeto-rgna")
+      if (is_project_root(nested)) {
+        return(normalizePath(nested, winslash = "/", mustWork = FALSE))
+      }
+      parent <- dirname(d)
+      if (identical(parent, d)) break
+      d <- parent
+    }
+  }
+  wd <- starts[[1]]
+  hits <- list.files(wd, pattern = "^dados_treino\\.xlsx$", recursive = TRUE, full.names = TRUE)
+  hits <- hits[grepl("data[/\\\\]raw", hits)]
+  hits <- hits[!grepl("projeto-rgna3", hits)]
+  if (length(hits)) {
+    return(normalizePath(dirname(dirname(hits[[1]])), winslash = "/", mustWork = FALSE))
+  }
+  stop("Não achei a raiz do projeto (arquivo .Rproj ou data/raw/dados_treino.xlsx) a partir de ", wd)
+}
+
+ink <- "#1c1917"
+muted <- "#6b6560"
+paper <- "#f7f4ee"
+fill_main <- "#2f4a3c"
+fill_soft <- "#d5ddd6"
+
+pal_modelo <- c(
+  Modelo_1 = "#8a8174",
+  Modelo_2 = "#6d7a82",
+  Modelo_3 = "#b56a4a",
+  Modelo_4 = "#2f4a3c",
+  Modelo_5 = "#5e7f96"
+)
+
+theme_rgna <- function(base_size = 12) {
+  theme_classic(base_size = base_size) +
+    theme(
+      plot.title = element_text(face = "plain", size = base_size + 1, color = ink, hjust = 0),
+      plot.subtitle = element_text(size = base_size - 1.5, color = muted, hjust = 0, margin = margin(b = 10)),
+      plot.caption = element_text(size = base_size - 2.5, color = muted, hjust = 0, margin = margin(t = 8)),
+      axis.title = element_text(size = base_size - 1, color = muted),
+      axis.text = element_text(color = ink),
+      axis.line = element_line(color = "#d4cfc6", linewidth = 0.4),
+      axis.ticks = element_line(color = "#d4cfc6", linewidth = 0.4),
+      panel.grid.major.y = element_line(color = "#efeae2", linewidth = 0.4),
+      panel.grid.major.x = element_blank(),
+      panel.background = element_rect(fill = "white", color = NA),
+      plot.background = element_rect(fill = "white", color = NA),
+      legend.position = "bottom",
+      legend.title = element_text(size = base_size - 1.5, color = muted),
+      legend.text = element_text(size = base_size - 1.5),
+      legend.background = element_blank(),
+      strip.background = element_blank(),
+      strip.text = element_text(face = "plain", color = ink, hjust = 0)
+    )
+}
+
+ler_treino <- function(root = find_root()) {
+  read_excel(
+    file.path(root, "data", "raw", "dados_treino.xlsx"),
+    .name_repair = "minimal"
+  ) |>
+    select(
+      ID_Observacao, Estudo, Pais_Estudo, Sistema_Producao, Status_Metabolico,
+      Sexo_Animal, Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A,
+      Fracao_Perda_B, Modelo, MAPE
+    ) |>
+    mutate(
+      Modelo = factor(Modelo, levels = paste0("Modelo_", 1:5)),
+      Pais_Estudo = as.character(Pais_Estudo)
+    )
+}
+
+paises_ocultos <- c(
+  "Campo Rico", "Ilha Verdejante", "Terra Nortenha",
+  "Monção Dourada", "Costa Austral"
+)
+
+
+
+
+
+================================================================
+End of Codebase
+================================================================

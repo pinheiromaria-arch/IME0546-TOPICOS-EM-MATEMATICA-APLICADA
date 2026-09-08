@@ -1,0 +1,52 @@
+"Pais_Estudo","Modelo","n_vitorias","fracao"
+"Alpes Neutros","Modelo_1",1,0.5
+"Alpes Neutros","Modelo_3",1,0.5
+"Arquipélago Oriente","Modelo_2",3,0.428571428571429
+"Arquipélago Oriente","Modelo_3",2,0.285714285714286
+"Arquipélago Oriente","Modelo_5",2,0.285714285714286
+"Baixo Reino","Modelo_4",2,1
+"Campo Rico","Modelo_1",5,0.2
+"Campo Rico","Modelo_2",6,0.24
+"Campo Rico","Modelo_3",4,0.16
+"Campo Rico","Modelo_4",2,0.08
+"Campo Rico","Modelo_5",8,0.32
+"Costa Austral","Modelo_1",1,0.1
+"Costa Austral","Modelo_3",3,0.3
+"Costa Austral","Modelo_4",5,0.5
+"Costa Austral","Modelo_5",1,0.1
+"Grandvale","Modelo_1",13,0.144444444444444
+"Grandvale","Modelo_2",22,0.244444444444444
+"Grandvale","Modelo_3",7,0.0777777777777778
+"Grandvale","Modelo_4",37,0.411111111111111
+"Grandvale","Modelo_5",11,0.122222222222222
+"Ilha Verdejante","Modelo_1",1,0.0625
+"Ilha Verdejante","Modelo_3",1,0.0625
+"Ilha Verdejante","Modelo_4",13,0.8125
+"Ilha Verdejante","Modelo_5",1,0.0625
+"Ilhota Central","Modelo_1",1,0.333333333333333
+"Ilhota Central","Modelo_3",2,0.666666666666667
+"Império Central","Modelo_3",2,1
+"Monção Dourada","Modelo_3",7,0.583333333333333
+"Monção Dourada","Modelo_4",3,0.25
+"Monção Dourada","Modelo_5",2,0.166666666666667
+"Península Matina","Modelo_1",1,0.2
+"Península Matina","Modelo_2",2,0.4
+"Península Matina","Modelo_3",1,0.2
+"Península Matina","Modelo_5",1,0.2
+"Planalto Sol","Modelo_1",1,0.0833333333333333
+"Planalto Sol","Modelo_2",1,0.0833333333333333
+"Planalto Sol","Modelo_3",4,0.333333333333333
+"Planalto Sol","Modelo_4",5,0.416666666666667
+"Planalto Sol","Modelo_5",1,0.0833333333333333
+"Reino Litoral","Modelo_1",2,0.117647058823529
+"Reino Litoral","Modelo_2",1,0.0588235294117647
+"Reino Litoral","Modelo_3",2,0.117647058823529
+"Reino Litoral","Modelo_4",11,0.647058823529412
+"Reino Litoral","Modelo_5",1,0.0588235294117647
+"Terra Nortenha","Modelo_3",2,0.166666666666667
+"Terra Nortenha","Modelo_4",8,0.666666666666667
+"Terra Nortenha","Modelo_5",2,0.166666666666667
+"Terra do Galo","Modelo_4",1,0.5
+"Terra do Galo","Modelo_5",1,0.5
+"Vale do Indus Novo","Modelo_4",2,0.333333333333333
+"Vale do Indus Novo","Modelo_5",4,0.666666666666667
