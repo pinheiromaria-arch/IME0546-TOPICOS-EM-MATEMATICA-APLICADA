@@ -41,33 +41,43 @@ def campeao_do_fold(train: pd.DataFrame) -> str:
 
 def generate_feature_sets() -> list[dict]:
     """Gera todas as combinações possíveis de variáveis numéricas e categóricas."""
-    num_combinations = []
-    for r in range(1, len(config.NUM_CANDIDATES) + 1):
-        num_combinations.extend(list(combinations(config.NUM_CANDIDATES, r)))
-
-    cat_combinations = []
-    for r in range(1, len(config.CAT_CANDIDATES) + 1):
-        cat_combinations.extend(list(combinations(config.CAT_CANDIDATES, r)))
-
     feature_sets = []
-    # Combinações com variáveis numéricas e categóricas
-    for num_cols, cat_cols in product(num_combinations, cat_combinations):
-        num_list, cat_list = list(num_cols), list(cat_cols)
-        feature_sets.append({
-            "num": num_list,
-            "cat": cat_list,
-            "x_cols": num_list + cat_list,
-            "name": f"num({'_'.join(num_list)})__cat({'_'.join(cat_list)})",
-        })
-    # Combinações com apenas variáveis numéricas
+
+    num_combinations = [combo for r in range(1, len(config.NUM_CANDIDATES) + 1) for combo in combinations(config.NUM_CANDIDATES, r)]
+    cat_combinations = [combo for r in range(1, len(config.CAT_CANDIDATES) + 1) for combo in combinations(config.CAT_CANDIDATES, r)]
+
     for num_cols in num_combinations:
         num_list = list(num_cols)
-        feature_sets.append({
-            "num": num_list,
-            "cat": [],
-            "x_cols": num_list,
-            "name": f"num({'_'.join(num_list)})__cat(none)",
-        })
+        feature_sets.append(
+            {
+                "num": num_list,
+                "cat": [],
+                "x_cols": num_list,
+                "name": f"num({'_'.join(num_list)})_cat(none)",
+            }
+        )
+
+    for cat_cols in cat_combinations:
+        cat_list = list(cat_cols)
+        feature_sets.append(
+            {
+                "num": [],
+                "cat": cat_list,
+                "x_cols": cat_list,
+                "name": f"num(none)_cat({'_'.join(cat_list)})",
+            }
+        )
+
+    for num_cols, cat_cols in product(num_combinations, cat_combinations):
+        num_list, cat_list = list(num_cols), list(cat_cols)
+        feature_sets.append(
+            {
+                "num": num_list,
+                "cat": cat_list,
+                "x_cols": num_list + cat_list,
+                "name": f"num({'_'.join(num_list)})__cat({'_'.join(cat_list)})",
+            }
+        )
     return feature_sets
 
 
@@ -108,14 +118,16 @@ def run_all_models_for_fold(
         # Define os pipelines
         pipe_ols = pipelines.ols_pipeline(num, cat)
         pipe_spl = pipelines.spline_pipeline(num, cat)
+        allow_2sls = "Modelo" in x_cols
 
         # Executa os modelos e coleta predições/equações
-        predictions[f"ols_2sls_{name}"] = modeling.fit_predict_2sls(
-            pipe_ols, train, test, x_cols, num, cat, f"ols__{name}"
-        )
-        predictions[f"spl_2sls_{name}"] = modeling.fit_predict_2sls(
-            pipe_spl, train, test, x_cols, num, cat, f"splines__{name}"
-        )
+        if allow_2sls:
+            predictions[f"ols_2sls_{name}"] = modeling.fit_predict_2sls(
+                pipe_ols, train, test, x_cols, num, cat, f"ols__{name}"
+            )
+            predictions[f"spl_2sls_{name}"] = modeling.fit_predict_2sls(
+                pipe_spl, train, test, x_cols, num, cat, f"splines__{name}"
+            )
         predictions[f"ols_{name}"] = modeling.fit_predict_simples(
             pipe_ols, train, test, x_cols, f"ols_simples__{name}"
         )
