@@ -109,16 +109,16 @@ def run_all_models_for_fold(
         pipe_spl = pipelines.spline_pipeline(num, cat)
 
         # Executa os modelos e coleta predições/equações
-        predictions[f"ols__{name}"] = modeling.fit_predict_2sls(
+        predictions[f"ols_2sls_{name}"] = modeling.fit_predict_2sls(
             pipe_ols, train, test, x_cols, num, cat, f"ols__{name}"
         )
-        predictions[f"splines__{name}"] = modeling.fit_predict_2sls(
+        predictions[f"spl_2sls_{name}"] = modeling.fit_predict_2sls(
             pipe_spl, train, test, x_cols, num, cat, f"splines__{name}"
         )
-        predictions[f"ols_simples__{name}"] = modeling.fit_predict_simples(
+        predictions[f"ols_{name}"] = modeling.fit_predict_simples(
             pipe_ols, train, test, x_cols, f"ols_simples__{name}"
         )
-        predictions[f"splines_simples__{name}"] = modeling.fit_predict_simples(
+        predictions[f"spl_{name}"] = modeling.fit_predict_simples(
             pipe_spl, train, test, x_cols, f"splines_simples__{name}"
         )
 
@@ -311,7 +311,7 @@ def filter_models(agg: pd.DataFrame) -> set[str]:
         protocol = row["protocolo"]
         if protocol in baseline_metrics:
             # Se o MAE ou MAPE for pior que a baseline, marca para remoção
-            if row["mape"] > baseline_metrics[protocol]["mape"] or row["mae"] > baseline_metrics[protocol]["mae"]:
+            if row["mape"] > baseline_metrics[protocol]["mape"]:
                 models_to_keep.discard(row["modelo"])
                 
     return models_to_keep
@@ -340,22 +340,22 @@ def main() -> None:
     boot = cluster_bootstrap_error(oof)
     
     # Filtra os modelos com base no desempenho
-    # models_to_keep = filter_models(agg)
-    # agg_f = agg[agg["modelo"].isin(models_to_keep)].copy()
-    # raw_f = raw[raw["modelo"].isin(models_to_keep)].copy()
-    # oof_f = oof[oof["modelo_ml"].isin(models_to_keep)].copy()
-    # boot_f = boot[boot["modelo"].isin(models_to_keep)].copy()
+    models_to_keep = filter_models(agg)
+    agg_f = agg[agg["modelo"].isin(models_to_keep)].copy()
+    raw_f = raw[raw["modelo"].isin(models_to_keep)].copy()
+    oof_f = oof[oof["modelo_ml"].isin(models_to_keep)].copy()
+    boot_f = boot[boot["modelo"].isin(models_to_keep)].copy()
     
     # Salva os resultados
-    agg.to_csv(out_dir / "04_metricas_resumo.csv", index=False)
-    raw.to_csv(out_dir / "04_metricas_folds.csv", index=False)
-    oof.to_csv(out_dir / "04_predicoes_oof.csv", index=False)
-    boot.to_csv(out_dir / "04_bootstrap_ic.csv", index=False)
+    agg_f.to_csv(out_dir / "04_metricas_resumo.csv", index=False)
+    raw_f.to_csv(out_dir / "04_metricas_folds.csv", index=False)
+    oof_f.to_csv(out_dir / "04_predicoes_oof.csv", index=False)
+    boot_f.to_csv(out_dir / "04_bootstrap_ic.csv", index=False)
     (out_dir / "04_equacoes_modelos.txt").write_text("\n".join(sorted(list(set(all_equations)))), encoding="utf-8")
     
     # Cria o JSON de resumo
     summary_json = {
-        "metricas": agg.to_dict(orient="records"),
+        "metricas": agg_f.to_dict(orient="records"),
         "vif_numericos": vif.to_dict(orient="records"),
     }
     (out_dir / "04_resumo.json").write_text(json.dumps(summary_json, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -364,9 +364,9 @@ def main() -> None:
     utils.log("VIF (Numéricos):")
     utils.log(vif.to_string(index=False))
     utils.log("\nMelhores Modelos (Métricas Agregadas):")
-    utils.log(agg.head(10).to_string(index=False))
+    utils.log(agg_f.head(10).to_string(index=False))
     utils.log("\nBootstrap (IC 95% do Erro - GroupKFold):")
-    utils.log(boot.head(10).to_string(index=False))
+    utils.log(boot_f.head(10).to_string(index=False))
     utils.log(f"\nResultados salvos em: {out_dir}")
 
 

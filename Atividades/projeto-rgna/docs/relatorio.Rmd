@@ -175,7 +175,7 @@ tem_boot <- file.exists(path_boot)
 if (tem_boot) boot_04 <- read.csv(path_boot, check.names = FALSE)
 ```
 
-# Anatomia do Alvo e Estabilização de Variância
+# Anatomia da Variável Alvo
 
 O foco principal deste estudo preditivo reside na modelagem do **Mean Absolute Percentage Error (MAPE)** correspondente
 aos cinco modelos empíricos ajustados para a estimativa de emissões de metano entérico em bovinos. É de extrema
@@ -205,7 +205,7 @@ Y^{(\lambda)} = \begin{cases}
 \end{cases}
 $$
 
-## Visualização e Análise do Alvo Original (MAPE)
+## Visualização e Análise do MAPE
 
 A cauda longa à direita fica evidente ao plotarmos o histograma de frequências do MAPE bruto na base de treino:
 
@@ -250,7 +250,7 @@ tab(
 
 ---
 
-## Efeito Estabilizador da Transformação de Box-Cox ($(\lambda \approx 0,343$))
+## Transformação de Box-Cox ($(\lambda \approx 0,343$))
 
 Com a aplicação do parâmetro ótimo encontrado por máxima verossimilhança, a distribuição foi centralizada e a assimetria
 severa foi reduzida a praticamente zero ($(\text{assimetria} \approx -0,05$)), resultando em uma distribuição com
@@ -311,9 +311,9 @@ ggplot(df_modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
   )
 ```
 
-# Estrutura de Variância Hierárquica e Dependência de Grupo
+# Variância Hierárquica e Dependência de Grupo
 
-## O Desafio Metodológico dos Dados Aninhados
+## Avaliação da Estrutura dos Dados
 
 Na modelagem de dados zootécnicos provenientes de consórcios internacionais, um erro frequente é assumir que as
 observações são independentes e identicamente distribuídas ($i.i.d.$). No presente dataset de treino, as $1.115$ linhas
@@ -340,8 +340,6 @@ completamente inéditos.
 Para quantificar estatisticamente a influência do agrupamento dos estudos sobre a variabilidade do erro, realizou-se uma
 Análise de Variância (ANOVA) de um fator, tendo o MAPE bruto como variável dependente e o `Estudo` como fator de
 agrupamento.
-
-Abaixo está o código R injetado para extrair e formatar a tabela clássica de decomposição da Soma de Quadrados:
 
 ```{r calc-anova, include=FALSE}
 # Executa a ANOVA de um fator do MAPE em relação ao Estudo
@@ -395,8 +393,6 @@ Onde:
 * $\hat{\sigma}^2_b$ representa o componente de variância entre estudos;
 * $\hat{\sigma}^2_w$ representa o componente de variância residual dentro dos estudos.
 
-O bloco R abaixo calcula essas estatísticas de forma dinâmica:
-
 ```{r calc-icc, include=FALSE}
 # Extração dos parâmetros da ANOVA
 N_obs <- nrow(df)
@@ -430,7 +426,7 @@ hierárquica dos resíduos e impede o uso de validações cruzadas simples que v
 
 ---
 
-## Desenho do Protocolo de Validação Cruzada
+## Protocolo de Validação Cruzada
 
 Diante desse cenário hierárquico, o script de modelagem em Python (`04_modelagem_validacao.py`) foi travado sob dois
 protocolos de validação cruzada robustos de alta rigidez para garantir que o modelo seja testado em ambientes que imitam
@@ -449,9 +445,9 @@ agrupamento** no iterador da validação cruzada. Ela jamais entra como variáve
 estimadores de regressão, uma vez que estudos futuros no teste lacrado possuirão códigos de identificação inéditos e
 imprevisíveis para o modelo.
 
-# Engenharia de Features e Controle de Colinearidade
+# Engenharia de Features
 
-## Filtros Metodológicos e Eliminação de Redundâncias
+## Eliminação de Redundâncias
 
 Antes de submeter os dados aos estimadores de Machine Learning, as covariáveis contínuas e categóricas do dataset de
 treino passaram por um rigoroso processo de saneamento metodológico na fase de Engenharia de Features (
@@ -509,7 +505,7 @@ tab(
 
 ---
 
-## Diagnóstico e Combate à Multicolinearidade Sistêmica (VIF)
+## Diagnóstico de Multicolinearidade (VIF)
 
 O fator de inflação da variância (**VIF** - *Variance Inflation Factor*) quantifica o grau em que a variância de um
 coeficiente de regressão estimado é inflacionada devido à colinearidade com as demais variáveis independentes do modelo.
@@ -541,14 +537,12 @@ Ao calcular o VIF bruto para os três preditores numéricos concorrentes (`Consu
 Para mitigar esse cenário inflacionado sem perder a informação zootécnica de estrutura corporal do animal, a variável de
 consumo energético (**`Consumo_MS_kg`**) foi mantida no banco físico processado (`03_modelagem.csv`), mas **foi
 explicitamente desativada e mantida fora do estimador linear principal** no script de modelagem em Python (
-`04_modelagem_validacao.py`).
+`04_modelagem_validacao.py`). 
+`NOTE. Ajustar esse trecho, agora estamos rodando o modelo para várias combinações possíveis.`
 
 Dessa forma, os preditores numéricos ativos na regressão de dois estágios resumem-se a **`Peso_Corporal_kg`** e *
 *`Fracao_Perda_A`**. Esse corte reduziu drasticamente o VIF multivariado final para um patamar extremamente seguro e
 estável de **$\approx 1,26$**, blindando os estimadores lineares de desvios inflacionados.
-
-Abaixo está o chunk de R injetado que simula e apresenta o diagnóstico do VIF multivariado antes e depois da intervenção
-metodológica:
 
 ```{r calc-vif}
 # Isola as observações únicas por animal para evitar o efeito pareado das 5 linhas
@@ -601,7 +595,9 @@ tab(
 
 ---
 
-## Interações Categóricas e a Especificação de Nicho
+## Interações Categóricas e a Especificação de Nicho    
+
+Note. RETIREI, mas gostei da discussão
 
 Se o nosso regressor linear dependesse unicamente das variáveis biológicas isoladas (Peso e Fração A), ele teria grande
 dificuldade em capturar o comportamento individual de erro de cada modelo empírico. O modelo de Machine Learning
@@ -635,10 +631,11 @@ geográficos e regionais de dieta e genética locais. Contudo, o seu processamen
    `handle_unknown='ignore'`. Isso garante que, se o modelo for confrontado no fold de teste com um país ausente na
    partição de treino daquele fold específico, a predição prosseguirá de forma robusta, anulando as colunas
    correspondentes sem quebrar o fluxo de execução.
+NOTE. QUAL O IMPACTO DE ENTRAR UM PAIS NOVO E TER A LINHA TODA ZERADA PARA PAIS?
 
-# Estratégia de Modelagem Hierárquica em Dois Estágios
+# Estratégia de Modelagem
 
-## O Princípio "Dividir para Conquistar" (2SLS)
+## "Dividir para Conquistar" (2SLS)
 
 Ao lidar com observações fortemente agrupadas por animais e estudos (conforme provado pelo ICC de $0,539$), um estimador
 linear tradicional que empilhasse todas as $1.115$ linhas de treino falharia de forma grave. Esse modelo trataria o erro
@@ -646,7 +643,7 @@ de um animal submetido a cinco formulações como cinco observações totalmente
 fundamental da independência de resíduos do método dos Mínimos Quadrados Ordinários (OLS).
 
 Para contornar essa barreira sem recorrer a modelos de efeitos mistos extremamente complexos e instáveis de transpor
-para predição puramente Out-of-Sample, o script Python implementa uma elegante **arquitetura de modelagem em dois
+para predição puramente Out-of-Sample, o script Python implementa uma **arquitetura de modelagem em dois
 estágios** baseada na decomposição sequencial do erro ("Dividir para Conquistar"):
 
 ### Estágio 1: Predição do Patamar do Animal
@@ -691,9 +688,9 @@ $$\widehat{\text{MAPE}}_{ij} = \text{inv\_boxcox}(\widehat{Y}_{ij}; \lambda = 0,
 
 ---
 
-## Injeção de Código R: Simulação Conceitual da Partição de Dois Estágios
+## Simulação Conceitual da Partição de Dois Estágios
 
-Para atestar e demonstrar a viabilidade matemática dessa partição hierárquica, o bloco de código R injetado abaixo
+Para demonstrar a viabilidade matemática dessa partição hierárquica, o bloco de código R abaixo
 simula exatamente o ajuste sequencial de ambos os estágios no banco de treino, extraindo os coeficientes de
 determinação ($R^2$) de cada nível:
 
@@ -708,6 +705,7 @@ df_animal <- df_modelagem |>
   dplyr::ungroup()
 
 # Ajuste do Estágio 1: Predição do patamar a partir de variáveis biológicas do animal
+# NOTE. Ajustar colunas
 lm_est1 <- lm(mediana_real_animal ~ Peso_Corporal_kg + Fracao_Perda_A, data = df_animal)
 sum_est1 <- summary(lm_est1)
 
@@ -838,7 +836,7 @@ estágio único:
 tab(
   resumo_04 |>
     dplyr::filter(!stringr::str_detect(modelo, "ridge|lasso|elasticnet")) |>
-    dplyr::arrange(protocolo, mae) |>
+    dplyr::arrange(protocolo, mape) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 3))),
   caption = "Média das métricas entre folds para OLS e Splines (saída de 04_metricas_resumo.csv)."
 )
@@ -903,12 +901,10 @@ A reamostragem foi realizada **no nível do Estudo** (com reposição), preserva
 das observações agrupadas, o que evita a subestimação severa dos erros padrão que ocorreria caso as linhas fossem
 tratadas como independentes.
 
-O bloco de código R abaixo exibe dinamicamente o Intervalo de Confiança de 95% para o erro dos modelos sobreviventes:
-
 ```{r tab-boot, eval=exists("tem_boot") && tem_boot}
 tab(
   boot_04 |>
-    dplyr::filter(!stringr::str_detect(modelo, "ridge|lasso|elasticnet")) |>
+    dplyr::arrange(mape) |> 
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 3))),
   caption = "IC 95% do MAE e do RMSE via bootstrap agrupado por Estudo (OOF do GroupKFold, 1.000 réplicas)."
 )
