@@ -79,6 +79,7 @@ def collect_fold_results(
     tmp["pred"] = pred
     real_win = tmp.loc[tmp.groupby("ID_Observacao")["MAPE"].idxmin(), "Modelo"]
     scores = utils.regression_scores(tmp["MAPE"], pred)
+    # scores["mape"] = utils.mape(tmp["MAPE"], pred)
     scores.update({
         "modelo": name,
         "protocolo": protocol,
@@ -189,6 +190,9 @@ def summarize_results(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Agrega os resultados dos folds."""
     utils.log(f"Agregando resultados dos folds...")
     raw = pd.DataFrame(rows)
+    if raw.empty:
+        cols = ["protocolo", "modelo", "n_folds", "mape", "mae", "rmse", "r2", "top1", "top1_sempre_campeao"]
+        return raw, pd.DataFrame(columns=cols)
     agg = (
         raw.groupby(["protocolo", "modelo"], as_index=False)
         .agg(
@@ -270,23 +274,18 @@ def cluster_bootstrap_error(oof: pd.DataFrame) -> pd.DataFrame:
             mae_b[b] = float(np.mean(np.abs(err)))
             rmse_b[b] = float(np.sqrt(np.mean(err ** 2)))
 
-            denom = np.abs(y_b)
-            rel = np.divide(err, y_b, out=np.zeros_like(err, dtype=float), where=denom > 0)
-            mape_b[b] = float(np.mean(np.abs(rel)))
+            mape_b[b] = utils.mape(y_b, yhat_b)
 
         y_obs = sub["MAPE"].to_numpy(dtype=float)
         yhat_obs = sub["pred"].to_numpy(dtype=float)
         err_obs = y_obs - yhat_obs
-
-        denom_obs = np.abs(y_obs)
-        rel_obs = np.divide(err_obs, y_obs, out=np.zeros_like(err_obs, dtype=float), where=denom_obs > 0)
 
         rows.append({
             "protocolo": "GroupKFold",
             "modelo": name,
             "n_boot": config.N_BOOT,
             "agrupamento": "Estudo",
-            "mape": float(np.mean(np.abs(rel_obs))),
+            "mape": utils.mape(y_obs, yhat_obs),
             "mape_ic95_inf": float(np.quantile(mape_b, 0.025)),
             "mape_ic95_sup": float(np.quantile(mape_b, 0.975)),
             "mae": float(np.mean(np.abs(err_obs))),
@@ -310,7 +309,7 @@ def filter_models(agg: pd.DataFrame) -> set[str]:
     for _, row in agg.iterrows():
         protocol = row["protocolo"]
         if protocol in baseline_metrics:
-            # Se o MAE ou MAPE for pior que a baseline, marca para remoção
+            # Se o MAPE for pior que a baseline, marca para remoção
             if row["mape"] > baseline_metrics[protocol]["mape"]:
                 models_to_keep.discard(row["modelo"])
                 
@@ -334,10 +333,11 @@ def main() -> None:
     rows_l, oof_l, eqs_l = run_loso_paises(df)
     
     raw, agg = summarize_results(rows_g + rows_l)
-    oof = pd.concat([oof_g, oof_l], ignore_index=True)
+    oof_parts = [part for part in [oof_g, oof_l] if not part.empty]
+    oof = pd.concat(oof_parts, ignore_index=True) if oof_parts else pd.DataFrame()
     all_equations = eqs_g + eqs_l
 
-    boot = cluster_bootstrap_error(oof)
+    boot = cluster_bootstrap_error(oof) if not oof.empty else pd.DataFrame()
     
     # Filtra os modelos com base no desempenho
     models_to_keep = filter_models(agg)

@@ -60,13 +60,22 @@ def rmse(y_true, y_pred) -> float:
     return float(np.sqrt(mean_squared_error(y_true, y_pred)))
 
 
+def mape(y_true, y_pred) -> float:
+    """Calcula o MAPE com proteção contra divisão por zero."""
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    denom = np.abs(y_true)
+    rel = np.divide(y_true - y_pred, y_true, out=np.zeros_like(y_true, dtype=float), where=denom > 0)
+    return float(np.mean(np.abs(rel)))
+
+
 def regression_scores(y_true, y_pred) -> dict:
     """Calcula um dicionário de métricas de regressão."""
     return {
         "mae": float(mean_absolute_error(y_true, y_pred)),
         "rmse": rmse(y_true, y_pred),
         "r2": float(r2_score(y_true, y_pred)),
-        "mape": float(np.mean(np.abs((y_true - y_pred) / y_true))),
+        "mape": mape(y_true, y_pred),
     }
 
 
