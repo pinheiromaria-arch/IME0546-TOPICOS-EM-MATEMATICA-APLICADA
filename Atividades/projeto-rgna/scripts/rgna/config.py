@@ -25,6 +25,19 @@ CAT_CANDIDATES = [
     "Modelo",
 ]
 
+map_columns = {
+    "Peso_Corporal_kg": "peso",
+    "Consumo_MS_kg": "consumo",
+    "Fracao_Perda_A": "fracao",
+    "Pais_Estudo": "pais",
+    "Status_Metabolico": "status",
+    "Sexo_Animal": "sexo",
+    "Modelo": "modelo"
+    }
+
 # Configurações de Bootstrap
 N_BOOT = 1000
 BOOT_SEED = 42
+
+# Configurações do filtro de modelos
+TOP_N_MODELOS_POR_PROTOCOLO = 5

@@ -425,16 +425,6 @@ A taxa `Consumo_MS_kg / Peso_Corporal_kg` entra depois como feature zootécnica 
 
 Kruskal–Wallis do MAPE entre status (ignorando o pareamento por modelo): \(p\) = `r fmt_p(kw_status$p.value)`. O nível de erro não é o mesmo nas fases produtivas, mas o que o case pergunta é se o **vencedor** muda.
 
-```{r tab-win-status}
-tab(
-  win_status |>
-    mutate(mediana = fmt_n(mediana, 3), media = fmt_n(media, 3)),
-  col.names = c("Status", "Vencedor (mediana)", "n", "Média", "Mediana"),
-  align = c("l", "l", "r", "r", "r"),
-  caption = "Modelo de menor mediana de MAPE em cada status metabólico."
-)
-```
-
 ```{r tab-status-full}
 tab(
   tab_status |>
@@ -446,22 +436,36 @@ tab(
 )
 ```
 
+```{r tab-win-status}
+tab(
+  win_status |>
+    mutate(mediana = fmt_n(mediana, 3), media = fmt_n(media, 3)),
+  col.names = c("Status", "Vencedor (mediana)", "n", "Média", "Mediana"),
+  align = c("l", "l", "r", "r", "r"),
+  caption = "Modelo de menor mediana de MAPE em cada status metabólico."
+)
+```
 Crescimento (n = `r n_distinct(df$ID_Observacao[df$Status_Metabolico == "Crescimento"])` animais) favorece o **Modelo_3** na mediana. Terminação favorece o **Modelo_4**. “Crescimento e Terminação” e Maturo têm n pequeno (8 e 17 animais): o vencedor local é instável.
 
 ```{r box-status, fig.height=5.2, fig.cap="Distribuição do MAPE por status, um painel por modelo empírico."}
-ggplot(df, aes(x = Status_Metabolico, y = MAPE)) +
+ggplot(df, aes(x = Modelo, y = MAPE)) +
   geom_boxplot(
     fill = fill_soft, color = fill_main, outlier.colour = muted,
     outlier.alpha = 0.4, outlier.size = 0.9, width = 0.55, linewidth = 0.4
   ) +
-  facet_wrap(~Modelo, nrow = 1) +
+  facet_wrap(~Status_Metabolico, nrow = 1) +
   labs(
     title = "MAPE segundo o status metabólico",
     x = NULL,
     y = "MAPE",
     caption = "Fonte: dados_treino.xlsx."
   ) +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+  theme(
+    axis.text.x = element_text(angle = 40, hjust = 1, size = 8),
+    # Adicione estas linhas abaixo no seu theme():
+    panel.border = element_rect(color = "gray70", fill = NA, linetype = "dashed", linewidth = 0.4),
+    panel.spacing = unit(0.8, "lines")
+  )
 ```
 
 ## Sexo
@@ -494,14 +498,31 @@ tab(
 ```
 
 ```{r box-sexo, fig.height=5.2, fig.cap="MAPE por sexo do animal, facetas por modelo empírico."}
-ggplot(df, aes(x = Sexo_Animal, y = MAPE)) +
+ggplot(df, aes(x = Modelo, y = MAPE)) +
   geom_boxplot(
-    fill = fill_soft, color = fill_main, outlier.colour = muted,
-    outlier.alpha = 0.35, outlier.size = 0.9, width = 0.55, linewidth = 0.4
+    fill = fill_soft, 
+    color = fill_main, 
+    outlier.colour = muted,
+    outlier.alpha = 0.35, 
+    outlier.size = 0.9, 
+    width = 0.55, 
+    linewidth = 0.4
   ) +
-  facet_wrap(~Modelo, nrow = 1) +
-  labs(title = "MAPE segundo o sexo", x = NULL, y = "MAPE", caption = "Fonte: dados_treino.xlsx.") +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 8))
+  # Subtituto Sexo_Animal pela coluna do status metabólico do seu dataframe
+  facet_wrap(~Sexo_Animal, nrow = 1) + 
+  labs(
+    title = "MAPE segundo o Sexo do animal", 
+    x = NULL, 
+    y = "MAPE", 
+    caption = "Fonte: dados_treino.xlsx."
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 40, hjust = 1, size = 8),
+    # Desenha a borda/linha vertical tracejada e discreta em cada faceta:
+    panel.border = element_rect(color = "gray70", fill = NA, linetype = "dashed", linewidth = 0.4),
+    panel.spacing = unit(0.8, "lines") # Ajusta a distância entre cada faceta
+  )
 ```
 
 Novilho puxa o **Modelo_5**; Boi, Vaca e Novilha, o **Modelo_4**. Isso reforça a necessidade de interação `Modelo ×` características, e também o risco de overfit se o encoding de sexo for ingênuo nas classes raras.

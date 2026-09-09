@@ -1,2 +1,2 @@
-"n_linhas","n_id","n_estudo","campeao_global","colunas_excluidas","encoding_pais"
-1115,223,93,"Modelo_4","Estudo (só grupo); Sistema_Producao; Fracao_Perda_B","one-hot no script 04, handle_unknown=ignore (não target-encoding)"
+"n_linhas","n_id","n_estudo","campeao_global","lambda_boxcox","colunas_excluidas","info"
+1115,223,93,"Modelo_4",0.3,"Sistema_Producao; Fracao_Perda_B","Estudo usado apenas como grupo de CV. País será one-hot encoded."

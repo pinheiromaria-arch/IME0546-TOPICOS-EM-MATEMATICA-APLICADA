@@ -53,34 +53,38 @@ def generate_feature_sets() -> list[dict]:
 
     for num_cols in num_combinations:
         num_list = list(num_cols)
+        num_names = [config.map_columns.get(c, "-") for c in num_list]
         feature_sets.append(
             {
                 "num": num_list,
                 "cat": [],
                 "x_cols": num_list,
-                "name": f"num({'_'.join(num_list)})_cat(none)",
+                "name": f"({'_'.join(num_names)})",
             }
         )
 
     for cat_cols in cat_combinations:
         cat_list = list(cat_cols)
+        cat_names = [config.map_columns.get(c, "-") for c in cat_list]
         feature_sets.append(
             {
                 "num": [],
                 "cat": cat_list,
                 "x_cols": cat_list,
-                "name": f"num(none)_cat({'_'.join(cat_list)})",
+                "name": f"({'_'.join(cat_names)})",
             }
         )
 
     for num_cols, cat_cols in product(num_combinations, cat_combinations):
         num_list, cat_list = list(num_cols), list(cat_cols)
+        num_names = [config.map_columns.get(c, "-") for c in num_list]
+        cat_names = [config.map_columns.get(c, "-") for c in cat_list]
         feature_sets.append(
             {
                 "num": num_list,
                 "cat": cat_list,
                 "x_cols": num_list + cat_list,
-                "name": f"num({'_'.join(num_list)})__cat({'_'.join(cat_list)})",
+                "name": f"({'_'.join(num_names)})_({'_'.join(cat_names)})",
             }
         )
     return feature_sets
@@ -119,36 +123,40 @@ def run_all_models_for_fold(
     """
     predictions = {"baseline_mediana_modelo": (baseline_predict(train, test), [])}
     feature_sets = generate_feature_sets()
+    weight_feature = "Peso_Corporal_kg"
 
     for fset in feature_sets:
         num, cat, x_cols, name = fset["num"], fset["cat"], fset["x_cols"], fset["name"]
+        has_weight = weight_feature in x_cols
 
         # Define os pipelines
         pipe_ols = pipelines.ols_pipeline(num, cat)
-        pipe_spl = pipelines.spline_pipeline(num, cat)
+        pipe_spl = pipelines.spline_pipeline(num, cat) if has_weight else None
         allow_2sls = "Modelo" in x_cols
 
         # Executa os modelos e coleta predições/equações
         if allow_2sls:
-            model_key = f"ols_2sls_{name}"
+            model_key = f"ols_2s_{name}"
             predictions[model_key] = modeling.fit_predict_2sls(
                 pipe_ols, train, test, x_cols, num, cat, model_key
             )
 
-            model_key = f"spl_2sls_{name}"
-            predictions[model_key] = modeling.fit_predict_2sls(
-                pipe_spl, train, test, x_cols, num, cat, model_key
-            )
+            if has_weight and pipe_spl is not None:
+                model_key = f"spl_2s_{name}"
+                predictions[model_key] = modeling.fit_predict_2sls(
+                    pipe_spl, train, test, x_cols, num, cat, model_key
+                )
 
         model_key = f"ols_{name}"
         predictions[model_key] = modeling.fit_predict_simples(
             pipe_ols, train, test, x_cols, model_key
         )
 
-        model_key = f"spl_{name}"
-        predictions[model_key] = modeling.fit_predict_simples(
-            pipe_spl, train, test, x_cols, model_key
-        )
+        if has_weight and pipe_spl is not None:
+            model_key = f"spl_{name}"
+            predictions[model_key] = modeling.fit_predict_simples(
+                pipe_spl, train, test, x_cols, model_key
+            )
 
     return predictions
 
@@ -350,12 +358,33 @@ def filter_models(agg: pd.DataFrame) -> set[str]:
                 continue
             if (
                 row["mape"] > baseline_metrics[protocol]["mape"]
-                and row["mae"] > baseline_metrics[protocol]["mae"]
-                and row["rmse"] > baseline_metrics[protocol]["rmse"]
+                # and row["mae"] > baseline_metrics[protocol]["mae"]
+                # and row["rmse"] > baseline_metrics[protocol]["rmse"]
             ):
                 models_to_keep.discard(row["modelo"])
                 
     return models_to_keep
+
+
+def top_models_union_after_median_filter(agg: pd.DataFrame) -> set[str]:
+    """
+    Retorna a união dos top-N modelos de LOSO e GroupKFold após o filtro por baseline.
+
+    O N é parametrizado por config.TOP_N_MODELOS_POR_PROTOCOLO.
+    """
+    n_top = int(getattr(config, "TOP_N_MODELOS_POR_PROTOCOLO", 5))
+    if n_top <= 0 or agg.empty:
+        return set()
+
+    selected: set[str] = set()
+    for protocolo in ("LOSO_paises_case", "GroupKFold"):
+        top = (
+            agg[agg["protocolo"] == protocolo]
+            .sort_values(["mape", "mae", "rmse", "modelo"], ascending=[True, True, True, True])
+            .head(n_top)
+        )
+        selected.update(top["modelo"].tolist())
+    return selected
 
 
 def main() -> None:
@@ -389,6 +418,12 @@ def main() -> None:
         keep_mask |= agg["protocolo"].eq(protocol) & agg["modelo"].isin(models_to_keep)
 
     agg_f = agg[keep_mask].copy()
+
+    # Segundo filtro: mantém apenas a união dos top-N de LOSO e top-N de GroupKFold.
+    top_union_models = top_models_union_after_median_filter(agg_f)
+    if top_union_models:
+        agg_f = agg_f[agg_f["modelo"].isin(top_union_models)].copy()
+
     raw_f = raw.merge(agg_f[["protocolo", "modelo"]].drop_duplicates(), on=["protocolo", "modelo"], how="inner")
     keep_pairs = agg_f[["protocolo", "modelo"]].drop_duplicates()
     oof_f = oof.merge(keep_pairs, left_on=["protocolo", "modelo_ml"], right_on=["protocolo", "modelo"], how="inner")

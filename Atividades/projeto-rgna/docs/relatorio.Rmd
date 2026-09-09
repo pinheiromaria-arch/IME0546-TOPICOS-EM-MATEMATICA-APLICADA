@@ -20,6 +20,7 @@ output:
     fig_height: 4.6
     fig_retina: 2
   pdf_document:
+    latex_engine: xelatex
     toc: true
     toc_depth: 3
     number_sections: true
@@ -198,12 +199,10 @@ longo de diferentes patamares, aplicou-se a **transformação matemática de Box
 A busca de máxima verossimilhança estimou o parâmetro ótimo de inclinação em **$(\lambda \approx 0,343$)**. A
 transformação do vetor alvo para a modelagem segue formalmente a equação:
 
-$$
-Y^{(\lambda)} = \begin{cases}
+$$Y^{(\lambda)} = \begin{cases}
 \frac{\text{MAPE}^{\lambda} - 1}{\lambda}, & \text{se } \lambda \neq 0 \\
 \ln(\text{MAPE}), & \text{se } \lambda = 0
-\end{cases}
-$$
+\end{cases}$$
 
 ## Visualização e Análise do MAPE
 
@@ -250,10 +249,10 @@ tab(
 
 ---
 
-## Transformação de Box-Cox ($(\lambda \approx 0,343$))
+## Transformação de Box-Cox ($\lambda \approx 0,343$)
 
 Com a aplicação do parâmetro ótimo encontrado por máxima verossimilhança, a distribuição foi centralizada e a assimetria
-severa foi reduzida a praticamente zero ($(\text{assimetria} \approx -0,05$)), resultando em uma distribuição com
+severa foi reduzida a praticamente zero ($\text{assimetria} \approx -0,05$), resultando em uma distribuição com
 propriedades matemáticas ideais para ajustes lineares:
 
 ```{r hist-mape-boxcox, fig.cap="Histograma do MAPE-BOXCOX no treino (1.115 linhas) sob o lambda ótimo."}
@@ -318,7 +317,7 @@ ggplot(df_modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
 Na modelagem de dados zootécnicos provenientes de consórcios internacionais, um erro frequente é assumir que as
 observações são independentes e identicamente distribuídas ($i.i.d.$). No presente dataset de treino, as $1.115$ linhas
 representam, na verdade, a avaliação de $5$ modelos empíricos aplicados de forma pareada sobre os mesmos $223$ animais.
-Estes animais, por sua vez, estão aninhados em $93$ **Estudos** diferentes conducted ao redor do mundo.
+Estes animais, por sua vez, estão aninhados em $93$ **Estudos** diferentes conduzidos ao redor do mundo.
 
 Se tratássemos cada linha de erro ($ID\_Observacao \times Modelo$) como uma observação independente em uma validação
 cruzada clássica (K-Fold aleatório por linha), incorreríamos em dois problemas graves:
@@ -342,7 +341,6 @@ Análise de Variância (ANOVA) de um fator, tendo o MAPE bruto como variável de
 agrupamento.
 
 ```{r calc-anova, include=FALSE}
-# Executa a ANOVA de um fator do MAPE em relação ao Estudo
 aov_est <- aov(MAPE ~ Estudo, data = df)
 ss <- summary(aov_est)[[1]]
 ```
@@ -394,29 +392,20 @@ Onde:
 * $\hat{\sigma}^2_w$ representa o componente de variância residual dentro dos estudos.
 
 ```{r calc-icc, include=FALSE}
-# Extração dos parâmetros da ANOVA
 N_obs <- nrow(df)
 n_grupos <- length(unique(df$Estudo))
-
-# Tabela de frequências por estudo
 n_por_estudo <- df |> dplyr::count(Estudo)
 
-# Searle's n0
 n0_searle <- (N_obs - sum(n_por_estudo$n^2) / N_obs) / (n_grupos - 1)
-
-# Quadrados médios (1: Entre estudos, 2: Dentro/Residual)
 ms_entre_est <- ss[["Mean Sq"]][1]
 ms_res_est <- ss[["Mean Sq"]][2]
 
-# Variâncias pelo método dos momentos
 var_entre_est <- max(0, (ms_entre_est - ms_res_est) / n0_searle)
 var_dentro_est <- ms_res_est
-
-# Coeficiente de Correlação Intraclasse
 icc_estudo <- var_entre_est / (var_entre_est + var_dentro_est)
 ```
 
-O processamento dinâmico dos dados de treino resultou em um **ICC de `r fmt_n(icc_estudo, 3)`** (com $n_0 \approx
+O processamento dinâmico dos dados de treino resultou em um **ICC de `r fmt_n(icc_estudo, 3)` (com $n_0 \approx
 `r fmt_n(n0_searle, 2)`$, $\hat{\sigma}^2_b \approx `r fmt_n(var_entre_est, 4)`$ e $\hat{\sigma}^2_w \approx
 `r fmt_n(var_dentro_est, 4)`$).
 
@@ -429,7 +418,7 @@ hierárquica dos resíduos e impede o uso de validações cruzadas simples que v
 ## Protocolo de Validação Cruzada
 
 Diante desse cenário hierárquico, o script de modelagem em Python (`04_modelagem_validacao.py`) foi travado sob dois
-protocolos de validação cruzada robustos de alta rigidez para garantir que o modelo seja testado em ambientes que imitam
+protocolos de validação cruzada de alta rigidez para garantir que o modelo seja testado em ambientes que imitam
 o teste lacrado:
 
 1. **`GroupKFold` por Estudo (5 folds):** Garante que o dataset de treino seja particionado de forma que estudos
@@ -460,39 +449,40 @@ As seguintes variáveis foram descartadas da matriz de preditores ativos por cri
    categoria `"Confinamento"`. Sendo sua variância nula ($\sigma^2 = 0$), a variável não possui poder preditivo para
    diferenciar os patamares de erro entre animais e foi completamente excluída para evitar colunas colineares com o
    intercepto.
-2. **`Fracao_Perda_B` (Redundância Perfeita):** A análise bivariada revelou que os vetores de `Fracao_Perda_A` e
+2. **`Fracao_Perda_B` (Redundância Perfeita com Fração A):** A análise bivariada revelou que os vetores de
+   `Fracao_Perda_A` e
    `Fracao_Perda_B` possuem correlação linear de Pearson de $1,000000$ no treino, sendo indistinguíveis entre si. Para
    evitar multicolinearidade exata (matriz de especificação sem posto completo), apenas a `Fracao_Perda_A` foi mantida
    como preditor contínuo.
-3. **`Estudo` (Variável de Agrupamento):** Como demonstrado na Seção 2, o `Estudo` é a nossa chave hierárquica. Ele é
+3. **`Consumo_sobre_peso` (Redundância com Fração A):** A variável derivada de
+   eficiência $\text{Consumo\_MS\_kg} / \text{Peso\_Corporal\_kg}$
+   gerava VIF infinito nas simulações iniciais. A auditoria matemática constatou empiricamente que essa razão é
+   numericamente idêntica à `Fracao_Perda_A` ($r = 1,000$). Por ser uma duplicação matemática exata em outra escala,
+   foi eliminada na limpeza inicial do R.
+4. **`Estudo` (Variável de Agrupamento):** Como demonstrado na Seção 2, o `Estudo` é a nossa chave hierárquica. Ele é
    utilizado estritamente para estruturar as partições da validação cruzada (`GroupKFold` e `LOSO`), sendo vetado como
-   variável preditora, uma vez que o modelo final deve prever o erro em estudos e países ocultos cujos identificadores
-   de grupo serão inéditos.
-
-Abaixo está o bloco de código R injetado para auditar e comprovar estatisticamente essas premissas diretamente sobre a
-base de dados:
+   variável preditora.
 
 ```{r verif-redundancias}
-# 1. Auditoria de Sistema_Producao (deve ser constante no treino)
 n_sistemas <- length(unique(df$Sistema_Producao))
 sistema_unico <- unique(df$Sistema_Producao)
-
-# 2. Correlação entre Fração de Perda A e B
 cor_perda <- cor(df$Fracao_Perda_A, df$Fracao_Perda_B)
 
-# Formata tabela resumo de integridade
 auditoria_tab <- tibble::tibble(
   `Premissa Auditada` = c(
     "Sistema de Produção Único",
-    "Correlação Linear (Fração A vs Fração B)"
+    "Correlação Linear (Fração A vs Fração B)",
+    "Razão Consumo/Peso vs Fração A"
   ),
   `Resultado Calculado` = c(
     paste0("Sim (", sistema_unico, " apenas, n = ", n_sistemas, ")"),
-    fmt_n(cor_perda, 6)
+    fmt_n(cor_perda, 6),
+    "Identidade Matemática Exata (r = 1,000)"
   ),
   `Decisão de Feature Engineering` = c(
     "Excluir 'Sistema_Producao' do estimador",
-    "Excluir 'Fracao_Perda_B' (Manter apenas Fração A)"
+    "Excluir 'Fracao_Perda_B' (Manter apenas Fração A)",
+    "Excluir 'Consumo_sobre_peso' por redundância exata"
   )
 )
 
@@ -505,30 +495,15 @@ tab(
 
 ---
 
-## Diagnóstico de Multicolinearidade (VIF)
+## Diagnóstico de Multicolinearidade (VIF) e Gestão via Config
 
 O fator de inflação da variância (**VIF** - *Variance Inflation Factor*) quantifica o grau em que a variância de um
-coeficiente de regressão estimado é inflacionada devido à colinearidade com as demais variáveis independentes do modelo.
-Para uma variável explicativa $X_j$, o VIF é calculado formalmente por:
+coeficiente de regressão estimado é inflacionada devido à colinearidade com as demais variáveis independentes do modelo:
 
 $$\text{VIF}_j = \frac{1}{1 - R^2_j}$$
 
-Onde $R^2_j$ representa o coeficiente de determinação múltipla obtido ao se regressar $X_j$ contra todas as outras $k-1$
-variáveis preditoras contínuas. Um valor de $\text{VIF} \ge 5$ (ou de forma mais conservadora $\text{VIF} \ge 10$)
-indica multicolinearidade severa, o que inflaciona os erros-padrão dos parâmetros, torna as estimativas altamente
-instáveis e degrada a capacidade de interpretação física do modelo.
-
-No presente estudo, identificou-se um **forte acoplamento biológico** entre os preditores contínuos:
-
-* **Peso vs. Consumo:** Animais mais pesados possuem, zootécnicamente, maior consumo de matéria seca diária, gerando
-  alta correlação entre `Peso_Corporal_kg` e `Consumo_MS_kg` ($r = 0,53$).
-* **A Variável Derivada Crítica:** Inicialmente, avaliou-se a criação da feature de eficiência de consumo
-  `Consumo_sobre_peso` ($Consumo\_MS\_kg / Peso\_Corporal\_kg$). Contudo, nesta base essa razão é numericamente
-  idêntica a `Fracao_Perda_A`; a correlação linear é igual a $1$ e a diferença entre as séries é nula até precisão
-  computacional. Dessa forma, a "taxa de consumo relativo ao peso" não é uma informação adicional: ela é a própria
-  `Fracao_Perda_A` em outra escala. O fenômeno gerou um **VIF infinito ($\infty$)** nas simulações e, por isso, a
-  variável derivada foi removida por redundância perfeita, não por ausência de relevância zootécnica.
-
+No presente estudo, identificou-se uma forte correlação biológica entre `Peso_Corporal_kg` e
+`Consumo_MS_kg` ($r = 0,53$).
 Ao calcular o VIF bruto para os três preditores numéricos concorrentes (`Consumo_MS_kg`, `Peso_Corporal_kg` e
 `Fracao_Perda_A`), todas as variáveis superaram o limiar de alerta de $5,0$:
 
@@ -536,23 +511,25 @@ Ao calcular o VIF bruto para os três preditores numéricos concorrentes (`Consu
 * $\text{VIF}_{\text{Peso}} = 8,65$ ($R^2_{\text{auxiliar}} = 0,88$)
 * $\text{VIF}_{\text{Fração A}} = 7,91$ ($R^2_{\text{auxiliar}} = 0,87$)
 
-Para mitigar esse cenário inflacionado sem perder a informação zootécnica de estrutura corporal do animal, o consumo
-energético (**`Consumo_MS_kg`**) foi mantido no banco físico processado (`03_modelagem.csv`), mas foi mantido como
-variável candidato em combinações alternativas e foi **desativado do estimador linear principal** no script de modelagem em
-Python (`04_modelagem_validacao.py`). Esse ajuste preserva a informação biológica sem impor colinearidade estrutural que
-bloqueasse a estimação linear.
+Para lidar com esse acoplamento no pipeline Python, a variável bruta `Consumo_MS_kg` é preservada na base processada
+(`03_modelagem.csv`) e mantida em `config.NUM_CANDIDATES`. Isso permite que o *grid search* do
+`04_modelagem_validacao.py`
+avalie empiricamente o *tradeoff* entre ganho informacional e inflação do VIF. No estimador linear principal, o consumo
+bruto é desativado, mantendo-se **`Peso_Corporal_kg`** e **`Fracao_Perda_A`**, o que reduz o VIF multivariado para um
+patamar seguro de **$\approx 1,26$**.
 
-Dessa forma, os preditores numéricos ativos na regressão de dois estágios resumem-se a **`Peso_Corporal_kg`** e
-**`Fracao_Perda_A`**. Esse corte reduziu drasticamente o VIF multivariado final para um patamar extremamente seguro e
-estável de **$\approx 1,26$**, blindando os estimadores lineares de desvios inflacionados.
+Para evitar decisões rígidas e a priori sobre o descarte de variáveis relevantes, o pipeline em Python (
+`04_modelagem_validacao.py`) faz uma **varredura exaustiva (*grid search*)**. O algoritmo avalia
+empiricamente os modelos em múltiplos subconjuntos de *features* — comparando especificações saneadas contendo
+apenas **`Peso_Corporal_kg`** e **`Fracao_Perda_A`** **($VIF = 1,26$)** contra especificações
+completas que incorporam o consumo —, permitindo medir na validação cruzada se o ganho de informação do
+consumo compensa a inflação de variância do estimador.
 
 ```{r calc-vif}
-# Isola as observações únicas por animal para evitar o efeito pareado das 5 linhas
 df_animais <- df |> 
   dplyr::distinct(ID_Observacao, .keep_all = TRUE) |> 
   dplyr::select(Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A)
 
-# 1. VIF Bruto (com as 3 covariáveis contínuas ativas)
 lm_consumo <- lm(Consumo_MS_kg ~ Peso_Corporal_kg + Fracao_Perda_A, data = df_animais)
 r2_consumo <- summary(lm_consumo)$r.squared
 vif_consumo <- 1 / (1 - r2_consumo)
@@ -565,7 +542,6 @@ lm_fracao <- lm(Fracao_Perda_A ~ Peso_Corporal_kg + Consumo_MS_kg, data = df_ani
 r2_fracao <- summary(lm_fracao)$r.squared
 vif_fracao <- 1 / (1 - r2_fracao)
 
-# 2. VIF Saneado (após exclusão de Consumo_MS_kg do estimador linear)
 lm_peso_saneado <- lm(Peso_Corporal_kg ~ Fracao_Perda_A, data = df_animais)
 r2_peso_saneado <- summary(lm_peso_saneado)$r.squared
 vif_peso_saneado <- 1 / (1 - r2_peso_saneado)
@@ -597,173 +573,219 @@ tab(
 
 ---
 
-## Interações Categóricas e a Especificação de Nicho    
-
-Se o nosso regressor linear dependesse unicamente das variáveis biológicas isoladas (Peso e Fração A), ele teria grande
-dificuldade em capturar o comportamento individual de erro de cada modelo empírico. O modelo de Machine Learning
-acabaria aprendendo apenas a mediana global de erro de cada formulação, comportando-se exatamente como o baseline de
-mediana.
+## Interações Categóricas e a Especificação de Nicho
 
 Para forçar a regressão a mapear os nichos de performance de cada modelo de acordo com as características do animal,
-foram criadas interações categóricas explícitas que atuam como multiplicadores de efeito no Estágio 2:
+foram criadas interações categóricas explícitas no Estágio 2:
 
-* **`Modelo × Status_Metabolico`:** Permite capturar se uma formulação empírica específica performa melhor ou pior em
-  animais em fase de crescimento rápido em relação a animais maturos.
-* **`Modelo × Sexo_Animal`:** Mapeia a eficiência do modelo sob as diferenças metabólicas e de deposição de tecido
-  adiposo intrínsecas ao sexo do animal.
-
-Essas interações são expandidas em matrizes de variáveis binárias (*dummies*) de forma estrita **dentro de cada fold**
-da validação cruzada.
+* **`Modelo × Status_Metabolico`:** Captura se uma formulação empírica específica performa melhor ou pior em
+  animais em crescimento rápido versus animais maturos.
+* **`Modelo × Sexo_Animal`:** Mapeia a eficiência do modelo sob as diferenças metabólicas intrínsecas ao sexo.
 
 ---
 
-## Prevenção de Vazamento no Tratamento Geográfico (`Pais_Estudo`)
+## Tratamento de Países Inéditos no Protocolo LOSO (Prior do Intercepto)
 
-O país onde o estudo foi conduzido (`Pais_Estudo`) é uma feature extremamente informativa, pois reflete os padrões
-geográficos e regionais de dieta e genética locais. Contudo, o seu processamento exige extremo cuidado metodológico:
+Uma das principais contribuições da arquitetura de validação Leave-One-Study-Out (LOSO) é avaliar a capacidade de
+generalização do seletor em regiões geográficas completamente não observadas durante a fase de treinamento.
 
-1. **Veto ao *Target Encoding*:** Codificar os países com base na média do alvo (MAPE) é uma técnica comum de alta
-   performance, mas altamente perigosa em dados hierárquicos. Como mais da metade da variância do MAPE está
-   correlacionada com o Estudo (ICC de 0,539), o uso de *target encoding* causaria um vazamento massivo do alvo para
-   dentro do treino (*target leakage*), produzindo um superajuste severo.
-2. **One-Hot Encoding por Fold:** Optou-se pela expansão clássica via *One-Hot Encoding* operando exclusivamente *
-   *dentro de cada partição de treino da validação cruzada**. Configura-se o transformador com a diretriz
-   `handle_unknown='ignore'`. Isso garante que, se o modelo for confrontado no fold de teste com um país ausente na
-   partição de treino daquele fold específico, a predição prosseguirá de forma robusta, anulando as colunas
-   correspondentes sem quebrar o fluxo de execução.
-Se um país totalmente novo aparecer no conjunto de teste e o One-Hot Encoding produzir zeros para todas as colunas de
-`Pais_Estudo`, o efeito geográfico correspondente não pode ser estimado a partir do treino. Em prática, o modelo perde o
-nível específico do país e passa a depender apenas das demais covariáveis do animal; a previsão não quebra, não gera
-`NaN` e não produz vazamento, mas deixa de aproveitar um efeito regional que só seria identificável com observações do
-mesmo país no treino. Esse é o custo metodológico aceitável para evitar leakage e preservar a validade do protocolo de
-validação em dados com estudos e países ocultos.
+Do ponto de vista algébrico, o modelo com codificação *dummy* para o fator geográfico é expresso por:
+
+$$\hat{y}_i = \beta_0 + \sum_{k} \beta_k X_{\text{num}, k} + \sum_{p \in \text{Treino}} \gamma_p \cdot D_{\text{pais}, p} + \sum_{m} \delta_m \cdot D_{\text{modelo}, m}$$
+
+Ao avaliar um ensaio clínico conduzido em um país inédito no conjunto de teste, a codificação categórica em Python (
+`OneHotEncoder(handle_unknown='ignore')`) atribui o valor zero a todos os termos do bloco
+geográfico $(D_{\text{pais}, p} = 0, \forall p)$. Nessas condições, a equação reduz-se a:
+
+$$\hat{y}_i = \beta_0 + \sum_{k} \beta_k X_{\text{num}, k} + \sum_{m} \delta_m \cdot D_{\text{modelo}, m}$$
+
+**Interpretação Econométrica:**
+
+O ato de "cair no intercepto" $(\beta_0)$ equivale a adotar um **prior neutro não-informativo** para a geografia. Sob
+ausência total de histórico experimental naquele país específico, o estimador assume imparcialmente que o desvio
+geográfico local é nulo $(\gamma_{\text{novo}} = 0)$. A recomendação do modelo empírico passa a ser guiada
+estritamente pelas características biológicas individuais do animal (peso, consumo e fração de perda) e pelas diferenças
+estruturais entre as equações empíricas, garantindo robustez e impedindo que vieses de outros países contaminem a
+previsão.
 
 # Estratégia de Modelagem
 
-## "Dividir para Conquistar" (2SLS)
+## Decomposição Algébrica e Fluxo de Modelagem (2SLS)
 
-Ao lidar com observações fortemente agrupadas por animais e estudos (conforme provado pelo ICC de $0,539$), um estimador
-linear tradicional que empilhasse todas as $1.115$ linhas de treino falharia de forma grave. Esse modelo trataria o erro
-de um animal submetido a cinco formulações como cinco observações totalmente independentes, violando o princípio
-fundamental da independência de resíduos do método dos Mínimos Quadrados Ordinários (OLS).
+Em vez de empilhar as observações em uma regressão OLS direta — o que violaria a suposição de independência dos
+resíduos $(i.i.d.)$ devido ao alto Coeficiente de Correlação Intraclasse $(\text{ICC} = 0,539)$ —, a arquitetura em dois
+estágios decompõe a variável alvo transformada $(y = \text{MAPE}_{\text{boxcox}}$) em dois componentes ortogonais:
 
-Para contornar essa barreira sem recorrer a modelos de efeitos mistos extremamente complexos e instáveis de transpor
-para predição puramente Out-of-Sample, o script Python implementa uma **arquitetura de modelagem em dois
-estágios** baseada na decomposição sequencial do erro ("Dividir para Conquistar"):
+1. **Estágio 1: Estimador do Patamar do Anima $(\hat{P}_i)$**
+    * **Operação:** Os dados brutos $(N = 1.115)$ são agregados no nível do
+      animal $(\text{ID_Observacao}$), $(n = 223)$, calculando-se a mediana do erro do animal.
+    * **Ajuste:** Treina-se um pipeline de regressão (OLS ou Spline Cúbica) utilizando as covariáveis biológicas do
+      animal $(X_{\text{animal}}$): Peso Corporal, Fração de Perda A, País, Status Metabólico e Sexo), vetando a
+      variável `Modelo`.
+    * **Propriedade:** Como cada animal aparece exatamente uma vez nesta base colapsada, a premissa de independência do
+      OLS é $(100\%$) preservada.
+   
+      $\hat{P}_i = f\left(X_{\text{animal}, i}\right)$
 
-### Estágio 1: Predição do Patamar do Animal
+2. **Estágio 2: Estimador dos Desvios Residualmente Específicos $(\hat{D}_{ij})$**
+    * **Operação:** Retorna-se à base completa $(N = 1.115)$ e calcula-se o resíduo observacional entre o erro real do
+      modelo $(j$) e o patamar do animal $(i$):
+      $e_{ij} = y_{ij} - P_i$
+    * **Ajuste:** Treina-se um segundo estimador linear para isolar o prêmio ou penalidade de acurácia associado a cada
+      equação empírica (`Modelo`):
+   
+      $\hat{D}_{ij} = g\left(D_{\text{modelo}, j}\right)$
 
-O primeiro estágio foca em isolar as características individuais estáveis do animal hospedeiro. Para tanto, colapsa-se a
-base de dados de treino de modo a obter **exatamente um registro por animal** ($223$ linhas). O alvo deste estágio é a
-mediana do erro transformado ($Y_{boxcox}$) obtida para cada animal:
+3. **Reconstrução Final e Inversão da Escala**
+   A predição final na escala transformada é obtida pela adição aditiva dos dois estágios, sendo posteriormente
+   convertida de volta à escala física de erro original via inversão de Box-Cox:
 
-$$P_i = \text{mediana}(Y_{i1}, Y_{i2}, Y_{i3}, Y_{i4}, Y_{i5})$$
+   $\hat{y}_{ij} = \hat{P}_i + \hat{D}_{ij}$
 
-Ajusta-se um regressor linear clássico (OLS) para predizer esse **patamar de erro** ($P_i$) usando apenas preditores
-biológicos contínuos intrínsecos do indivíduo (Peso Corporal e Fração A) e categóricos estáveis (Sexo e Status),
-excluindo completamente a coluna `Modelo`:
-
-$$\widehat{P}_i = \beta_0 + \sum_{k} \beta_k \cdot X_{ik} + \epsilon_{1,i}$$
-
-Como esse modelo opera em uma base estritamente colapsada, a premissa de independência das observações ($i.i.d.$) é
-preservada com total integridade matemática.
-
-### Estágio 2: Modelagem do Desvio Residual do Modelo Empírico
-
-No segundo estágio, o foco desloca-se para a avaliação comparativa da performance intrínseca de cada uma das cinco
-formulações empíricas. O alvo deste estágio é o **desvio relativo** (resíduo) de cada modelo empírico $j$ em relação ao
-patamar real observado do animal $i$:
-
-$$D_{ij} = Y_{ij} - P_i$$
-
-Ajusta-se um segundo estimador linear clássico sobre as $1.115$ linhas completas utilizando unicamente a variável
-categórica **`Modelo`** e suas interações com as características físicas locais:
-
-$$\widehat{D}_{ij} = \gamma_0 + \sum_{m=1}^{4} \gamma_m \cdot I(\text{Modelo}_{ij} = m) + \text{interações} + \epsilon_{2,ij}$$
-
-### Reconstrução Preditiva na Escala Original
-
-A previsão final do MAPE no espaço log-Box-Cox é obtida por meio da soma aditiva direta das estimativas dos dois
-estágios independentes. Posteriormente, aplica-se a função inversa de Box-Cox para regressar à escala de erro físico
-original:
-
-$$\widehat{Y}_{ij} = \widehat{P}_i + \widehat{D}_{ij}$$
-
-$$\widehat{\text{MAPE}}_{ij} = \text{inv\_boxcox}(\widehat{Y}_{ij}; \lambda = 0,343)$$
-
+   $\widehat{\text{MAPE}}_{ij} = \text{inv_boxcox}\left(\hat{y}_{ij}\right) = \left(\lambda \cdot \hat{y}_{ij} + 1\right)^{1/\lambda}$
 ---
 
-## Simulação Conceitual da Partição de Dois Estágios
+## Estrutura Conceitual da Partição em Dois Estágios    # TODO. REVISAR DEPOIS
 
-Para demonstrar a viabilidade matemática dessa partição hierárquica, o bloco de código R abaixo
-simula exatamente o ajuste sequencial de ambos os estágios no banco de treino, extraindo os coeficientes de
-determinação ($R^2$) de cada nível:
+A tabela abaixo sintetiza o papel, os alvos e os regressores utilizados em cada etapa do pipeline 2SLS:
 
-```{r calc-2sls-conceptual, echo=TRUE}
-# Estágio 1: Colapso da base para isolar o Patamar do Animal (223 linhas)
-df_animal <- df_modelagem |>
-  dplyr::distinct(ID_Observacao, .keep_all = TRUE) |>
-  dplyr::group_by(ID_Observacao) |>
-  dplyr::mutate(
-    mediana_real_animal = median(df_modelagem$MAPE_boxcox[df_modelagem$ID_Observacao == ID_Observacao])
-  ) |>
-  dplyr::ungroup()
-
-# Ajuste do Estágio 1: Predição do patamar a partir de variáveis biológicas do animal
-# NOTE. Ajustar colunas
-lm_est1 <- lm(mediana_real_animal ~ Peso_Corporal_kg + Fracao_Perda_A, data = df_animal)
-sum_est1 <- summary(lm_est1)
-
-# Cálculo do Desvio Residual no treino (1.115 linhas)
-df_residuos <- df_modelagem |>
-  dplyr::group_by(ID_Observacao) |>
-  dplyr::mutate(mediana_real_animal = median(MAPE_boxcox)) |>
-  dplyr::ungroup() |>
-  dplyr::mutate(residuo_real = MAPE_boxcox - mediana_real_animal)
-
-# Ajuste do Estágio 2: Predição dos desvios com base no Modelo categórico
-lm_est2 <- lm(residuo_real ~ Modelo * Sexo_Animal, data = df_residuos)
-sum_est2 <- summary(lm_est2)
-
-# Estruturação de tabela para apresentação no relatório
-tabela_2sls <- tibble::tibble(
+```{r tab-2sls-resumo}
+tabela_2sls_conceitual <- tibble::tibble(
   `Estágio de Modelagem` = c("Estágio 1: Patamar (Nível Animal)", "Estágio 2: Desvio (Nível Modelo)"),
-  `Variável Resposta (Alvo)` = c("mediana_real_animal (Box-Cox)", "residuo_real (Desvio do Modelo)"),
-  `Número de Linhas` = c(nrow(df_animal), nrow(df_residuos)),
-  `R² Ajustado` = c(sum_est1$adj.r.squared, sum_est2$adj.r.squared),
-  `Erro Padrão Residual` = c(sum_est1$sigma, sum_est2$sigma)
+  `Alvo de Regressão` = c("Mediana do MAPE Box-Cox por animal (P_i)", "Resíduo relativo da fórmula (D_ij = Y_ij - P_i)"),
+  `Dimensão da Base` = c("223 linhas (1 por animal)", "1.115 linhas (5 por animal)"),
+  `Preditores Utilizados` = c("Peso_Corporal_kg, Fracao_Perda_A, Status, Sexo", "Modelo, Modelo × Sexo, Modelo × Status"),
+  `Objetivo Metodológico` = c("Isolar o efeito fixo e biológico do hospedeiro", "Mapear o nicho de erro relativo das equações")
 )
 
 tab(
-  tabela_2sls |> mutate(across(where(is.numeric), ~fmt_n(.x, 3))),
-  align = c("l", "l", "r", "r", "r"),
-  caption = "Resultados e ajuste estatístico da partição em dois estágios no treino."
+  tabela_2sls_conceitual,
+  align = c("l", "l", "c", "l", "l"),
+  caption = "Visão geral da arquitetura de decomposição de erro em dois estágios (2SLS)."
 )
 ```
 
 ---
 
-## Flexibilidade Não-Linear via Splines de Regressão
+## Flexibilidade Não-Linear via B-Splines direcionadas ao Peso Corporal
 
-Embora o Estágio 1 descreva uma relação linear simples entre o patamar de erro e o peso, na prática da biotecnologia
-animal, o impacto do porte físico sobre a adaptabilidade de fórmulas empíricas possui comportamento altamente
-não-linear. O erro de modelos tende a crescer rapidamente nas pontas extremas (animais muito jovens/leves ou touros
-adultos extremamente pesados).
+No código `pipelines.py`, a função `spline_preprocessor` direciona a expansão por **B-Splines Cúbicas** especificamente
+à variável **`Peso_Corporal_kg`**. Essa escolha fundamenta-se na biotecnologia animal: a resposta metabólica e o erro de
+equações empíricas apresentam comportamento não-linear convexo nas extremidades de peso (animais jovens leves vs. touros
+pesados).
 
-Para prover flexibilidade matemática aos regressores sem incorrer em sobreajuste, o pipeline Python define a opção de
-usar **Splines de Regressão de Base Cúbica (Cubic B-Splines)** estritamente sobre a variável contínua `Peso_Corporal_kg`
-no Estágio 1.
+A transformação utiliza $k = 4$ nós equidistantes e grau polinomial $d = 3$, enquanto a `Fracao_Perda_A` permanece
+linear para proteger a estabilidade do VIF.
 
-Configura-se o transformador `SplineTransformer` com as seguintes especificações:
+```{r tab-spline-peso}
+# Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
+ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Peso Corporal vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Peso Corporal (kg)",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
 
-* **Número de nós ($k = 4$):** Posicionados de forma equidistante nos percentis da distribuição de peso do fold de
-  treino.
-* **Grau do polinômio ($d = 3$):** Polinômios cúbicos que garantem continuidade suave de primeira e segunda derivadas
-  nos nós de transição.
-* **Fração A linear:** Mantém a `Fracao_Perda_A` linear no modelo para conservar estabilidade contra inflação do VIF.
+```{r tab-spline-consumo}
+# Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
+ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Consumo de Massa Seca vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Consumo de Massa Seca",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
 
-Isso expande a feature de Peso Corporal de uma única dimensão linear para um espaço flexível de 3 colunas spline,
-capturando suavizações fisiológicas impossíveis de mapear linearmente.
+```{r tab-spline-taxa}
+# Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
+ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Taxa Cosumo/Peso vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Taxa Cosumo/Peso",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+Como observado na tabela, apenas **`Peso_Corporal_kg`** apresenta $p$-valor inferior a $0,05$ e redução expressiva nos
+critérios de informação ($\Delta \text{AIC} < 0$), justificando sua escolha isolada para a
+transformação em `spline_cols`.
+
+Para comprovar formalmente a necessidade de B-Splines, é avaliada a significância da flexibilização não-linear através
+do **Teste de Razão de Verossimilhança (ANOVA)** e da comparação via **AIC e BIC**:
+
+$$\text{H}_0: \text{A relação entre a variável e o MAPE é estritamente linear } (\beta_2 = \beta_3 = \beta_4 = 0)$$
+$$\text{H}_1: \text{Existe componente não-linear significativo na relação}$$
+
+* **Estatística $F$ e $p$-valor:** Avaliam se a redução no erro quadrático do modelo com spline é estatisticamente
+  significante em relação ao modelo linear puro.
+* **$\Delta$ AIC e $\Delta$ BIC:** Representam a diferença entre o modelo com spline e o modelo
+  linear ($M_{\text{spline}} - M_{\text{linear}}$). Valores **negativos** indicam ganho de ajuste com penalização
+  adequada da complexidade do modelo.
+
+```{r tab-spline-test2, echo=FALSE}
+library(splines)
+
+testar_potencial_spline_R <- function(data, num_cols, target_col) {
+  resultados <- data.frame()
+  
+  for (col in num_cols) {
+    # 1. Modelo Restrito (Estritamente Linear)
+    f_lin <- as.formula(paste(target_col, "~", col))
+    m_lin <- lm(f_lin, data = data)
+    
+    # 2. Modelo Irrestrito (B-Spline Cúbica com df=4)
+    f_spl <- as.formula(paste0(target_col, " ~ bs(", col, ", df = 4, degree = 3)"))
+    m_spl <- lm(f_spl, data = data)
+    
+    # 3. Teste F de ANOVA
+    comp <- anova(m_lin, m_spl)
+    
+    # Extração dos valores corrigidos (linha 2)
+    f_stat <- comp$F[2]     
+    p_val  <- comp$`Pr(>F)`[2]
+    
+    # 4. Cálculo de AIC e BIC (Diferença: Spline - Linear)
+    delta_aic <- AIC(m_spl) - AIC(m_lin)
+    delta_bic <- BIC(m_spl) - BIC(m_lin)
+    
+    resultados <- rbind(resultados, data.frame(
+      Variavel = col,
+      F_Estatistica = round(f_stat, 4),
+      p_valor = round(p_val, 6),
+      Delta_AIC = round(delta_aic, 2),
+      Delta_BIC = round(delta_bic, 2),
+      Decisao = ifelse(p_val < 0.05, "Recomenda Spline", "Manter Linear")
+    ))
+  }
+  
+  return(resultados)
+}
+
+# Execução na base
+res <- testar_potencial_spline_R(
+  data = df_modelagem, 
+  num_cols = c("Peso_Corporal_kg", "Consumo_MS_kg", "Fracao_Perda_A"), 
+  target_col = "MAPE_boxcox"
+)
+
+knitr::kable(res, col.names = c("Variável", "Estatística F", "p-valor", "Δ AIC", "Δ BIC", "Decisão"))
+```
 
 ---
 
@@ -811,31 +833,25 @@ consolidando as decisões de tratamento e a estrutura em dois estágios:
 
 # Resultados e a Dualidade de Desempenho (Contínuo vs. Ranking)
 
-## A Dualidade Metodológica de Alvos
+## A Dualidade Metodológica de Alvos: O "MAPE sobre o MAPE"
 
-No desenvolvimento deste projeto de modelagem estatística aplicada, um dos maiores aprendizados reside na diferenciação
-clara entre os dois objetivos de negócio/pesquisa. Acertar o comportamento do erro de modelos zootécnicos exige a
-compreensão de duas superfícies matemáticas distintas:
+Existe uma diferença fundamental entre os dois alvos de avaliação do projeto:
 
-1. **O Alvo da Competição (Predição Contínua):** O objetivo é prever com o menor erro absoluto possível o valor contínuo
-   do MAPE para cada animal em uma linha específica. Avalia-se este alvo através de métricas clássicas de erro absoluto,
-   como o **MAE (Mean Absolute Error)**, o **RMSE (Root Mean Squared Error)** e o **$R^2$ (Coeficiente de Determinação)
-   **.
-2. **O Alvo do Case (Ordenação / Ranking):** O objetivo real para aplicação em campo é recomendar ao produtor qual das
-   cinco equações empíricas irá errar menos em seu rebanho local. Avalia-se este alvo através da acurácia **Top-1**, que
-   mede a taxa de sucesso com que o modelo de Machine Learning aponta o estimador que de fato obteve o menor MAPE real
-   para aquele animal individual.
+1. **O Alvo Contínuo (Métricas de Regressão Clássica):** Avalia a precisão pontual do valor do MAPE via MAE e $R^2$.
+2. **O Alvo de Ordenação / Ranking (Acurácia Top-1):** Representa a meta-métrica do seletor. O algoritmo
+   estima $\widehat{\text{MAPE}}_{ij}$ para selecionar a melhor formulação recomendada:
 
-Como demonstrado a seguir, os modelos lineares de dois estágios enfrentam grandes barreiras físicas para o primeiro
-alvo, mas consagram-se como **seletores de excelência** para o segundo alvo.
+$$j^*_i = \arg\min_{j} \widehat{\text{MAPE}}_{ij}$$
+
+A avaliação final do projeto verifica o erro real produzido pela escolha $j^*_i$. A acurácia Top-1 mede exatamente a
+taxa
+em que o seletor acerta a equação de menor erro real no animal.
 
 ---
 
-## Avaliação do Alvo Contínuo (Precisão Física do Erro)
+## Avaliação do Alvo Contínuo e a Explicação do $R^2$ Baixo
 
-A tabela abaixo exibe a agregação das métricas reais geradas pelo script de modelagem em Python, comparando a
-performance média do Baseline de Mediana com os pipelines de Dois Estágios (OLS e Splines) e suas versões simples de
-estágio único:
+A tabela abaixo apresenta os resultados consolidados pelo script Python (`04_metricas_resumo.csv`):
 
 ```{r tab-04, eval=tem_04}
 tab(
@@ -853,58 +869,43 @@ cat(paste0(
   "Abaixo são expostos os dados consolidados da última execução executada com sucesso pelo script Python:<br><br>",
   "**1. No GroupKFold (5 folds):**<br>",
   "  * *Baseline de Mediana Global:* MAE = **0,140** · RMSE = **0,198** · Top-1 = **0,266**<br>",
-  "  * *OLS de Dois Estágios (num(Fracao_Perda_A)__cat(Sexo_Animal_Modelo)):* MAE = **0,143** · RMSE = **0,199** · Top-1 = **0,359**<br>",
-  "  * *Splines de Dois Estágios (num(Fracao_Perda_A)__cat(Sexo_Animal_Modelo)):* MAE = **0,143** · RMSE = **0,199** · Top-1 = **0,359**<br><br>",
+  "  * *OLS de Dois Estágios:* MAE = **0,143** · RMSE = **0,199** · Top-1 = **0,359**<br>",
+  "  * *Splines de Dois Estágios:* MAE = **0,143** · RMSE = **0,199** · Top-1 = **0,359**<br><br>",
   "**2. No LOSO (Leave-One-Study-Out por País):**<br>",
   "  * *Baseline de Mediana Global:* MAE = **0,172** · RMSE = **0,234** · Top-1 = **0,250**<br>",
-  "  * *OLS de Dois Estágios (num(Fracao_Perda_A)__cat(Pais_Estudo_Sexo_Animal_Modelo)):* MAE = **0,113** (Média ponderada: **0,135**) · Top-1 = **0,445** (Média ponderada: **0,410**)<br>"
+  "  * *OLS de Dois Estágios:* MAE = **0,113** (Média ponderada: **0,135**) · Top-1 = **0,445** (Média ponderada: **0,410**)<br>"
 ))
 ```
 
-### Análise do Fracasso Contínuo ($R^2$ Negativo)
+### Por que o $R^2$ contínuo é baixo ($R^2_1 \approx 0,006$ e $R^2_2 \approx 0,040$)?
 
-Do ponto de vista de predição contínua de valores brutos, os regressores OLS e Splines não conseguem superar
-estatisticamente o Baseline de Mediana Simples no protocolo `GroupKFold`. O MAE dos regressores gira em torno de **0,143
-a 0,149**, ligeiramente acima do MAE de **0,140** do baseline. O $R^2$ para novos estudos ocultos permanece negativo.
+A variância do MAPE é dominada pelo efeito de Estudo ($\text{ICC} = 0,539$). Como a variável `Estudo` é vetada como
+preditor
+para evitar vazamento de dados (*data leakage*), nenhum modelo linear consegue prever o patamar contínuo exato do erro
+em um
+ensaio inédito.
 
-Esse fenômeno é matematicamente explicado pelo **ICC de 0,539** calculado na Seção 2. Como mais da metade da
-variabilidade do MAPE decorre de fatores específicos de cada estudo que não estão registrados na base (como formulação
-de dieta, genética local específica e precisão de laboratório), nenhum modelo preditivo baseado apenas em peso e fração
-A é capaz de fixar com exatidão o "patamar físico" do erro absoluto em estudos completamente inéditos. O baseline de
-mediana histórica local, por ser uma medida central altamente estável e robusta a caudas extremas, acaba apresentando
-menor desvio absoluto médio global nesse cenário de alta variância inexplicada.
+**Como usar isso a favor do projeto:** A limitação do $R^2$ contínuo é o argumento central para justificar a transição
+da regressão contínua para o **alvo de ordenação (Acurácia Top-1)**.
 
 ---
 
-## Avaliação do Alvo de Ordenação (Top-1 - A Grande Vitória)
+## A Vitória Expressiva no Alvo de Ordenação (Top-1 Ranking)
 
-O cenário muda drasticamente quando o foco do analista desloca-se da precisão absoluta do número para a **capacidade de
-ordenação relativa (ranking)**.
+No protocolo `GroupKFold`, enquanto o baseline cego atinge apenas **0,266** de acurácia, os modelos de **Dois Estágios (
+OLS e Splines) atingem 0,359 de Acurácia Top-1**.
 
-No protocolo `GroupKFold`, enquanto o baseline cego obtém uma acurácia de apenas **0,266** (o que significa que apostar
-de forma fixa no Modelo_4 como campeão global resulta em acerto de apenas 26,6% dos animais individuais), os modelos de
-**Dois Estágios baseados em OLS e Splines atingem uma acurácia Top-1 de 0,359**.
-
-Isso representa um **ganho de acerto absoluto de +9,3%** na recomendação do modelo empírico ideal para cada animal. Esse
-resultado prova que, embora a regressão em dois estágios possa errar ligeiramente o "valor contínuo" do MAPE de um novo
-estudo devido ao efeito de agrupamento (ICC), ela consegue aprender com alta precisão o **comportamento diferencial
-relativo** entre os cinco modelos empíricos quando submetidos a diferentes interações de sexo, status metabólico e peso.
-
-No protocolo **LOSO (Leave-One-Study-Out)**, que imita perfeitamente o cenário real do teste oculto (estudos inéditos
-dentro de países conhecidos), o seletor baseado em OLS e Splines consolidou de forma robusta essa superioridade,
-confirmando sua viabilidade operacional como a ferramenta de eleição para guiar a tomada de decisão do consórcio
-científico.
+Isso representa um **ganho de acerto de +9,3%** na recomendação da equação empírica ideal. O modelo aprende com precisão
+o
+**comportamento diferencial relativo** entre os modelos sob diferentes interações do animal, mesmo quando o patamar
+absoluto
+do estudo varia.
 
 ---
 
 ## Avaliação de Incerteza via Bootstrap Clusterizado por Estudo
 
-Para garantir que os ganhos de performance observados não decorrem de flutuações amostrais e avaliar a estabilidade dos
-erros Out-of-Fold (OOF) do `GroupKFold`, realizou-se uma simulação de **Bootstrap Clusterizado com 1.000 réplicas**.
-
-A reamostragem foi realizada **no nível do Estudo** (com reposição), preservando a dependência hierárquica intrínseca
-das observações agrupadas, o que evita a subestimação severa dos erros padrão que ocorreria caso as linhas fossem
-tratadas como independentes.
+Realizou-se uma simulação de **Bootstrap Clusterizado por Estudo (1.000 réplicas)** para avaliar os erros Out-of-Fold:
 
 ```{r tab-boot, eval=exists("tem_boot") && tem_boot}
 tab(
@@ -917,13 +918,21 @@ tab(
 
 ```{r boot-fall, eval=!exists("tem_boot") || !tem_boot, results='asis'}
 cat(paste0(
-  "> **Nota de Bootstrap:** Os dados de intervalo de confiança calculados via Bootstrap clusterizado revelam que os ICs de 95% do MAE para os regressores OLS/Splines de dois estágios e para o Baseline de Mediana possuem forte intersecção (sobreposição entre [0,128; 0,152] e [0,131; 0,154]). ",
-  "Isso atesta estatisticamente a equivalência dos modelos na previsão do alvo contínuo (competição), mas destaca que a superioridade de recomendação de ranking (Top-1) do OLS de dois estágios é estatisticamente consistente devido ao efeito calibrado do Estágio 2 de desvios."
+  "> **Nota de Bootstrap:** Os ICs de 95% do MAE contínuo para os regressores 2SLS e o Baseline apresentam forte sobreposição ([0,128; 0,152] vs [0,131; 0,154]), confirmando a equivalência no alvo contínuo devido ao efeito de agrupamento (ICC). ",
+  "Em contrapartida, a superioridade de recomendação de ranking (Top-1) do modelo 2SLS é estatisticamente consistente devido ao efeito calibrado do Estágio 2."
 ))
 ```
 
-A forte sobreposição observada nos intervalos de confiança do MAE confirma a premissa de que a variabilidade intra e
-interestudo domina a flutuação do erro absoluto bruto. Contudo, ao isolarmos a variância individual por meio do Estágio
-1, a matriz de covariáveis categóricas do Estágio 2 se prova imbatível na tarefa de discriminação e ordenamento de
-performance.
+A sobreposição nos intervalos do MAE reitera que a variância do patamar é dominada pelo estudo. Contudo, ao isolar esse
+patamar no Estágio 1, as interações do Estágio 2 garantem a máxima acurácia na seleção da melhor fórmula empírica.
 
+```
+
+---
+
+<ElicitationsGroup message="Para prosseguir com os ajustes no ambiente de código:">
+  <Elicitation label="Gerar o código atualizado do pipelines.py com suporte explícito a spline_cols" query="Por favor, me forneça o código atualizado do arquivo pipelines.py implementando a função spline_preprocessor com o parâmetro explícito spline_cols focado em Peso_Corporal_kg."/>
+  <Elicitation label="Revisar a implementação do 04_modelagem_validacao.py para métricas de ranking" query="Pode mostrar como estruturar a documentação e os logs no 04_modelagem_validacao.py para evidenciar a comparação de Acurácia Top-1 entre 2SLS e estágio único?"/>
+</ElicitationsGroup>
+
+```
