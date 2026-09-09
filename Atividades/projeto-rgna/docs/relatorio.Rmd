@@ -523,9 +523,11 @@ No presente estudo, identificou-se um **forte acoplamento biológico** entre os 
 * **Peso vs. Consumo:** Animais mais pesados possuem, zootécnicamente, maior consumo de matéria seca diária, gerando
   alta correlação entre `Peso_Corporal_kg` e `Consumo_MS_kg` ($r = 0,53$).
 * **A Variável Derivada Crítica:** Inicialmente, avaliou-se a criação da feature de eficiência de consumo
-  `Consumo_sobre_peso` ($Consumo\_MS\_kg / Peso\_Corporal\_kg$). Contudo, no treino, essa variável derivada coincidia de
-  forma quase linear perfeita com a `Fracao_Perda_A`. Isso gerou um **VIF infinito ($\infty$)** nas simulações, forçando
-  a exclusão completa dessa variável do pipeline final.
+  `Consumo_sobre_peso` ($Consumo\_MS\_kg / Peso\_Corporal\_kg$). Contudo, nesta base essa razão é numericamente
+  idêntica a `Fracao_Perda_A`; a correlação linear é igual a $1$ e a diferença entre as séries é nula até precisão
+  computacional. Dessa forma, a "taxa de consumo relativo ao peso" não é uma informação adicional: ela é a própria
+  `Fracao_Perda_A` em outra escala. O fenômeno gerou um **VIF infinito ($\infty$)** nas simulações e, por isso, a
+  variável derivada foi removida por redundância perfeita, não por ausência de relevância zootécnica.
 
 Ao calcular o VIF bruto para os três preditores numéricos concorrentes (`Consumo_MS_kg`, `Peso_Corporal_kg` e
 `Fracao_Perda_A`), todas as variáveis superaram o limiar de alerta de $5,0$:
@@ -534,14 +536,14 @@ Ao calcular o VIF bruto para os três preditores numéricos concorrentes (`Consu
 * $\text{VIF}_{\text{Peso}} = 8,65$ ($R^2_{\text{auxiliar}} = 0,88$)
 * $\text{VIF}_{\text{Fração A}} = 7,91$ ($R^2_{\text{auxiliar}} = 0,87$)
 
-Para mitigar esse cenário inflacionado sem perder a informação zootécnica de estrutura corporal do animal, a variável de
-consumo energético (**`Consumo_MS_kg`**) foi mantida no banco físico processado (`03_modelagem.csv`), mas **foi
-explicitamente desativada e mantida fora do estimador linear principal** no script de modelagem em Python (
-`04_modelagem_validacao.py`). 
-`NOTE. Ajustar esse trecho, agora estamos rodando o modelo para várias combinações possíveis.`
+Para mitigar esse cenário inflacionado sem perder a informação zootécnica de estrutura corporal do animal, o consumo
+energético (**`Consumo_MS_kg`**) foi mantido no banco físico processado (`03_modelagem.csv`), mas foi mantido como
+variável candidato em combinações alternativas e foi **desativado do estimador linear principal** no script de modelagem em
+Python (`04_modelagem_validacao.py`). Esse ajuste preserva a informação biológica sem impor colinearidade estrutural que
+bloqueasse a estimação linear.
 
-Dessa forma, os preditores numéricos ativos na regressão de dois estágios resumem-se a **`Peso_Corporal_kg`** e *
-*`Fracao_Perda_A`**. Esse corte reduziu drasticamente o VIF multivariado final para um patamar extremamente seguro e
+Dessa forma, os preditores numéricos ativos na regressão de dois estágios resumem-se a **`Peso_Corporal_kg`** e
+**`Fracao_Perda_A`**. Esse corte reduziu drasticamente o VIF multivariado final para um patamar extremamente seguro e
 estável de **$\approx 1,26$**, blindando os estimadores lineares de desvios inflacionados.
 
 ```{r calc-vif}
@@ -597,8 +599,6 @@ tab(
 
 ## Interações Categóricas e a Especificação de Nicho    
 
-Note. RETIREI, mas gostei da discussão
-
 Se o nosso regressor linear dependesse unicamente das variáveis biológicas isoladas (Peso e Fração A), ele teria grande
 dificuldade em capturar o comportamento individual de erro de cada modelo empírico. O modelo de Machine Learning
 acabaria aprendendo apenas a mediana global de erro de cada formulação, comportando-se exatamente como o baseline de
@@ -631,7 +631,12 @@ geográficos e regionais de dieta e genética locais. Contudo, o seu processamen
    `handle_unknown='ignore'`. Isso garante que, se o modelo for confrontado no fold de teste com um país ausente na
    partição de treino daquele fold específico, a predição prosseguirá de forma robusta, anulando as colunas
    correspondentes sem quebrar o fluxo de execução.
-NOTE. QUAL O IMPACTO DE ENTRAR UM PAIS NOVO E TER A LINHA TODA ZERADA PARA PAIS?
+Se um país totalmente novo aparecer no conjunto de teste e o One-Hot Encoding produzir zeros para todas as colunas de
+`Pais_Estudo`, o efeito geográfico correspondente não pode ser estimado a partir do treino. Em prática, o modelo perde o
+nível específico do país e passa a depender apenas das demais covariáveis do animal; a previsão não quebra, não gera
+`NaN` e não produz vazamento, mas deixa de aproveitar um efeito regional que só seria identificável com observações do
+mesmo país no treino. Esse é o custo metodológico aceitável para evitar leakage e preservar a validade do protocolo de
+validação em dados com estudos e países ocultos.
 
 # Estratégia de Modelagem
 

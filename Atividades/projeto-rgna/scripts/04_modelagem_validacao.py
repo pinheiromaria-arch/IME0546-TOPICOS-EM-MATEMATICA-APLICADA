@@ -12,7 +12,6 @@ from itertools import combinations, product
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import GroupKFold
 
 from rgna import config, modeling, pipelines, utils
@@ -20,8 +19,14 @@ from rgna import config, modeling, pipelines, utils
 
 def top1_accuracy(frame: pd.DataFrame, pred_col: str) -> float:
     """Calcula a acurácia top-1."""
-    real = frame.loc[frame.groupby("ID_Observacao")["MAPE"].idxmin(), ["ID_Observacao", "Modelo"]]
-    hat = frame.loc[frame.groupby("ID_Observacao")[pred_col].idxmin(), ["ID_Observacao", "Modelo"]]
+    real = (
+        frame.sort_values(["ID_Observacao", "MAPE", "Modelo"])
+        .drop_duplicates("ID_Observacao", keep="first")[["ID_Observacao", "Modelo"]]
+    )
+    hat = (
+        frame.sort_values(["ID_Observacao", pred_col, "Modelo"])
+        .drop_duplicates("ID_Observacao", keep="first")[["ID_Observacao", "Modelo"]]
+    )
     m = real.merge(hat, on="ID_Observacao", suffixes=("_real", "_hat"))
     return float((m["Modelo_real"] == m["Modelo_hat"]).mean())
 
@@ -87,9 +92,12 @@ def collect_fold_results(
     """Coleta e calcula as métricas para um único fold."""
     tmp = test.copy()
     tmp["pred"] = pred
-    real_win = tmp.loc[tmp.groupby("ID_Observacao")["MAPE"].idxmin(), "Modelo"]
+    real_win = (
+        tmp.sort_values(["ID_Observacao", "MAPE", "Modelo"])
+        .drop_duplicates("ID_Observacao", keep="first")["Modelo"]
+    )
     scores = utils.regression_scores(tmp["MAPE"], pred)
-    # scores["mape"] = utils.mape(tmp["MAPE"], pred)
+    scores["mape"] = utils.mape(tmp["MAPE"], pred)
     scores.update({
         "modelo": name,
         "protocolo": protocol,
@@ -122,17 +130,24 @@ def run_all_models_for_fold(
 
         # Executa os modelos e coleta predições/equações
         if allow_2sls:
-            predictions[f"ols_2sls_{name}"] = modeling.fit_predict_2sls(
-                pipe_ols, train, test, x_cols, num, cat, f"ols__{name}"
+            model_key = f"ols_2sls_{name}"
+            predictions[model_key] = modeling.fit_predict_2sls(
+                pipe_ols, train, test, x_cols, num, cat, model_key
             )
-            predictions[f"spl_2sls_{name}"] = modeling.fit_predict_2sls(
-                pipe_spl, train, test, x_cols, num, cat, f"splines__{name}"
+
+            model_key = f"spl_2sls_{name}"
+            predictions[model_key] = modeling.fit_predict_2sls(
+                pipe_spl, train, test, x_cols, num, cat, model_key
             )
-        predictions[f"ols_{name}"] = modeling.fit_predict_simples(
-            pipe_ols, train, test, x_cols, f"ols_simples__{name}"
+
+        model_key = f"ols_{name}"
+        predictions[model_key] = modeling.fit_predict_simples(
+            pipe_ols, train, test, x_cols, model_key
         )
-        predictions[f"spl_{name}"] = modeling.fit_predict_simples(
-            pipe_spl, train, test, x_cols, f"splines_simples__{name}"
+
+        model_key = f"spl_{name}"
+        predictions[model_key] = modeling.fit_predict_simples(
+            pipe_spl, train, test, x_cols, model_key
         )
 
     return predictions
@@ -141,7 +156,13 @@ def run_all_models_for_fold(
 def run_group_kfold(df: pd.DataFrame, n_splits: int = 5) -> tuple[list[dict], pd.DataFrame, list[str]]:
     """Executa a validação cruzada GroupKFold."""
     groups = df["Estudo"].to_numpy()
-    cv = GroupKFold(n_splits=min(n_splits, df["Estudo"].nunique()))
+    n_groups = int(df["Estudo"].nunique())
+    if n_groups < 2:
+        raise ValueError("GroupKFold requer pelo menos 2 estudos distintos.")
+    cv = GroupKFold(n_splits=min(n_splits, n_groups))
+    test_rows = sum(len(te_idx) for _, te_idx in cv.split(df, groups=groups))
+    if test_rows == 0:
+        raise ValueError("GroupKFold não produziu folds de teste válidos.")
     
     rows, oof_parts, all_equations = [], [], []
     for i, (tr_idx, te_idx) in enumerate(cv.split(df, groups=groups), 1):
@@ -209,12 +230,13 @@ def summarize_results(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
         raw.groupby(["protocolo", "modelo"], as_index=False)
         .agg(
             n_folds=("fold", "nunique"),
-            mape=("mape", "mean"),
-            mae=("mae", "mean"),
-            rmse=("rmse", "mean"),
-            r2=("r2", "mean"),
-            top1=("top1", "mean"),
-            top1_sempre_campeao=("top1_sempre_campeao", "mean"),
+            n=("n", "sum"),
+            mape=("mape", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
+            mae=("mae", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
+            rmse=("rmse", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
+            r2=("r2", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
+            top1=("top1", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
+            top1_sempre_campeao=("top1_sempre_campeao", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
         )
         .sort_values(["protocolo", "mape"])
     )
@@ -247,6 +269,9 @@ def vif_from_matrix(X: pd.DataFrame) -> pd.DataFrame:
 
 def compute_vif(df: pd.DataFrame) -> pd.DataFrame:
     """Calcula o VIF para as variáveis numéricas candidatas."""
+    missing = [c for c in config.NUM_CANDIDATES if c not in df.columns]
+    if missing:
+        raise KeyError(f"Colunas numéricas ausentes para VIF: {missing}")
     vif_num = vif_from_matrix(df[config.NUM_CANDIDATES])
     vif_num["bloco"] = "numericos_brutos"
     vif_num["alerta"] = np.where(vif_num["VIF"] >= 10, "VIF>=10", np.where(vif_num["VIF"] >= 5, "VIF>=5", "ok"))
@@ -314,15 +339,20 @@ def cluster_bootstrap_error(oof: pd.DataFrame) -> pd.DataFrame:
 def filter_models(agg: pd.DataFrame) -> set[str]:
     """Filtra modelos com desempenho inferior à baseline."""
     utils.log(f"Filtrando modelos com desempenho inferior à baseline...")
-    baseline_metrics = agg[agg["modelo"] == "baseline_mediana_modelo"].set_index("protocolo")[["mape", "mae"]].to_dict('index')
+    baseline_metrics = agg[agg["modelo"] == "baseline_mediana_modelo"].set_index("protocolo")[["mape", "mae", "rmse"]].to_dict("index")
     
     models_to_keep = set(agg["modelo"])
     
     for _, row in agg.iterrows():
         protocol = row["protocolo"]
         if protocol in baseline_metrics:
-            # Se o MAPE for pior que a baseline, marca para remoção
-            if row["mape"] > baseline_metrics[protocol]["mape"]:
+            if row["modelo"] == "baseline_mediana_modelo":
+                continue
+            if (
+                row["mape"] > baseline_metrics[protocol]["mape"]
+                and row["mae"] > baseline_metrics[protocol]["mae"]
+                and row["rmse"] > baseline_metrics[protocol]["rmse"]
+            ):
                 models_to_keep.discard(row["modelo"])
                 
     return models_to_keep
@@ -351,12 +381,19 @@ def main() -> None:
 
     boot = cluster_bootstrap_error(oof) if not oof.empty else pd.DataFrame()
     
-    # Filtra os modelos com base no desempenho
-    models_to_keep = filter_models(agg)
-    agg_f = agg[agg["modelo"].isin(models_to_keep)].copy()
-    raw_f = raw[raw["modelo"].isin(models_to_keep)].copy()
-    oof_f = oof[oof["modelo_ml"].isin(models_to_keep)].copy()
-    boot_f = boot[boot["modelo"].isin(models_to_keep)].copy()
+    # Filtra os modelos com base no desempenho, por protocolo
+    keep_mask = pd.Series(False, index=agg.index)
+    for protocol in agg["protocolo"].unique():
+        proto = agg[agg["protocolo"] == protocol].copy()
+        models_to_keep = filter_models(proto)
+        keep_mask |= agg["protocolo"].eq(protocol) & agg["modelo"].isin(models_to_keep)
+
+    agg_f = agg[keep_mask].copy()
+    raw_f = raw.merge(agg_f[["protocolo", "modelo"]].drop_duplicates(), on=["protocolo", "modelo"], how="inner")
+    keep_pairs = agg_f[["protocolo", "modelo"]].drop_duplicates()
+    oof_f = oof.merge(keep_pairs, left_on=["protocolo", "modelo_ml"], right_on=["protocolo", "modelo"], how="inner")
+    oof_f = oof_f.drop(columns=["modelo"], errors="ignore")
+    boot_f = boot.merge(keep_pairs, on=["protocolo", "modelo"], how="inner")
     
     # Salva os resultados
     agg_f.to_csv(out_dir / "04_metricas_resumo.csv", index=False)

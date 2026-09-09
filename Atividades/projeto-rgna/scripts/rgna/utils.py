@@ -65,7 +65,7 @@ def mape(y_true, y_pred) -> float:
     y_true = np.asarray(y_true, dtype=float)
     y_pred = np.asarray(y_pred, dtype=float)
     denom = np.abs(y_true)
-    rel = np.divide(y_true - y_pred, y_true, out=np.zeros_like(y_true, dtype=float), where=denom > 0)
+    rel = np.divide(y_true - y_pred, denom, out=np.zeros_like(y_true, dtype=float), where=denom > 0)
     return float(np.mean(np.abs(rel)))
 
 
