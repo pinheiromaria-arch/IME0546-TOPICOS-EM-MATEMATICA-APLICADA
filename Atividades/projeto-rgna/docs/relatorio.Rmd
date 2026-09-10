@@ -573,17 +573,6 @@ tab(
 
 ---
 
-## Interações Categóricas e a Especificação de Nicho
-
-Para forçar a regressão a mapear os nichos de performance de cada modelo de acordo com as características do animal,
-foram criadas interações categóricas explícitas no Estágio 2:
-
-* **`Modelo × Status_Metabolico`:** Captura se uma formulação empírica específica performa melhor ou pior em
-  animais em crescimento rápido versus animais maturos.
-* **`Modelo × Sexo_Animal`:** Mapeia a eficiência do modelo sob as diferenças metabólicas intrínsecas ao sexo.
-
----
-
 ## Tratamento de Países Inéditos no Protocolo LOSO (Prior do Intercepto)
 
 Uma das principais contribuições da arquitetura de validação Leave-One-Study-Out (LOSO) é avaliar a capacidade de
