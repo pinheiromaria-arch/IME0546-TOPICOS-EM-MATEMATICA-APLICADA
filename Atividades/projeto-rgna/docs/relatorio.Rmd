@@ -252,8 +252,7 @@ tab(
 ## Transformação de Box-Cox ($\lambda \approx 0,343$)
 
 Com a aplicação do parâmetro ótimo encontrado por máxima verossimilhança, a distribuição foi centralizada e a assimetria
-severa foi reduzida a praticamente zero ($\text{assimetria} \approx -0,05$), resultando em uma distribuição com
-propriedades matemáticas ideais para ajustes lineares:
+caus de $+1,61$ para $-0,17$, resultando em uma distribuição com propriedades matemáticas ideais para ajustes lineares:
 
 ```{r hist-mape-boxcox, fig.cap="Histograma do MAPE-BOXCOX no treino (1.115 linhas) sob o lambda ótimo."}
 assimetria_bc <- mean((df_modelagem$MAPE_boxcox - mean(df_modelagem$MAPE_boxcox))^3) / (sd(df_modelagem$MAPE_boxcox)^3)
@@ -495,7 +494,7 @@ tab(
 
 ---
 
-## Diagnóstico de Multicolinearidade (VIF) e Gestão via Config
+## Diagnóstico de Multicolinearidade (VIF) e Grid Search
 
 O fator de inflação da variância (**VIF** - *Variance Inflation Factor*) quantifica o grau em que a variância de um
 coeficiente de regressão estimado é inflacionada devido à colinearidade com as demais variáveis independentes do modelo:
@@ -659,9 +658,7 @@ tab(
 ## Flexibilidade Não-Linear via B-Splines direcionadas ao Peso Corporal
 
 No código `pipelines.py`, a função `spline_preprocessor` direciona a expansão por **B-Splines Cúbicas** especificamente
-à variável **`Peso_Corporal_kg`**. Essa escolha fundamenta-se na biotecnologia animal: a resposta metabólica e o erro de
-equações empíricas apresentam comportamento não-linear convexo nas extremidades de peso (animais jovens leves vs. touros
-pesados).
+à variável **`Peso_Corporal_kg`**. 
 
 A transformação utiliza $k = 4$ nós equidistantes e grau polinomial $d = 3$, enquanto a `Fracao_Perda_A` permanece
 linear para proteger a estabilidade do VIF.
@@ -672,6 +669,21 @@ ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
   geom_point(alpha = 0.3, color = fill_main) +
   geom_smooth(method = "loess", color = "red", se = TRUE) +
   geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Peso Corporal vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Peso Corporal (kg)",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+```{r tab-spline-peso2}
+# Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
+ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  facet_wrap(~ Modelo) +
   labs(
     title = "Inspeção de Não-Linearidade: Peso Corporal vs. MAPE Box-Cox",
     # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
@@ -695,6 +707,21 @@ ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
   ) +
   theme_rgna()
 ```
+```{r tab-spline-consumo2}
+# Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
+ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  facet_wrap(~ Modelo) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Consumo de Massa Seca vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Consumo de Massa Seca (kg)",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
 
 ```{r tab-spline-taxa}
 # Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
@@ -710,22 +737,21 @@ ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
   ) +
   theme_rgna()
 ```
-
-Como observado na tabela, apenas **`Peso_Corporal_kg`** apresenta $p$-valor inferior a $0,05$ e redução expressiva nos
-critérios de informação ($\Delta \text{AIC} < 0$), justificando sua escolha isolada para a
-transformação em `spline_cols`.
-
-Para comprovar formalmente a necessidade de B-Splines, é avaliada a significância da flexibilização não-linear através
-do **Teste de Razão de Verossimilhança (ANOVA)** e da comparação via **AIC e BIC**:
-
-$$\text{H}_0: \text{A relação entre a variável e o MAPE é estritamente linear } (\beta_2 = \beta_3 = \beta_4 = 0)$$
-$$\text{H}_1: \text{Existe componente não-linear significativo na relação}$$
-
-* **Estatística $F$ e $p$-valor:** Avaliam se a redução no erro quadrático do modelo com spline é estatisticamente
-  significante em relação ao modelo linear puro.
-* **$\Delta$ AIC e $\Delta$ BIC:** Representam a diferença entre o modelo com spline e o modelo
-  linear ($M_{\text{spline}} - M_{\text{linear}}$). Valores **negativos** indicam ganho de ajuste com penalização
-  adequada da complexidade do modelo.
+```{r tab-spline-taxa2}
+# Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
+ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  facet_wrap(~ Modelo) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Taxa Consumo/Peso vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Taxa Consumo/Peso",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
 
 ```{r tab-spline-test2, echo=FALSE}
 library(splines)
@@ -776,6 +802,23 @@ res <- testar_potencial_spline_R(
 knitr::kable(res, col.names = c("Variável", "Estatística F", "p-valor", "Δ AIC", "Δ BIC", "Decisão"))
 ```
 
+Como observado na tabela, apenas **`Peso_Corporal_kg`** apresenta $p$-valor inferior a $0,05$ e redução expressiva nos
+critérios de informação ($\Delta \text{AIC} < 0$), justificando sua escolha isolada para a
+transformação em `spline_cols`.
+
+Para comprovar formalmente a necessidade de B-Splines, é avaliada a significância da flexibilização não-linear através
+do **Teste de Razão de Verossimilhança (ANOVA)** e da comparação via **AIC e BIC**:
+
+$$\text{H}_0: \text{A relação entre a variável e o MAPE é estritamente linear } (\beta_2 = \beta_3 = \beta_4 = 0)$$
+$$\text{H}_1: \text{Existe componente não-linear significativo na relação}$$
+
+* **Estatística $F$ e $p$-valor:** Avaliam se a redução no erro quadrático do modelo com spline é estatisticamente
+  significante em relação ao modelo linear puro.
+* **$\Delta$ AIC e $\Delta$ BIC:** Representam a diferença entre o modelo com spline e o modelo
+  linear ($M_{\text{spline}} - M_{\text{linear}}$). Valores **negativos** indicam ganho de ajuste com penalização
+  adequada da complexidade do modelo.
+
+
 ---
 
 ## Representação Visual da Estratégia de Modelagem
@@ -820,21 +863,21 @@ consolidando as decisões de tratamento e a estrutura em dois estágios:
       boot --> out
 </pre>
 
-# Resultados e a Dualidade de Desempenho (Contínuo vs. Ranking)
+# Resultados
 
-## A Dualidade Metodológica de Alvos: O "MAPE sobre o MAPE"
+## A Dualidade Metodológica de Alvos
 
 Existe uma diferença fundamental entre os dois alvos de avaliação do projeto:
 
-1. **O Alvo Contínuo (Métricas de Regressão Clássica):** Avalia a precisão pontual do valor do MAPE via MAE e $R^2$.
+1. **O Alvo Contínuo (Métricas de Regressão Clássica):** Avalia a precisão pontual do valor do MAPE (_target_) via MAPE, 
+   MAE e $R^2$.
 2. **O Alvo de Ordenação / Ranking (Acurácia Top-1):** Representa a meta-métrica do seletor. O algoritmo
    estima $\widehat{\text{MAPE}}_{ij}$ para selecionar a melhor formulação recomendada:
 
 $$j^*_i = \arg\min_{j} \widehat{\text{MAPE}}_{ij}$$
 
 A avaliação final do projeto verifica o erro real produzido pela escolha $j^*_i$. A acurácia Top-1 mede exatamente a
-taxa
-em que o seletor acerta a equação de menor erro real no animal.
+taxa em que o seletor acerta a equação (modelo empírico) de menor erro real no animal.
 
 ---
 
@@ -917,11 +960,11 @@ patamar no Estágio 1, as interações do Estágio 2 garantem a máxima acuráci
 
 ```
 
----
+# Anexos
 
-<ElicitationsGroup message="Para prosseguir com os ajustes no ambiente de código:">
-  <Elicitation label="Gerar o código atualizado do pipelines.py com suporte explícito a spline_cols" query="Por favor, me forneça o código atualizado do arquivo pipelines.py implementando a função spline_preprocessor com o parâmetro explícito spline_cols focado em Peso_Corporal_kg."/>
-  <Elicitation label="Revisar a implementação do 04_modelagem_validacao.py para métricas de ranking" query="Pode mostrar como estruturar a documentação e os logs no 04_modelagem_validacao.py para evidenciar a comparação de Acurácia Top-1 entre 2SLS e estágio único?"/>
-</ElicitationsGroup>
+Quantidade de combinações de features
+Quantidade de modelos + combinações
 
-```
+Lista com todas as combinaçãos + modelos gerados e treinados
+
+

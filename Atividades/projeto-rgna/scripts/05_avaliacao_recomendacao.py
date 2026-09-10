@@ -19,8 +19,8 @@ def criar_tabela_decisao(resumo: pd.DataFrame, campeao_global: str) -> pd.DataFr
     Returns:
         DataFrame com a análise de decisão por protocolo.
     """
-    # Encontra o melhor modelo (menor MAE) para cada protocolo
-    best_models_idx = resumo.groupby("protocolo")["mae"].idxmin()
+    # Encontra o melhor modelo (menor mape) para cada protocolo
+    best_models_idx = resumo.groupby("protocolo")["mape"].idxmin()
     best_models = resumo.loc[best_models_idx].set_index("protocolo")
 
     # Isola a baseline para cada protocolo
@@ -34,18 +34,18 @@ def criar_tabela_decisao(resumo: pd.DataFrame, campeao_global: str) -> pd.DataFr
     )
 
     # Calcula as colunas de decisão
-    decisao["ganho_mae_vs_baseline"] = decisao["mae_baseline"] - decisao["mae_melhor"]
+    decisao["ganho_mape_vs_baseline"] = decisao["mape_baseline"] - decisao["mape_melhor"]
     # Adiciona 1e-9 para estabilidade numérica ao comparar floats
     decisao["seletor_supera_campeao"] = decisao["top1_melhor"] > (decisao["top1_sempre_campeao_melhor"] + 1e-9)
     decisao["campeao_global_treino"] = campeao_global
     
     # Renomeia e seleciona as colunas finais
-    decisao = decisao.rename(columns={"modelo_melhor": "melhor_modelo_mae"})
+    decisao = decisao.rename(columns={"modelo_melhor": "melhor_modelo_mape"})
     colunas_finais = [
-        "melhor_modelo_mae",
-        "mae_melhor",
-        "mae_baseline",
-        "ganho_mae_vs_baseline",
+        "melhor_modelo_mape",
+        "mape_melhor",
+        "mape_baseline",
+        "ganho_mape_vs_baseline",
         "top1_melhor",
         "top1_sempre_campeao_melhor",
         "seletor_supera_campeao",
@@ -53,11 +53,11 @@ def criar_tabela_decisao(resumo: pd.DataFrame, campeao_global: str) -> pd.DataFr
     ]
     decisao = decisao[colunas_finais].reset_index()
 
-    # Pivota a tabela de resumo para ter MAE de cada modelo como uma coluna
-    mae_pivot = resumo.pivot_table(index="protocolo", columns="modelo", values="mae").reset_index()
+    # Pivota a tabela de resumo para ter mape de cada modelo como uma coluna
+    mape_pivot = resumo.pivot_table(index="protocolo", columns="modelo", values="mape").reset_index()
     
-    # Junta a tabela de decisão com os MAEs pivotados
-    decisao_final = pd.merge(decisao, mae_pivot, on="protocolo")
+    # Junta a tabela de decisão com os mapes pivotados
+    decisao_final = pd.merge(decisao, mape_pivot, on="protocolo")
     
     return decisao_final
 
@@ -101,7 +101,7 @@ def main() -> None:
     print(tabela_decisao.to_string(index=False))
     
     if not boot.empty:
-        print("\nIC 95% Bootstrap (MAE, GroupKFold por Estudo):")
+        print("\nIC 95% Bootstrap (MAPE, GroupKFold por Estudo):")
         print(boot.to_string(index=False))
         
     print("\nRegra de Decisão:")

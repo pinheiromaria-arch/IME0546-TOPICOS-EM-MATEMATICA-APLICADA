@@ -1,0 +1,4 @@
+bloco,variavel,r2_auxiliar,VIF,alerta
+numericos_brutos,Consumo_MS_kg,0.8850094055942037,8.696363430134538,VIF>=5
+numericos_brutos,Peso_Corporal_kg,0.8844229644562343,8.652237836826403,VIF>=5
+numericos_brutos,Fracao_Perda_A,0.8735933959215478,7.910979076531212,VIF>=5
