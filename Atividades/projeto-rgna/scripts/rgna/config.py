@@ -40,4 +40,4 @@ N_BOOT = 1000
 BOOT_SEED = 42
 
 # Configurações do filtro de modelos
-TOP_N_MODELOS_POR_PROTOCOLO = 5
+TOP_N_MODELOS_POR_PROTOCOLO = 10
