@@ -135,17 +135,18 @@ def run_all_models_for_fold(
         allow_2sls = "Modelo" in x_cols
 
         # Executa os modelos e coleta predições/equações
-        if allow_2sls:
-            model_key = f"ols_2s_{name}"
-            predictions[model_key] = modeling.fit_predict_2sls(
-                pipe_ols, train, test, x_cols, num, cat, model_key
-            )
-
-            if has_weight and pipe_spl is not None:
-                model_key = f"spl_2s_{name}"
+        if False:
+            if allow_2sls:
+                model_key = f"ols_2s_{name}"
                 predictions[model_key] = modeling.fit_predict_2sls(
-                    pipe_spl, train, test, x_cols, num, cat, model_key
+                    pipe_ols, train, test, x_cols, num, cat, model_key
                 )
+    
+                if has_weight and pipe_spl is not None:
+                    model_key = f"spl_2s_{name}"
+                    predictions[model_key] = modeling.fit_predict_2sls(
+                        pipe_spl, train, test, x_cols, num, cat, model_key
+                    )
 
         model_key = f"ols_{name}"
         predictions[model_key] = modeling.fit_predict_simples(

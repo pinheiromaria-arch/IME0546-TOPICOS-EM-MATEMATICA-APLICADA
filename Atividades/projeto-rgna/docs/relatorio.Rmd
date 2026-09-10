@@ -174,6 +174,8 @@ if (tem_vif) vif_04 <- read.csv(path_vif, check.names = FALSE)
 path_boot <- file.path(root, "data", "processed", "04_bootstrap_ic.csv")
 tem_boot <- file.exists(path_boot)
 if (tem_boot) boot_04 <- read.csv(path_boot, check.names = FALSE)
+path_oof <- file.path(root, "data", "processed", "04_predicoes_oof.csv")
+if (file.exists(path_oof)) df_oof <- read.csv(path_oof, check.names = FALSE)
 ```
 
 # Anatomia da Variável Alvo
@@ -596,69 +598,73 @@ estritamente pelas características biológicas individuais do animal (peso, con
 estruturais entre as equações empíricas, garantindo robustez e impedindo que vieses de outros países contaminem a
 previsão.
 
-# Estratégia de Modelagem
+# Estratégias de Modelagem
 
-## Decomposição Algébrica e Fluxo de Modelagem (2SLS)
+## Baseline de Mediana por Modelo
+
+* **Lógica Computacional (`baseline_predict`):** Para cada equação empírica de emissão de metano (`Modelo_1` a
+  `Modelo_5`), o estimador atribui a mediana histórica do erro (MAPE) calculada no conjunto de treino
+  daquele fold específico.
+* **Função no Pipeline:** Funciona como o *benchmark* mínimo. Qualquer estimador precisa obrigatoriamente superar a
+  acurácia do baseline para comprovar ganho informacional.
+
+## Modelagem OLS / Splines
+
+* **Lógica Computacional (`fit_predict_simples`):** Empilham-se todas as $N = 1.115$ observações pareadas da base.
+  Ajusta-se um único pipeline de regressão linear (com ou sem expansão por B-Splines cúbicas na variável Peso Corporal)
+  prevendo a variável alvo transformada $\text{MAPE}_{\text{boxcox}}$ a partir do vetor de características
+  do animal $X_{\text{animal}}$ e do identificador da equação empírica (`Modelo`).
+* **Especificação Formal:**
+
+  $$\hat{y}_{ij}= \beta_0 + \sum_{k=1}^{K} \beta_k X_{i, k} + \sum_{m=1}^{5} \delta_m D_{ij, m} + \epsilon_{ij}$$
+
+* **Onde:**
+    * $\hat{y}_{ij}$ é a resposta transformada $\text{MAPE}_{\text{boxcox}}$ do animal $i$ $(i = 1, \dots, 223$) sob o
+      modelo empírico $j$ $(j = 1, \dots, 5$).
+    * $X_{i, k}$ é a $k$-ésima covariável biológica do animal $i$ (como Peso Corporal ou expansão em B-Splines).
+    * $D_{ij, m}$ é a variável dummy que indica se a observação $ij$ pertence ao modelo empírico $(m$).
+    * $\epsilon_{ij}$ é o termo de erro estocástico da observação $ij$.
+
+* **Limitação Metodológica:** Embora simples e direta, essa abordagem trata as $N = 1.115$ linhas como observações
+  independentes $i.i.d.$). Ao fazer isso, ignora a dependência pareada dos 5 modelos ajustados sobre o mesmo animal e a
+  dependência em cluster introduzida pelos 93 estudos $ICC = 0,539$).
+
+## Decomposição Sequencial em Dois Estágios (Decomposição do Erro)
 
 Em vez de empilhar as observações em uma regressão OLS direta — o que violaria a suposição de independência dos
 resíduos $(i.i.d.)$ devido ao alto Coeficiente de Correlação Intraclasse $(\text{ICC} = 0,539)$ —, a arquitetura em dois
 estágios decompõe a variável alvo transformada $(y = \text{MAPE}_{\text{boxcox}}$) em dois componentes ortogonais:
 
-1. **Estágio 1: Estimador do Patamar do Anima $(\hat{P}_i)$**
-    * **Operação:** Os dados brutos $(N = 1.115)$ são agregados no nível do
-      animal $(\text{ID_Observacao}$), $(n = 223)$, calculando-se a mediana do erro do animal.
-    * **Ajuste:** Treina-se um pipeline de regressão (OLS ou Spline Cúbica) utilizando as covariáveis biológicas do
-      animal $(X_{\text{animal}}$): Peso Corporal, Fração de Perda A, País, Status Metabólico e Sexo), vetando a
-      variável `Modelo`.
-    * **Propriedade:** Como cada animal aparece exatamente uma vez nesta base colapsada, a premissa de independência do
-      OLS é $(100\%$) preservada.
-   
-      $\hat{P}_i = f\left(X_{\text{animal}, i}\right)$
+* **Lógica Computacional (`fit_predict_2sls`):** Em vez de tentar estimar a variância total de uma só vez, a arquitetura
+  decompõe a variável alvo $\text{MAPE}_{\text{boxcox}}$ em dois componentes aditivos e ortogonais:
+    * **Estágio 1 (Patamar do Animal):** Agrega os dados no nível do animal $n = 223$, 1 linha por animal,
+      calculando a mediana do erro do animal. Ajusta-se um regressor (OLS ou Spline) sobre as variáveis biológicas
+      do animal $X_{\text{animal}}$), isolando o nível base de erro $\hat{P}_i$.
+      $$\hat{P}_i = f\left(X_{\text{animal}, i}\right)$$
+    * **Estágio 2 (Desvio Específico do Modelo):** Retorna-se à base de $N = 1.115$ linhas e calcula-se o
+      resíduo $e_{ij} = y_{ij} - P_i$. Um segundo regressor ajusta os desvios residuais especificamente em função do
+      identificador da equação (`Modelo`) e suas interações com sexo e status metabólico $\hat{D}_{ij}$).
+      $$\hat{D}_{ij} = g\left(D_{\text{modelo}, j}\right)$$
+* **Reconstrução Final:**
+  A predição final na escala transformada é obtida pela adição aditiva dos dois estágios, sendo posteriormente
+  convertida de volta à escala física de erro original via inversão de Box-Cox:
 
-2. **Estágio 2: Estimador dos Desvios Residualmente Específicos $(\hat{D}_{ij})$**
-    * **Operação:** Retorna-se à base completa $(N = 1.115)$ e calcula-se o resíduo observacional entre o erro real do
-      modelo $(j$) e o patamar do animal $(i$):
-      $e_{ij} = y_{ij} - P_i$
-    * **Ajuste:** Treina-se um segundo estimador linear para isolar o prêmio ou penalidade de acurácia associado a cada
-      equação empírica (`Modelo`):
-   
-      $\hat{D}_{ij} = g\left(D_{\text{modelo}, j}\right)$
+  $$\hat{y}_{ij} = \hat{P}_i + \hat{D}_{ij}$$
 
-3. **Reconstrução Final e Inversão da Escala**
-   A predição final na escala transformada é obtida pela adição aditiva dos dois estágios, sendo posteriormente
-   convertida de volta à escala física de erro original via inversão de Box-Cox:
+  $$\widehat{\text{MAPE}}_{ij} = \text{inv_boxcox}\left(\hat{y}_{ij}\right) = \left(\lambda \cdot \hat{y}_{ij} + 1\right)^{1/\lambda}$$
 
-   $\hat{y}_{ij} = \hat{P}_i + \hat{D}_{ij}$
+A tabela abaixo sintetiza as três arquiteturas avaliadas durante o protocolo de validação cruzada:
 
-   $\widehat{\text{MAPE}}_{ij} = \text{inv_boxcox}\left(\hat{y}_{ij}\right) = \left(\lambda \cdot \hat{y}_{ij} + 1\right)^{1/\lambda}$
----
-
-## Estrutura Conceitual da Partição em Dois Estágios    # TODO. REVISAR DEPOIS
-
-A tabela abaixo sintetiza o papel, os alvos e os regressores utilizados em cada etapa do pipeline 2SLS:
-
-```{r tab-2sls-resumo}
-tabela_2sls_conceitual <- tibble::tibble(
-  `Estágio de Modelagem` = c("Estágio 1: Patamar (Nível Animal)", "Estágio 2: Desvio (Nível Modelo)"),
-  `Alvo de Regressão` = c("Mediana do MAPE Box-Cox por animal (P_i)", "Resíduo relativo da fórmula (D_ij = Y_ij - P_i)"),
-  `Dimensão da Base` = c("223 linhas (1 por animal)", "1.115 linhas (5 por animal)"),
-  `Preditores Utilizados` = c("Peso_Corporal_kg, Fracao_Perda_A, Status, Sexo", "Modelo, Modelo × Sexo, Modelo × Status"),
-  `Objetivo Metodológico` = c("Isolar o efeito fixo e biológico do hospedeiro", "Mapear o nicho de erro relativo das equações")
-)
-
-tab(
-  tabela_2sls_conceitual,
-  align = c("l", "l", "c", "l", "l"),
-  caption = "Visão geral da arquitetura de decomposição de erro em dois estágios (2SLS)."
-)
-```
-
----
+| Estratégia                        |       Dimensão da Base ($N$)       | Regressores / Variáveis Utilizadas                                                                   | Premissa sobre Resíduos ($i.i.d.$)                               | Objetivo no Pipeline                                    |
+|:----------------------------------|:----------------------------------:|:-----------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:--------------------------------------------------------|
+| **Baseline de Mediana**           |            $N = 1.115$             | Apenas o indicador do `Modelo` (Mediana)                                                             | Assume independência entre folds.                                | Piso de acurácia (*benchmark* cego).                    |
+| **Estágio Único (OLS / Splines)** |            $N = 1.115$             | $X_{\text{animal}}$ + `Modelo`                                                                       | Viola $i.i.d.$ por ignorar estrutura pareada/cluster.            | Testar ajuste direto de parâmetros do animal e fórmula. |
+| **Dois Estágios (Decomposição)**  | $n = 223$ (E1)<br>$N = 1.115$ (E2) | **E1:** $X_{\text{animal}}$ (sem `Modelo`)<br>**E2:** `Modelo` + Interações sobre o resíduo $e_{ij}$ | Isola o efeito de animal no E1 e modela o desvio relativo no E2. | Isolar patamar do animal e maximizar Acurácia Top-1.    |
 
 ## Flexibilidade Não-Linear via B-Splines direcionadas ao Peso Corporal
 
 No código `pipelines.py`, a função `spline_preprocessor` direciona a expansão por **B-Splines Cúbicas** especificamente
-à variável **`Peso_Corporal_kg`**. 
+à variável **`Peso_Corporal_kg`**.
 
 A transformação utiliza $k = 4$ nós equidistantes e grau polinomial $d = 3$, enquanto a `Fracao_Perda_A` permanece
 linear para proteger a estabilidade do VIF.
@@ -677,6 +683,7 @@ ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
   ) +
   theme_rgna()
 ```
+
 ```{r tab-spline-peso2}
 # Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
 ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
@@ -707,6 +714,7 @@ ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
   ) +
   theme_rgna()
 ```
+
 ```{r tab-spline-consumo2}
 # Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
 ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
@@ -737,6 +745,7 @@ ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
   ) +
   theme_rgna()
 ```
+
 ```{r tab-spline-taxa2}
 # Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
 ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
@@ -818,7 +827,6 @@ $$\text{H}_1: \text{Existe componente não-linear significativo na relação}$$
   linear ($M_{\text{spline}} - M_{\text{linear}}$). Valores **negativos** indicam ganho de ajuste com penalização
   adequada da complexidade do modelo.
 
-
 ---
 
 ## Representação Visual da Estratégia de Modelagem
@@ -827,41 +835,68 @@ O diagrama abaixo sintetiza todo o fluxo lógico percorrido pelos dados no scrip
 consolidando as decisões de tratamento e a estrutura em dois estágios:
 
 <pre class="mermaid">
-    flowchart TD
-      load["Lê 03_modelagem.csv"]
-      vif["VIF: Peso e Fração A"]
-      gkf["GroupKFold por Estudo\n(5 folds)"]
-      loso["LOSO nos estudos dos\n5 países do case"]
-      split["Treino / teste\nsimulado sem vazar Estudo"]
-      campeao["Campeão do fold\nmediana de MAPE"]
-      base["Baseline\nmediana por Modelo\n(escala original)"]
-      est1["Estágio 1 (OLS/Splines)\nPrevisão do patamar de MAPE Box-Cox do animal"]
-      est2["Estágio 2 (OLS)\nModelagem do desvio residual do Modelo no animal"]
-      recon["MAPE previsto =\ninv_boxcox(patamar + resíduo)"]
-      scores["Métricas de Validação\nMAE, RMSE, R², Top-1"]
-      oof["Predições OOF\n(Out-of-Fold)"]
-      boot["Bootstrap por Estudo\nIC 95% para MAE e RMSE"]
-      out["Geração de CSVs +\n04_resumo.json"]
+flowchart TD
+    %% Entrada e Grid Search
+    D1["<b>1. Entrada de Dados Processados</b><br/><i>(03_modelagem.csv)</i><br/>N = 1.115 observações pareadas | 223 Animais<br/>Preditores Numéricos: Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A"]
     
-      load --> vif
-      load --> gkf
-      load --> loso
-      gkf --> split
-      loso --> split
-      split --> campeao
-      split --> base
-      split --> est1
-      est1 --> est2
-      est2 --> recon
-      base --> scores
-      recon --> scores
-      campeao --> scores
-      scores --> oof
-      oof --> boot
-      vif --> out
-      scores --> out
-      boot --> out
+    GS["<b>2. Varredura Exaustiva de Features (Grid Search)</b><br/><code>generate_feature_sets()</code><br/>• Testa todas as combinações de variáveis numéricas e categóricas<br/>• Avalia empiricamente o <b>Consumo_MS_kg</b> (tradeoff ganho vs VIF)<br/>• Avalia B-Splines Cúbicas no Peso Corporal (4 nós)"]
+    
+    V1["<b>3. Protocolos de Validação Cruzada (Sem Data Leakage)</b><br/>• <b>GroupKFold por Estudo</b> (5 Folds)<br/>• <b>Leave-One-Study-Out (LOSO)</b> nos 5 Países Ocultos (38 Estudos)<br/><i>Estudo mantido estritamente como chave de agrupamento (vetado como feature)</i>"]
+
+    D1 --> GS
+    GS --> V1
+
+    %% Ramificação dos Estimadores
+    V1 --> R1["<b>RAMO A: Baseline Cego</b><br/><code>baseline_predict()</code>"]
+    V1 --> R2["<b>RAMO B: Estágio Único (Simples)</b><br/><code>fit_predict_simples()</code>"]
+    V1 --> R3["<b>RAMO C: Dois Estágios (2SLS)</b><br/><code>fit_predict_2sls()</code>"]
+
+    %% Detalhes do Ramo A
+    R1 --> A1["• Base: N = 1.115 linhas<br/>• Preditores: Apenas <i>Modelo</i><br/>• Lógica: Mediana histórica por fórmula<br/>• <b>Saída:</b> Predição constante"]
+
+    %% Detalhes do Ramo B
+    R2 --> B1["• Base: N = 1.115 linhas (Empilhada)<br/>• Preditores: Combinações do Grid Search (num + cat)<br/>• Lógica: OLS / Splines diretos em MAPE_boxcox<br/>• <b>Saída:</b> <code>inv_boxcox(y_hat)</code>"]
+
+    %% Detalhes do Ramo C
+    R3 --> C1["• Base: n = 223 (E1) | N = 1.115 (E2)<br/>• Preditores: Combinações do Grid Search<br/>• <b>Estágio 1:</b> Prediz patamar do animal via <i>X_animal</i><br/>• <b>Estágio 2:</b> Prediz desvio da fórmula via <i>Modelo</i><br/>• <b>Saída:</b> <code>inv_boxcox(P_i + D_j)</code>"]
+
+    %% Consolidação e Métricas
+    A1 --> M1
+    B1 --> M1
+    C1 --> M1["<b>5. Avaliação de Desempenho e Seleção Final</b><br/>• <b>Métricas Contínuas:</b> MAE, RMSE e R² Out-of-Fold (OOF)<br/>• <b>Meta-Métrica de Ordenação:</b> Acurácia Top-1 Ranking<br/>• <b>Incerteza:</b> Bootstrap Clusterizado por Estudo (1.000 réplicas)"]
+
+    style D1 fill:#EFF6FF,stroke:#1E3A8A,stroke-width:2px,color:#1E293B
+    style GS fill:#FFFBEB,stroke:#D97706,stroke-width:2px,color:#1E293B
+    style V1 fill:#F0FDFA,stroke:#0D9488,stroke-width:2px,color:#1E293B
+    style R1 fill:#FEF3C7,stroke:#B45309,stroke-width:2px,color:#1E293B
+    style R2 fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#1E293B
+    style R3 fill:#F3E8FF,stroke:#6D28D9,stroke-width:2px,color:#1E293B
+    style M1 fill:#ECFDF5,stroke:#047857,stroke-width:2px,color:#1E293B
 </pre>
+
+<div class="figure-caption">
+<strong>Figura 4.1 – Fluxograma do Pipeline Experimental de Modelagem, Grid Search e Validação Cruzada.</strong><br/>
+<span class="figure-source">Fonte: Elaborado pelos autores com base na implementação do script <code>04_modelagem_validacao.py</code>.</span>
+</div>
+
+<div class="figure-legend">
+<strong>Legenda.</strong>
+<ul>
+<li><strong>Etapa 1 (Entrada de Dados):</strong> carga do dataset processado (<code>03_modelagem.csv</code>) com <em>N</em> = 1.115 observações pareadas provenientes de 223 animais avaliados por 5 equações empíricas.</li>
+<li><strong>Etapa 2 (Grid Search de Features):</strong> rotina <code>generate_feature_sets()</code>, testando combinações de covariáveis numéricas e categóricas, com avaliação do Consumo de Matéria Seca e da B-Spline Cúbica no Peso (4 nós).</li>
+<li><strong>Etapa 3 (Validação Cruzada Estrita):</strong> <code>GroupKFold</code> (5 folds) e <code>Leave-One-Study-Out</code> (<code>LOSO</code> em 5 países ocultos), com <code>Estudo</code> apenas como chave de agrupamento.</li>
+<li><strong>Etapa 4 (Competição em Três Ramos):</strong> baseline cego (<code>baseline_predict()</code>), estágio único (<code>fit_predict_simples()</code>) e dois estágios (<code>fit_predict_2sls()</code>).</li>
+<li><strong>Etapa 5 (Consolidação de Métricas):</strong> avaliação OOF por MAE, RMSE, <em>R</em><sup>2</sup>, Top-1 e Bootstrap Clusterizado por Estudo (1.000 réplicas).</li>
+</ul>
+</div>
+
+### Detalhamento da varredura de features (Grid Search)
+
+### Detalhamento dos protocolos de validação cruzada
+
+### Detalhamento das arquiteturas de modelagem
+
+### Detalhamento das métricas de avaliação
 
 # Resultados
 
@@ -869,7 +904,7 @@ consolidando as decisões de tratamento e a estrutura em dois estágios:
 
 Existe uma diferença fundamental entre os dois alvos de avaliação do projeto:
 
-1. **O Alvo Contínuo (Métricas de Regressão Clássica):** Avalia a precisão pontual do valor do MAPE (_target_) via MAPE, 
+1. **O Alvo (Métricas de Regressão Clássica):** Avalia a precisão pontual do valor do MAPE (_target_) via MAPE,
    MAE e $R^2$.
 2. **O Alvo de Ordenação / Ranking (Acurácia Top-1):** Representa a meta-métrica do seletor. O algoritmo
    estima $\widehat{\text{MAPE}}_{ij}$ para selecionar a melhor formulação recomendada:
@@ -881,7 +916,7 @@ taxa em que o seletor acerta a equação (modelo empírico) de menor erro real n
 
 ---
 
-## Avaliação do Alvo Contínuo e a Explicação do $R^2$ Baixo
+## Avaliação do Alvo
 
 A tabela abaixo apresenta os resultados consolidados pelo script Python (`04_metricas_resumo.csv`):
 
@@ -909,30 +944,121 @@ cat(paste0(
 ))
 ```
 
-### Por que o $R^2$ contínuo é baixo ($R^2_1 \approx 0,006$ e $R^2_2 \approx 0,040$)?
+### Gráfico de resíduos OOF (Homocedasticidade e Q-Q Plot)
 
-A variância do MAPE é dominada pelo efeito de Estudo ($\text{ICC} = 0,539$). Como a variável `Estudo` é vetada como
-preditor
-para evitar vazamento de dados (*data leakage*), nenhum modelo linear consegue prever o patamar contínuo exato do erro
-em um
-ensaio inédito.
+```{r diagnostico-residuos-oof, echo=FALSE, fig.align='center', fig.cap="Diagnóstico de Resíduos Out-of-Fold na Escala Transformada (Box-Cox λ ≈ 0,343)", fig.width=9, fig.height=4.5}
+library(ggplot2)
+library(dplyr)
+library(patchwork) # Para combinar os dois painéis lado a lado
 
-**Como usar isso a favor do projeto:** A limitação do $R^2$ contínuo é o argumento central para justificar a transição
-da regressão contínua para o **alvo de ordenação (Acurácia Top-1)**.
+# 1. Preparação dos resíduos na escala Box-Cox - GroupKFold (λ = 0.343)
+df_residuos <- df_oof %>%
+        dplyr::filter(grepl("groupkfold", protocolo, ignore.case = TRUE)) %>%
+        dplyr::mutate(residuo_bc = MAPE - pred)
 
----
+# 2. Painel A: Resíduos vs. Valores Ajustados (Homocedasticidade e Ausência de Viés)
+p_homocedasticidade <- ggplot(df_residuos, aes(x = pred, y = residuo_bc)) +
+  geom_point(alpha = 0.4, color = "#1e3a8a", size = 1.3) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#dc2626", linewidth = 0.7) +
+  geom_smooth(method = "loess", color = "#d97706", se = FALSE, linewidth = 0.8) +
+  
+  # FACETAÇÃO: 1 painel para cada modelo empírico em 2 linhas
+  facet_wrap(~ modelo_ml, ncol = 3, scales = "fixed") +
+  
+  labs(
+    title = "Resíduos Out-of-Fold vs. Ajustados por Equação Empírica",
+    subtitle = "Avaliação individual de homocedasticidade e viés para cada modelo de metano",
+    x = "Valores Previstos (ŷ_bc)",
+    y = "Resíduo (e_ij)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    strip.background = element_rect(fill = "#e2e8f0", color = NA),
+    strip.text = element_text(face = "bold", color = "#1e293b"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 9.5, hjust = 0.5, color = "gray30"),
+    panel.border = element_rect(color = "#cbd5e1", fill = NA, linewidth = 0.5)
+  )
 
-## A Vitória Expressiva no Alvo de Ordenação (Top-1 Ranking)
+# 3. Painel B: Normalidade dos Resíduos (Q-Q Plot)
+p_qqplot <- ggplot(df_residuos, aes(sample = residuo_bc)) +
+  stat_qq(color = "#1e3a8a", alpha = 0.4, size = 1.5) +
+  stat_qq_line(color = "#dc2626", linetype = "dashed", linewidth = 0.8) +
+  facet_wrap(~ modelo_ml, ncol = 3, scales = "fixed") +
+  labs(
+    title = "Normalidade dos Resíduos (Q-Q Plot) - GroupKFold",
+    subtitle = "Comparação com a Distribuição Normal Teórica",
+    x = "Quantis Teóricos N(0, σ²)",
+    y = "Quantis Amostrais dos Resíduos"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8.5, color = "gray30"),
+    panel.grid.minor = element_blank()
+  )
 
-No protocolo `GroupKFold`, enquanto o baseline cego atinge apenas **0,266** de acurácia, os modelos de **Dois Estágios (
-OLS e Splines) atingem 0,359 de Acurácia Top-1**.
+# 4. Exibição combinada via patchwork
+p_homocedasticidade 
+p_qqplot
+```
 
-Isso representa um **ganho de acerto de +9,3%** na recomendação da equação empírica ideal. O modelo aprende com precisão
-o
-**comportamento diferencial relativo** entre os modelos sob diferentes interações do animal, mesmo quando o patamar
-absoluto
-do estudo varia.
+```{r diagnostico-residuos-oof2, echo=FALSE, fig.align='center', fig.cap="Diagnóstico de Resíduos Out-of-Fold na Escala Transformada (Box-Cox λ ≈ 0,343)", fig.width=9, fig.height=4.5}
+library(ggplot2)
+library(dplyr)
+library(patchwork) # Para combinar os dois painéis lado a lado
 
+# 1. Preparação dos resíduos na escala Box-Cox (λ = 0.343)
+df_residuos <- df_oof %>%
+        dplyr::filter(grepl("loso", protocolo, ignore.case = TRUE)) %>%
+        dplyr::mutate(residuo_bc = MAPE - pred)
+
+# 2. Painel A: Resíduos vs. Valores Ajustados (Homocedasticidade e Ausência de Viés)
+p_homocedasticidade <- ggplot(df_residuos, aes(x = pred, y = residuo_bc)) +
+  geom_point(alpha = 0.4, color = "#1e3a8a", size = 1.3) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#dc2626", linewidth = 0.7) +
+  geom_smooth(method = "loess", color = "#d97706", se = FALSE, linewidth = 0.8) +
+  
+  # FACETAÇÃO: 1 painel para cada modelo empírico em 2 linhas
+  facet_wrap(~ modelo_ml, ncol = 3, scales = "fixed") +
+  
+  labs(
+    title = "Resíduos Out-of-Fold vs. Ajustados por Equação Empírica - LOSO",
+    subtitle = "Avaliação individual de homocedasticidade e viés para cada modelo de metano",
+    x = "Valores Previstos (ŷ_bc)",
+    y = "Resíduo (e_ij)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    strip.background = element_rect(fill = "#e2e8f0", color = NA),
+    strip.text = element_text(face = "bold", color = "#1e293b"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 9.5, hjust = 0.5, color = "gray30"),
+    panel.border = element_rect(color = "#cbd5e1", fill = NA, linewidth = 0.5)
+  )
+
+# 3. Painel B: Normalidade dos Resíduos (Q-Q Plot)
+p_qqplot <- ggplot(df_residuos, aes(sample = residuo_bc)) +
+  stat_qq(color = "#1e3a8a", alpha = 0.4, size = 1.5) +
+  stat_qq_line(color = "#dc2626", linetype = "dashed", linewidth = 0.8) +
+  facet_wrap(~ modelo_ml, ncol = 3, scales = "fixed") +
+  labs(
+    title = "Normalidade dos Resíduos (Q-Q Plot) - LOSO",
+    subtitle = "Comparação com a Distribuição Normal Teórica",
+    x = "Quantis Teóricos N(0, σ²)",
+    y = "Quantis Amostrais dos Resíduos"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 11),
+    plot.subtitle = element_text(size = 8.5, color = "gray30"),
+    panel.grid.minor = element_blank()
+  )
+
+# 4. Exibição combinada via patchwork
+p_homocedasticidade 
+p_qqplot
+```
 ---
 
 ## Avaliação de Incerteza via Bootstrap Clusterizado por Estudo
@@ -955,16 +1081,14 @@ cat(paste0(
 ))
 ```
 
-A sobreposição nos intervalos do MAE reitera que a variância do patamar é dominada pelo estudo. Contudo, ao isolar esse
-patamar no Estágio 1, as interações do Estágio 2 garantem a máxima acurácia na seleção da melhor fórmula empírica.
-
-```
-
 # Anexos
+
+- desempenho pro grupo grupos e paises ocultos
+- distribuição do delta erro por animal
+- Tabela de Decisão Estratégica Consolidada 
 
 Quantidade de combinações de features
 Quantidade de modelos + combinações
 
 Lista com todas as combinaçãos + modelos gerados e treinados
-
 

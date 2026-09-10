@@ -3,14 +3,27 @@
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Se o RequireJS foi carregado pelo plotly/crosstalk, definimos o módulo manualmente
+    const mermaidConfig = {
+      startOnLoad: true,
+      securityLevel: "loose",
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        nodeSpacing: 55,
+        rankSpacing: 85,
+        padding: 25,
+        curve: "basis"
+      }
+    };
+
     if (typeof require === 'function' && typeof mermaid === 'undefined') {
       require(['https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'], function(m) {
         window.mermaid = m;
-        mermaid.initialize({ startOnLoad: true });
+        mermaid.initialize(mermaidConfig);
         mermaid.contentLoaded();
       });
     } else if (typeof mermaid !== 'undefined') {
-      mermaid.initialize({ startOnLoad: true });
+      mermaid.initialize(mermaidConfig);
     }
   });
 </script>
