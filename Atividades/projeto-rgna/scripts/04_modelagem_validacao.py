@@ -371,15 +371,27 @@ def top_models_union_after_median_filter(agg: pd.DataFrame) -> set[str]:
     Retorna a união dos top-N modelos de LOSO e GroupKFold após o filtro por baseline.
 
     O N é parametrizado por config.TOP_N_MODELOS_POR_PROTOCOLO.
+    A baseline mediana simples deve permanecer sempre no conjunto final para permitir
+    comparação direta com os modelos candidatos.
     """
     n_top = int(getattr(config, "TOP_N_MODELOS_POR_PROTOCOLO", 5))
     if n_top <= 0 or agg.empty:
         return set()
 
+    baseline_name = "baseline_mediana_modelo"
     selected: set[str] = set()
+    if baseline_name in agg["modelo"].unique():
+        selected.add(baseline_name)
+
     for protocolo in ("LOSO_paises_case", "GroupKFold"):
+        pd_proto = agg[agg["protocolo"] == protocolo]
+        if pd_proto.empty:
+            continue
+        if baseline_name in pd_proto["modelo"].unique():
+            selected.add(baseline_name)
+
         top = (
-            agg[agg["protocolo"] == protocolo]
+            pd_proto
             .sort_values(["mape", "mae", "rmse", "modelo"], ascending=[True, True, True, True])
             .head(n_top)
         )

@@ -44,7 +44,7 @@ def spline_preprocessor(num_cols: list[str], cat_cols: list[str]) -> ColumnTrans
         # Se não houver colunas numéricas, retorna um pré-processador apenas com as categóricas
         return ColumnTransformer([("cat", _cat_encoder(), cat_cols)], remainder="drop")
 
-    weight_col = "Peso_Animal"
+    weight_col = "Peso_Corporal_kg"
     num_spline = [weight_col] if weight_col in num_cols else []
     num_linear = [col for col in num_cols if col != weight_col]
 

@@ -427,7 +427,7 @@ o teste lacrado:
 2. **`Leave-One-Study-Out` (LOSO) para os Países do Case:** Este protocolo simula o cenário de aplicação real do teste
    oculto. Para os estudos pertencentes aos cinco países ocultos do case (Campo Rico, Costa Austral, Ilha Verdejante,
    Monção Dourada e Terra Nortenha), o modelo é validado deixando um estudo local inteiramente de fora para teste,
-   treinando com todos os estudos restantes de todos os outros países do consórcio global.
+   treinando com todos os estudos restantes de todos os outros países.
 
 *Nota de integridade:* É imperativo destacar que a variável categórica `Estudo` é utilizada **unicamente como chave de
 agrupamento** no iterador da validação cruzada. Ela jamais entra como variável preditora (*feature* ou *dummy*) nos
