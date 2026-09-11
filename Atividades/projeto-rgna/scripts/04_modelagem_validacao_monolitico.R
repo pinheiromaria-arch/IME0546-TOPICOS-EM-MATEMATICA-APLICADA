@@ -684,16 +684,16 @@ main <- function() {
     info = "Estudo usado apenas como grupo de CV. País será one-hot encoded."
   )
 
-  write.csv(modelagem, file.path(out_dir, "03_modelagem_r_monolitico.csv"), row.names = FALSE, fileEncoding = "UTF-8")
-  write.csv(meta, file.path(out_dir, "03_meta_r_monolitico.csv"), row.names = FALSE, fileEncoding = "UTF-8")
-  writeLines(campeao, file.path(out_dir, "01_campeao_global_r_monolitico.txt"))
+  write.csv(modelagem, file.path(out_dir, "03_modelagem.csv"), row.names = FALSE, fileEncoding = "UTF-8")
+  write.csv(meta, file.path(out_dir, "03_meta.csv"), row.names = FALSE, fileEncoding = "UTF-8")
+  writeLines(campeao, file.path(out_dir, "01_campeao_global.txt"))
 
   df <- modelagem
   df$Estudo <- as.character(df$Estudo)
   log_msg(sprintf("Dados carregados: n=%d, estudos=%d", nrow(df), n_distinct(df$Estudo)))
 
   vif <- compute_vif(df)
-  write.csv(vif, file.path(out_dir, "04_vif_r_monolitico.csv"), row.names = FALSE)
+  write.csv(vif, file.path(out_dir, "04_vif.csv"), row.names = FALSE)
   log_msg("VIF calculado.")
 
   feature_sets <- generate_feature_sets()
@@ -734,11 +734,11 @@ main <- function() {
   boot_f <- boot |>
     inner_join(keep_pairs, by = c("protocolo", "modelo"))
 
-  write.csv(agg_f, file.path(out_dir, "04_metricas_resumo_r_monolitico.csv"), row.names = FALSE)
-  write.csv(raw_f, file.path(out_dir, "04_metricas_folds_r_monolitico.csv"), row.names = FALSE)
-  write.csv(oof_f, file.path(out_dir, "04_predicoes_oof_r_monolitico.csv"), row.names = FALSE)
-  write.csv(boot_f, file.path(out_dir, "04_bootstrap_ic_r_monolitico.csv"), row.names = FALSE)
-  writeLines(sort(unique(all_equations)), file.path(out_dir, "04_equacoes_modelos_r_monolitico.txt"), useBytes = TRUE)
+  write.csv(agg_f, file.path(out_dir, "04_metricas_resumo.csv"), row.names = FALSE)
+  write.csv(raw_f, file.path(out_dir, "04_metricas_folds.csv"), row.names = FALSE)
+  write.csv(oof_f, file.path(out_dir, "04_predicoes_oof.csv"), row.names = FALSE)
+  write.csv(boot_f, file.path(out_dir, "04_bootstrap_ic.csv"), row.names = FALSE)
+  writeLines(sort(unique(all_equations)), file.path(out_dir, "04_equacoes_modelos.txt"), useBytes = TRUE)
 
   summary_json <- list(
     metricas = jsonlite::fromJSON(jsonlite::toJSON(agg_f, dataframe = "rows", auto_unbox = TRUE)),
@@ -746,7 +746,7 @@ main <- function() {
   )
   writeLines(
     jsonlite::toJSON(summary_json, ensure_ascii = FALSE, pretty = TRUE, auto_unbox = TRUE),
-    file.path(out_dir, "04_resumo_r_monolitico.json"),
+    file.path(out_dir, "04_resumo.json"),
     useBytes = TRUE
   )
 
