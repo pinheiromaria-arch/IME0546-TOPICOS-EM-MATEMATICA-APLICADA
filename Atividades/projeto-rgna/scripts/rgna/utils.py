@@ -61,7 +61,17 @@ def rmse(y_true, y_pred) -> float:
 
 
 def mape(y_true, y_pred) -> float:
-    """Calcula o MAPE com proteção contra divisão por zero."""
+    """Calcula o erro percentual médio ABSOLUTO da PREVISÃO em relação ao MAPE real.
+
+    Atenção: isto NÃO é o MAPE científico do case (a variável-alvo, já chamada
+    MAPE nos dados). É uma métrica de avaliação do MODELO: o erro percentual
+    entre o MAPE real de cada linha e o MAPE previsto pelo seletor/regressão
+    para aquela linha. O nome coincide por convenção de métrica de regressão,
+    não porque sejam a mesma grandeza. Como MAPE real pode ser próximo de
+    zero em algumas linhas (mínimo observado ~0,0005), o erro relativo pode
+    ficar bem maior que os erros absolutos (MAE/RMSE) sugerem — isso é
+    esperado da fórmula percentual, não um bug.
+    """
     y_true = np.asarray(y_true, dtype=float)
     y_pred = np.asarray(y_pred, dtype=float)
     denom = np.abs(y_true)
@@ -70,7 +80,16 @@ def mape(y_true, y_pred) -> float:
 
 
 def regression_scores(y_true, y_pred) -> dict:
-    """Calcula um dicionário de métricas de regressão."""
+    """Calcula um dicionário de métricas de regressão, todas na mesma escala.
+
+    y_true e y_pred devem estar ambos na escala original do MAPE (não em
+    MAPE_boxcox) — quem chama esta função é responsável por reverter Box-Cox
+    antes, com o MESMO lambda usado na transformação (ver config.get_best_lambda).
+    "mape" aqui é a métrica de erro da previsão, ver docstring de mape().
+    "r2" é o r2_score padrão do sklearn (1 - SSE/SST); pode ser negativo de
+    forma legítima quando o modelo erra mais que a média do próprio conjunto
+    de teste — não é clampado nem invertido em lugar nenhum do pipeline.
+    """
     return {
         "mae": float(mean_absolute_error(y_true, y_pred)),
         "rmse": rmse(y_true, y_pred),

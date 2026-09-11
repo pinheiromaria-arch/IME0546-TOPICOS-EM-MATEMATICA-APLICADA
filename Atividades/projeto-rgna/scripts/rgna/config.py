@@ -1,5 +1,7 @@
 """Módulo de configuração para os scripts Python do projeto RGNA."""
 
+import pandas as pd
+
 # Constantes de Modelagem
 PAISES_OCULTOS = [
     "Campo Rico",
@@ -10,7 +12,29 @@ PAISES_OCULTOS = [
 ]
 
 TARGET = "MAPE_boxcox"  # Note. MAPE na escala logarítmica (Box-Cox) para regressão linear
-BEST_LAMBDA = 0.3434343
+
+_best_lambda_cache: float | None = None
+
+
+def get_best_lambda(root=None) -> float:
+    """Lê o lambda de Box-Cox salvo por scripts/03_engenharia_features.R.
+
+    data/processed/03_meta.csv é a ÚNICA fonte de verdade para esse valor: é
+    o mesmo lambda usado para criar a coluna MAPE_boxcox. Um valor hardcoded
+    aqui pode divergir silenciosamente do lambda real usado na transformação
+    (era o caso antes: 0.3434343 hardcoded vs. 0.3 real), o que corrompe a
+    reversão de Box-Cox -> MAPE e distorce MAE/RMSE/R² calculados na escala
+    original. Resultado é cacheado em processo para evitar releituras do CSV.
+    """
+    global _best_lambda_cache
+    if _best_lambda_cache is None:
+        if root is None:
+            from .utils import find_root
+
+            root = find_root()
+        meta = pd.read_csv(root / "data" / "processed" / "03_meta.csv")
+        _best_lambda_cache = float(meta["lambda_boxcox"].iloc[0])
+    return _best_lambda_cache
 
 # Candidatos a features para varredura completa
 NUM_CANDIDATES = [
