@@ -107,7 +107,7 @@ def fit_predict_2sls(
 
     # --- Combinação ---
     pred_log = pred_median_test + pred_resid_test
-    pred_final = inv_boxcox(pred_log, config.BEST_LAMBDA)
+    pred_final = inv_boxcox(pred_log, config.get_best_lambda())
 
     return pred_final, equacoes
 
@@ -129,7 +129,7 @@ def fit_predict_simples(
 
     pipe.fit(train[x_cols], train[config.TARGET])
     pred_log = pipe.predict(test[x_cols])
-    pred_final = inv_boxcox(pred_log, config.BEST_LAMBDA)
+    pred_final = inv_boxcox(pred_log, config.get_best_lambda())
     equacao = extrair_expressao_pipeline(pipe, model_name)
 
     return pred_final, [equacao]
