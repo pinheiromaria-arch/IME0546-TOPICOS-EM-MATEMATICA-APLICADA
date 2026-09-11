@@ -890,6 +890,42 @@ flowchart TD
 </ul>
 </div>
 
+
+
+<pre class="mermaid">
+flowchart TD
+    %% Entrada e Grid Search
+    D1["<b>1. Entrada de Dados Processados</b><br/><i>(03_modelagem.csv)</i><br/>N = 1.115 observações pareadas | 223 Animais<br/>Preditores Numéricos: Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A"]
+    
+    GS["<b>2. Varredura Exaustiva de Features (Grid Search)</b><br/><code>generate_feature_sets()</code><br/>• Testa todas as combinações de variáveis numéricas e categóricas<br/>• Avalia empiricamente o <b>Consumo_MS_kg</b> (tradeoff ganho vs VIF)<br/>• Avalia B-Splines Cúbicas no Peso Corporal (4 nós)"]
+    
+    V1["<b>3. Protocolos de Validação Cruzada (Sem Data Leakage)</b><br/>• <b>GroupKFold por Estudo</b> (5 Folds)<br/>• <b>Leave-One-Study-Out (LOSO)</b> nos 5 Países Ocultos (38 Estudos)<br/><i>Estudo mantido estritamente como chave de agrupamento (vetado como feature)</i>"]
+
+    D1 --> GS
+    GS --> V1
+
+    %% Ramificação dos Estimadores
+    V1 --> R1["<b>RAMO A: Baseline Cego</b><br/><code>baseline_predict()</code>"]
+    V1 --> R2["<b>RAMO B: Estágio Único (Simples)</b><br/><code>fit_predict_simples()</code>"]
+
+    %% Detalhes do Ramo A
+    R1 --> A1["• Base: N = 1.115 linhas<br/>• Preditores: Apenas <i>Modelo</i><br/>• Lógica: Mediana histórica por fórmula<br/>• <b>Saída:</b> Predição constante"]
+
+    %% Detalhes do Ramo B
+    R2 --> B1["• Base: N = 1.115 linhas (Empilhada)<br/>• Preditores: Combinações do Grid Search (num + cat)<br/>• Lógica: OLS / Splines diretos em MAPE_boxcox<br/>• <b>Saída:</b> <code>inv_boxcox(y_hat)</code>"]
+
+    %% Consolidação e Métricas
+    A1 --> M1
+    B1 --> M1["<b>5. Avaliação de Desempenho e Seleção Final</b><br/>• <b>Métricas Contínuas:</b> MAE, RMSE e R² Out-of-Fold (OOF)<br/>• <b>Meta-Métrica de Ordenação:</b> Acurácia Top-1 Ranking<br/>• <b>Incerteza:</b> Bootstrap Clusterizado por Estudo (1.000 réplicas)"]
+
+    style D1 fill:#EFF6FF,stroke:#1E3A8A,stroke-width:2px,color:#1E293B
+    style GS fill:#FFFBEB,stroke:#D97706,stroke-width:2px,color:#1E293B
+    style V1 fill:#F0FDFA,stroke:#0D9488,stroke-width:2px,color:#1E293B
+    style R1 fill:#FEF3C7,stroke:#B45309,stroke-width:2px,color:#1E293B
+    style R2 fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#1E293B
+    style M1 fill:#ECFDF5,stroke:#047857,stroke-width:2px,color:#1E293B
+</pre>
+
 ### Detalhamento da varredura de features (Grid Search)
 
 ### Detalhamento dos protocolos de validação cruzada

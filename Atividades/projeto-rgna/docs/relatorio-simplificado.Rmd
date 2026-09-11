@@ -1,0 +1,1017 @@
+---
+title: "Previsão do MAPE de modelos empíricos de emissão de metano"
+subtitle: "IME0546 — Tópicos em Matemática Aplicada · Rede Global de Nutrição Animal (treino)"
+author: ""
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    theme: null
+    css: ./scripts/estilo.css
+    toc: true
+    toc_depth: 5
+    toc_float: false
+    number_sections: true
+    df_print: kable
+    self_contained: true
+    includes:
+      after_body: ./scripts/toc-nav.html
+      in_header: ./scripts/header-mermaid.html
+    fig_width: 8
+    fig_height: 4.6
+    fig_retina: 2
+  pdf_document:
+    latex_engine: xelatex
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_width: 7
+    fig_height: 4.2
+    highlight: tango
+    keep_tex: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  dpi = 140
+)
+options(knitr.kable.NA = "—")
+
+tab <- function(x, ...) {
+  k <- knitr::kable(
+    x,
+    format = "html",
+    escape = TRUE,
+    table.attr = 'class="rgna"',
+    ...
+  )
+  knitr::raw_html(
+    paste0('<div class="table-wrap">', paste(as.character(k), collapse = "\n"), "</div>")
+  )
+}
+root <- normalizePath("..")
+source(file.path(root, "scripts", "tema_rgna.R"), encoding = "UTF-8")
+df <- ler_treino(root)
+theme_set(theme_rgna())
+
+path_modelagem <- file.path(root, "data", "processed", "03_modelagem.csv")
+tem_modelagem <- file.exists(path_modelagem)
+if (tem_modelagem) {
+  df_modelagem <- read.csv(path_modelagem, check.names = FALSE)
+}
+
+fmt_pct <- function(x, d = 1) paste0(format(round(100 * x, d), decimal.mark = ",", nsmall = d), "%")
+fmt_n <- function(x, d = 3) format(round(x, d), decimal.mark = ",", nsmall = d)
+fmt_p <- function(p) {
+  if (is.na(p)) return("—")
+  if (p < 0.001) "< 0,001" else format(round(p, 3), decimal.mark = ",", nsmall = 3)
+}
+
+mape_modelo <- df |>
+  group_by(Modelo) |>
+  summarise(
+    n = n(),
+    media = mean(MAPE),
+    mediana = median(MAPE),
+    desvio = sd(MAPE),
+    q1 = quantile(MAPE, 0.25),
+    q3 = quantile(MAPE, 0.75),
+    minimo = min(MAPE),
+    maximo = max(MAPE),
+    .groups = "drop"
+  ) |>
+  arrange(mediana)
+
+campeao <- as.character(mape_modelo$Modelo[1])
+campeao_media <- as.character(mape_modelo$Modelo[which.min(mape_modelo$media)])
+
+win_id <- df |>
+  group_by(ID_Observacao) |>
+  slice_min(MAPE, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+vitorias <- win_id |>
+  count(Modelo, name = "n_vitorias") |>
+  mutate(fracao = n_vitorias / sum(n_vitorias)) |>
+  arrange(desc(n_vitorias))
+
+tab_pais <- df |>
+  group_by(Pais_Estudo, Modelo) |>
+  summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+
+win_pais <- tab_pais |>
+  group_by(Pais_Estudo) |>
+  slice_min(mediana, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+tab_status <- df |>
+  group_by(Status_Metabolico, Modelo) |>
+  summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+
+win_status <- tab_status |>
+  group_by(Status_Metabolico) |>
+  slice_min(mediana, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+tab_sexo <- df |>
+  group_by(Sexo_Animal, Modelo) |>
+  summarise(n = n(), media = mean(MAPE), mediana = median(MAPE), .groups = "drop")
+
+win_sexo <- tab_sexo |>
+  group_by(Sexo_Animal) |>
+  slice_min(mediana, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+estudos_pais <- df |>
+  group_by(Pais_Estudo) |>
+  summarise(
+    n_estudo = n_distinct(Estudo),
+    n_id = n_distinct(ID_Observacao),
+    n_linhas = n(),
+    .groups = "drop"
+  ) |>
+  arrange(desc(n_id))
+
+aov_est <- aov(MAPE ~ Estudo, data = df)
+ss <- summary(aov_est)[[1]]
+ms <- ss[["Mean Sq"]]
+n_por_estudo <- df |> count(Estudo)
+n0 <- (sum(n_por_estudo$n) - sum(n_por_estudo$n^2) / sum(n_por_estudo$n)) / (nrow(n_por_estudo) - 1)
+sigma2_w <- ms[2]
+sigma2_b <- max(0, (ms[1] - ms[2]) / n0)
+icc <- sigma2_b / (sigma2_b + sigma2_w)
+
+mape_wide <- df |>
+  select(ID_Observacao, Modelo, MAPE) |>
+  tidyr::pivot_wider(names_from = Modelo, values_from = MAPE)
+fried <- friedman.test(as.matrix(mape_wide |> select(starts_with("Modelo"))))
+
+kw_status <- kruskal.test(MAPE ~ Status_Metabolico, data = df)
+kw_sexo <- kruskal.test(MAPE ~ Sexo_Animal, data = df)
+kw_pais <- kruskal.test(MAPE ~ Pais_Estudo, data = df)
+
+num_sum <- df |>
+  distinct(ID_Observacao, .keep_all = TRUE) |>
+  summarise(across(
+    c(Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B),
+    list(media = mean, mediana = median, desvio = sd, min = min, max = max)
+  ))
+
+cors <- cor(
+  df |> select(MAPE, Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A, Fracao_Perda_B),
+  use = "complete.obs"
+)
+
+path_04 <- file.path(root, "data", "processed", "04_metricas_resumo.csv")
+tem_04 <- file.exists(path_04)
+if (tem_04) resumo_04 <- read.csv(path_04, check.names = FALSE)
+path_vif <- file.path(root, "data", "processed", "04_vif.csv")
+tem_vif <- file.exists(path_vif)
+if (tem_vif) vif_04 <- read.csv(path_vif, check.names = FALSE)
+path_boot <- file.path(root, "data", "processed", "04_bootstrap_ic.csv")
+tem_boot <- file.exists(path_boot)
+if (tem_boot) boot_04 <- read.csv(path_boot, check.names = FALSE)
+path_oof <- file.path(root, "data", "processed", "04_predicoes_oof.csv")
+if (file.exists(path_oof)) df_oof <- read.csv(path_oof, check.names = FALSE)
+```
+
+# Representação Visual da Estratégia de Modelagem
+
+O diagrama abaixo sintetiza todo o fluxo lógico percorrido pelos dados no script Python (`04_modelagem_validacao.py`),
+consolidando as decisões de tratamento e a estrutura em dois estágios:
+
+<pre class="mermaid">
+flowchart TD
+    %% Entrada e Grid Search
+    D1["<b>1. Entrada de Dados Processados</b><br/><i>(03_modelagem.csv)</i><br/>N = 1.115 observações pareadas | 223 Animais<br/>Preditores Numéricos: Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A"]
+    
+    GS["<b>2. Varredura Exaustiva de Features (Grid Search)</b><br/><code>generate_feature_sets()</code><br/>• Testa todas as combinações de variáveis numéricas e categóricas<br/>• Avalia empiricamente o <b>Consumo_MS_kg</b> (tradeoff ganho vs VIF)<br/>• Avalia B-Splines Cúbicas no Peso Corporal (4 nós)"]
+    
+    V1["<b>3. Protocolos de Validação Cruzada (Sem Data Leakage)</b><br/>• <b>GroupKFold por Estudo</b> (5 Folds)<br/>• <b>Leave-One-Study-Out (LOSO)</b> nos 5 Países Ocultos (38 Estudos)<br/><i>Estudo mantido estritamente como chave de agrupamento (vetado como feature)</i>"]
+
+    D1 --> GS
+    GS --> V1
+
+    %% Ramificação dos Estimadores
+    V1 --> R1["<b>RAMO A: Baseline Cego</b><br/><code>baseline_predict()</code>"]
+    V1 --> R2["<b>RAMO B: Estágio Único (Simples)</b><br/><code>fit_predict_simples()</code>"]
+
+    %% Detalhes do Ramo A
+    R1 --> A1["• Base: N = 1.115 linhas<br/>• Preditores: Apenas <i>Modelo</i><br/>• Lógica: Mediana histórica por fórmula<br/>• <b>Saída:</b> Predição constante"]
+
+    %% Detalhes do Ramo B
+    R2 --> B1["• Base: N = 1.115 linhas (Empilhada)<br/>• Preditores: Combinações do Grid Search (num + cat)<br/>• Lógica: OLS / Splines diretos em MAPE_boxcox<br/>• <b>Saída:</b> <code>inv_boxcox(y_hat)</code>"]
+
+    %% Consolidação e Métricas
+    A1 --> M1
+    B1 --> M1["<b>5. Avaliação de Desempenho e Seleção Final</b><br/>• <b>Métricas Contínuas:</b> MAE, RMSE e R² Out-of-Fold (OOF)<br/>• <b>Meta-Métrica de Ordenação:</b> Acurácia Top-1 Ranking<br/>• <b>Incerteza:</b> Bootstrap Clusterizado por Estudo (1.000 réplicas)"]
+
+    style D1 fill:#EFF6FF,stroke:#1E3A8A,stroke-width:2px,color:#1E293B
+    style GS fill:#FFFBEB,stroke:#D97706,stroke-width:2px,color:#1E293B
+    style V1 fill:#F0FDFA,stroke:#0D9488,stroke-width:2px,color:#1E293B
+    style R1 fill:#FEF3C7,stroke:#B45309,stroke-width:2px,color:#1E293B
+    style R2 fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#1E293B
+    style M1 fill:#ECFDF5,stroke:#047857,stroke-width:2px,color:#1E293B
+</pre>
+
+
+# Anatomia da Variável Alvo
+
+O foco principal deste estudo preditivo reside na modelagem do **Mean Absolute Percentage Error (MAPE)** correspondente
+aos cinco modelos empíricos ajustados para a estimativa de emissões de gases.
+
+Como as predições de regressão clássicas serão avaliadas em múltiplos cenários regionais, o objetivo é compreender os
+fatores individuais do animal que ditam o comportamento de erro de cada modelo empírico.
+
+A análise univariada do MAPE na escala original revelou um perfil de distribuição desafiador para modelagens
+lineares clássicas. A distribuição apresenta forte **assimetria positiva (à direita)**, com média amostral de **0,229**
+superando consideravelmente a mediana de **0,186**. Adicionalmente, identificou-se uma cauda longa extrema, onde o erro
+máximo observado atinge a marca de **1,214** (erro superior a 120%), enquanto o limite inferior está estritamente
+contido no domínio dos reais positivos $(MAPE > 0)$.
+
+Essa assimetria acentuada violaria de forma grave a premissa de homocedasticidade e normalidade dos resíduos de modelos
+estimados por Mínimos Quadrados Ordinários (OLS). Para contornar essa restrição e estabilizar a variância do alvo ao
+longo de diferentes patamares, aplicou-se a **transformação matemática de Box-Cox**.
+
+A busca de máxima verossimilhança estimou o parâmetro ótimo de inclinação em **$(\lambda \approx 0,343$)**. A
+transformação do vetor alvo para a modelagem segue formalmente a equação:
+
+$$Y^{(\lambda)} = \begin{cases}
+\frac{\text{MAPE}^{\lambda} - 1}{\lambda}, & \text{se } \lambda \neq 0 \\
+\ln(\text{MAPE}), & \text{se } \lambda = 0
+\end{cases}$$
+
+## Visualização e Análise do MAPE
+
+A cauda longa à direita fica evidente ao plotarmos o histograma de frequências do MAPE bruto na base de treino:
+
+```{r hist-mape, fig.cap="Histograma do MAPE no treino (1.115 linhas). A linha tracejada representa a mediana."}
+assimetria <- mean((df$MAPE - mean(df$MAPE))^3) / (sd(df$MAPE)^3)
+ggplot(df, aes(x = MAPE)) +
+  geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
+  geom_vline(xintercept = median(df$MAPE), linetype = "22", color = ink, linewidth = 0.4) +
+  labs(
+    title = "Distribuição do MAPE Original",
+    subtitle = paste0(
+      "Média ", fmt_n(mean(df$MAPE), 3),
+      " · Mediana ", fmt_n(median(df$MAPE), 3),
+      " · Assimetria ", fmt_n(assimetria, 2)
+    ),
+    x = "MAPE (Escala Original)",
+    y = "Frequência",
+    caption = "Fonte: dados_treino.xlsx. Treino apenas."
+  )
+```
+
+```{r tab-mape-global}
+mape_global <- df |>
+  summarise(
+    n = n(),
+    media = mean(MAPE),
+    mediana = median(MAPE),
+    desvio = sd(MAPE),
+    q1 = as.numeric(quantile(MAPE, 0.25)),
+    q3 = as.numeric(quantile(MAPE, 0.75)),
+    minimo = min(MAPE),
+    maximo = max(MAPE),
+    assimetria = mean((MAPE - mean(MAPE))^3) / (sd(MAPE)^3),
+    n_nao_positivo = sum(MAPE <= 0)
+  )
+tab(
+  mape_global |> mutate(across(-c(n, n_nao_positivo), ~fmt_n(.x, 3))),
+  caption = "Resumo univariado do MAPE na escala física original.",
+  align = "r"
+)
+```
+
+---
+
+## Transformação de Box-Cox ($\lambda \approx 0,343$)
+
+Com a aplicação do parâmetro ótimo encontrado por máxima verossimilhança, a distribuição foi centralizada e a assimetria
+caus de $+1,61$ para $-0,17$, resultando em uma distribuição com propriedades matemáticas ideais para ajustes lineares:
+
+```{r hist-mape-boxcox, fig.cap="Histograma do MAPE-BOXCOX no treino (1.115 linhas) sob o lambda ótimo."}
+assimetria_bc <- mean((df_modelagem$MAPE_boxcox - mean(df_modelagem$MAPE_boxcox))^3) / (sd(df_modelagem$MAPE_boxcox)^3)
+ggplot(df_modelagem, aes(x = MAPE_boxcox)) +
+  geom_histogram(bins = 36, fill = fill_main, color = paper, linewidth = 0.2) +
+  geom_vline(xintercept = median(df_modelagem$MAPE_boxcox), linetype = "22", color = ink, linewidth = 0.4) +
+  labs(
+    title = "Distribuição do MAPE Transformado (Box-Cox)",
+    subtitle = paste0(
+      "Média ", fmt_n(mean(df_modelagem$MAPE_boxcox), 3),
+      " · Mediana ", fmt_n(median(df_modelagem$MAPE_boxcox), 3),
+      " · Assimetria ", fmt_n(assimetria_bc, 2)
+    ),
+    x = "MAPE Transformado (Box-Cox)",
+    y = "Frequência",
+    caption = "Fonte: dados_treino.xlsx. Alvo de treino."
+  )
+```
+
+```{r tab-MAPE_boxcox-global}
+mape_boxcox_global <- df_modelagem |>
+  summarise(
+    n = n(),
+    media = mean(MAPE_boxcox),
+    mediana = median(MAPE_boxcox),
+    desvio = sd(MAPE_boxcox),
+    q1 = as.numeric(quantile(MAPE_boxcox, 0.25)),
+    q3 = as.numeric(quantile(MAPE_boxcox, 0.75)),
+    minimo = min(MAPE_boxcox),
+    maximo = max(MAPE_boxcox),
+    assimetria = mean((MAPE_boxcox - mean(MAPE_boxcox))^3) / (sd(MAPE_boxcox)^3),
+    n_nao_positivo = sum(MAPE_boxcox <= 0)
+  )
+tab(
+  mape_boxcox_global |> mutate(across(-c(n, n_nao_positivo), ~fmt_n(.x, 3))),
+  caption = "Resumo univariado do MAPE transformado por Box-Cox.",
+  align = "r"
+)
+```
+
+Por fim, ao analisar a densidade do alvo transformado por modelo empírico, observa-se que, embora a compressão da cauda
+longa tenha sido uniformemente aplicada com sucesso em todas as formulações, o centro de massa da distribuição de erros
+difere nitidamente de modelo para modelo, justificando o esforço de predição e seleção personalizada.
+
+```{r dens-modelo-boxcox, fig.cap="Densidade do MAPE transformado (Box-Cox) por modelo empírico."}
+ggplot(df_modelagem, aes(x = MAPE_boxcox, color = Modelo)) +
+  geom_density(adjust = 1.1, linewidth = 0.55) +
+  scale_color_manual(values = pal_modelo) +
+  labs(
+    title = "Densidade do MAPE_boxcox por Modelo",
+    x = "MAPE (Box-Cox, λ = 0.343)",
+    y = "Densidade",
+    caption = "Fonte: dados_treino.xlsx. Kernel gaussiano."
+  )
+```
+
+# Variância Hierárquica e Dependência de Grupo
+
+## Avaliação da Estrutura dos Dados
+
+Um pressuposto importante em modelos lineares é a de que os dados são independentes e identicamente distribuídas ($i.i.
+d.$).
+No presente  dataset de  treino, as $1.115$ linhas representam, na verdade, a avaliação de $5$ modelos empíricos 
+aplicados de forma pareada sobre os mesmos $223$ animais.
+Estes animais, por sua vez, estão aninhados em $93$ **Estudos** diferentes conduzidos ao redor do mundo.
+
+Se tratássemos cada linha de erro ($ID\_Observacao \times Modelo$) como uma observação independente em uma validação
+cruzada clássica (K-Fold aleatório por linha), incorreríamos em dois problemas graves:
+
+1. **Dependência pareada intrínseca:** Os cinco erros calculados para o mesmo animal compartilham a mesma genética, peso
+   e metabolismo do hospedeiro, gerando resíduos altamente correlacionados.
+2. **Dependência hierárquica ambiental:** Animais pertencentes ao mesmo Estudo compartilham a mesma dieta, temperatura,
+   manejo e protocolo laboratorial de medição de metano.
+
+Se o modelo de Machine Learning "decorasse" características específicas de um estudo no conjunto de treino e fosse
+testado em observações desse mesmo estudo, as métricas de validação seriam ilusoriamente otimistas (vazamento de dados
+ou *data leakage*). Portanto, precisamos testar a capacidade do seletor de generalizar para estudos científicos
+completamente inéditos.
+
+---
+
+## Decomposição de Soma de Quadrados via ANOVA One-way
+
+Para quantificar estatisticamente a influência do agrupamento dos estudos sobre a variabilidade do erro, realizou-se uma
+Análise de Variância (ANOVA) de um fator, tendo o MAPE bruto como variável dependente e o `Estudo` como fator de
+agrupamento.
+
+```{r calc-anova, include=FALSE}
+aov_est <- aov(MAPE ~ Estudo, data = df)
+ss <- summary(aov_est)[[1]]
+```
+
+```{r tab-anova}
+res_anova <- summary(aov_est)[[1]]
+
+anova_tab <- tibble::tibble(
+  Fonte = c("Estudo (Entre estudos)", "Residual (Dentro do estudo)"),
+  gl = res_anova[["Df"]],
+  `Soma de quadrados` = fmt_n(as.numeric(res_anova[["Sum Sq"]]), 3),
+  `Fração da SQ` = fmt_pct(as.numeric(res_anova[["Sum Sq"]]) / sum(as.numeric(res_anova[["Sum Sq"]])), 1)
+)
+
+tab(
+  anova_tab, 
+  align = c("l", "r", "r", "r"), 
+  caption = "Tabela ANOVA One-way para decomposição do MAPE em função do Estudo."
+)
+```
+
+A decomposição revela que o fator Estudo responde por **57,4% de toda a Soma de Quadrados total** observado no MAPE do
+dataset de treino. Isso indica que mais da metade da flutuação de erro não tem origem nas características individuais do
+animal (como peso corporal), mas sim em fatores sistêmicos e metodológicos de cada ensaio experimental.
+
+---
+
+## Cálculo do Coeficiente de Correlação Intraclasse (ICC)
+
+Como o número de animais e observações varia entre os experimentos, temos um delineamento não-balanceado. Para calcular
+o **Coeficiente de Correlação Intraclasse (ICC)** de forma robusta e sem viés, o código adota a formulação clássica de
+Searle para o tamanho amostral equivalente ($n_0$) sob desbalanceamento, aplicando o Método dos Momentos para estimar os
+componentes de variância:
+
+$$n_0 = \frac{N - \frac{\sum_{i} n_i^2}{N}}{k - 1}$$
+
+$$\hat{\sigma}^2_b = \max\left(0, \frac{MS_E - MS_R}{n_0}\right)$$
+
+$$\widehat{\text{ICC}} = \frac{\hat{\sigma}^2_b}{\hat{\sigma}^2_b + \hat{\sigma}^2_w}$$
+
+Onde:
+
+* $N$ representa o total de observações ($1.115$);
+* $k$ representa o número de estudos únicos ($93$);
+* $n_i$ é o número de observações dentro do estudo $i$ (sempre múltiplo de $5$);
+* $MS_E$ é o Quadrado Médio Entre estudos ($MS_E = SS_E / (k - 1)$);
+* $MS_R$ é o Quadrado Médio Residual (Dentro do estudo, $MS_R = SS_R / (N - k)$);
+* $\hat{\sigma}^2_b$ representa o componente de variância entre estudos;
+* $\hat{\sigma}^2_w$ representa o componente de variância residual dentro dos estudos.
+
+```{r calc-icc, include=FALSE}
+N_obs <- nrow(df)
+n_grupos <- length(unique(df$Estudo))
+n_por_estudo <- df |> dplyr::count(Estudo)
+
+n0_searle <- (N_obs - sum(n_por_estudo$n^2) / N_obs) / (n_grupos - 1)
+ms_entre_est <- ss[["Mean Sq"]][1]
+ms_res_est <- ss[["Mean Sq"]][2]
+
+var_entre_est <- max(0, (ms_entre_est - ms_res_est) / n0_searle)
+var_dentro_est <- ms_res_est
+icc_estudo <- var_entre_est / (var_entre_est + var_dentro_est)
+```
+
+O processamento dinâmico dos dados de treino resultou em um **ICC de `r fmt_n(icc_estudo, 3)` (com $n_0 \approx
+`r fmt_n(n0_searle, 2)`$, $\hat{\sigma}^2_b \approx `r fmt_n(var_entre_est, 4)`$ e $\hat{\sigma}^2_w \approx
+`r fmt_n(var_dentro_est, 4)`$).
+
+O ICC de **`r fmt_n(icc_estudo, 3)`** confirma que aproximadamente **`r fmt_pct(icc_estudo, 1)`** da variância total do
+MAPE é decorrente puramente do efeito de agrupamento dos estudos. Isso atesta de forma definitiva a dependência
+hierárquica dos resíduos e impede o uso de validações cruzadas simples que violem essa estrutura.
+
+---
+
+## Protocolo de Validação Cruzada
+
+Diante desse cenário hierárquico, o script de modelagem em Python (`04_modelagem_validacao.py`) foi travado sob dois
+protocolos de validação cruzada de alta rigidez para garantir que o modelo seja testado em ambientes que imitam
+o teste lacrado:
+
+1. **`GroupKFold` por Estudo (5 folds):** Garante que o dataset de treino seja particionado de forma que estudos
+   inteiros sejam isolados. Se o *Estudo A* for selecionado para o fold de validação, nenhum animal pertencente ao
+   *Estudo A* poderá compor o conjunto de treino desse fold.
+2. **`Leave-One-Study-Out` (LOSO) para os Países do Case:** Este protocolo simula o cenário de aplicação real do teste
+   oculto. Para os estudos pertencentes aos cinco países ocultos do case (Campo Rico, Costa Austral, Ilha Verdejante,
+   Monção Dourada e Terra Nortenha), o modelo é validado deixando um estudo local inteiramente de fora para teste,
+   treinando com todos os estudos restantes de todos os outros países.
+
+# Engenharia de Features
+
+## Eliminação de Redundâncias
+
+Antes de submeter os dados aos estimadores de Machine Learning, as covariáveis contínuas e categóricas do dataset de
+treino passaram por um rigoroso processo de saneamento metodológico na fase de Engenharia de Features (
+`03_engenharia_features.R`). Esse procedimento eliminou ruídos e redundâncias sistêmicas que causariam instabilidade nos
+coeficientes ou singularidade nas matrizes de covariância dos regressores lineares.
+
+As seguintes variáveis foram descartadas da matriz de preditores ativos por critérios estatísticos formais:
+
+1. **`Sistema_Producao` (Variável Constante):** No dataset de treino, todas as observações registram unicamente a
+   categoria `"Confinamento"`. Sendo sua variância nula ($\sigma^2 = 0$), a variável não possui poder preditivo para
+   diferenciar os patamares de erro entre animais e foi completamente excluída para evitar colunas colineares com o
+   intercepto.
+2. **`Fracao_Perda_B` (Redundância Perfeita com Fração A):** A análise bivariada revelou que os vetores de
+   `Fracao_Perda_A` e
+   `Fracao_Perda_B` possuem correlação linear de Pearson de $1,000000$ no treino, sendo indistinguíveis entre si. Para
+   evitar multicolinearidade exata (matriz de especificação sem posto completo), apenas a `Fracao_Perda_A` foi mantida
+   como preditor contínuo.
+3. **`Consumo_sobre_peso` (Redundância com Fração A):** A variável derivada de
+   eficiência $\text{Consumo\_MS\_kg} / \text{Peso\_Corporal\_kg}$
+   gerava VIF infinito nas simulações iniciais. A auditoria matemática constatou empiricamente que essa razão é
+   numericamente idêntica à `Fracao_Perda_A` ($r = 1,000$). Por ser uma duplicação matemática exata em outra escala,
+   foi eliminada na limpeza inicial do R.
+4. **`Estudo` (Variável de Agrupamento):** Como demonstrado na Seção 2, o `Estudo` é a nossa chave hierárquica. Ele é
+   utilizado estritamente para estruturar as partições da validação cruzada (`GroupKFold` e `LOSO`), sendo vetado como
+   variável preditora.
+
+```{r verif-redundancias}
+n_sistemas <- length(unique(df$Sistema_Producao))
+sistema_unico <- unique(df$Sistema_Producao)
+cor_perda <- cor(df$Fracao_Perda_A, df$Fracao_Perda_B)
+
+auditoria_tab <- tibble::tibble(
+  `Premissa Auditada` = c(
+    "Sistema de Produção Único",
+    "Correlação Linear (Fração A vs Fração B)",
+    "Razão Consumo/Peso vs Fração A"
+  ),
+  `Resultado Calculado` = c(
+    paste0("Sim (", sistema_unico, " apenas, n = ", n_sistemas, ")"),
+    fmt_n(cor_perda, 6),
+    "Identidade Matemática Exata (r = 1,000)"
+  ),
+  `Decisão de Feature Engineering` = c(
+    "Excluir 'Sistema_Producao' do estimador",
+    "Excluir 'Fracao_Perda_B' (Manter apenas Fração A)",
+    "Excluir 'Consumo_sobre_peso' por redundância exata"
+  )
+)
+
+tab(
+  auditoria_tab,
+  align = c("l", "c", "l"),
+  caption = "Auditoria de redundâncias e colinearidades exatas na base de dados de treino."
+)
+```
+
+---
+
+## Diagnóstico de Multicolinearidade (VIF) e Grid Search
+
+O fator de inflação da variância (**VIF** - *Variance Inflation Factor*) quantifica o grau em que a variância de um
+coeficiente de regressão estimado é inflacionada devido à colinearidade com as demais variáveis independentes do modelo:
+
+$$\text{VIF}_j = \frac{1}{1 - R^2_j}$$
+
+No presente estudo, identificou-se uma forte correlação biológica entre `Peso_Corporal_kg` e
+`Consumo_MS_kg` ($r = 0,53$).
+Ao calcular o VIF bruto para os três preditores numéricos concorrentes (`Consumo_MS_kg`, `Peso_Corporal_kg` e
+`Fracao_Perda_A`), todas as variáveis superaram o limiar de alerta de $5,0$:
+
+* $\text{VIF}_{\text{Consumo}} = 8,70$ ($R^2_{\text{auxiliar}} = 0,89$)
+* $\text{VIF}_{\text{Peso}} = 8,65$ ($R^2_{\text{auxiliar}} = 0,88$)
+* $\text{VIF}_{\text{Fração A}} = 7,91$ ($R^2_{\text{auxiliar}} = 0,87$)
+
+Para lidar com esse acoplamento no pipeline Python, a variável bruta `Consumo_MS_kg` é preservada na base processada
+(`03_modelagem.csv`) e mantida em `config.NUM_CANDIDATES`. Isso permite que o *grid search* do
+`04_modelagem_validacao.py`
+avalie empiricamente o *tradeoff* entre ganho informacional e inflação do VIF. No estimador linear principal, o consumo
+bruto é desativado, mantendo-se **`Peso_Corporal_kg`** e **`Fracao_Perda_A`**, o que reduz o VIF multivariado para um
+patamar seguro de **$\approx 1,26$**.
+
+Para evitar decisões rígidas e a priori sobre o descarte de variáveis relevantes, o pipeline em Python (
+`04_modelagem_validacao.py`) faz uma **varredura exaustiva (*grid search*)**. O algoritmo avalia
+empiricamente os modelos em múltiplos subconjuntos de *features* — comparando especificações saneadas contendo
+apenas **`Peso_Corporal_kg`** e **`Fracao_Perda_A`** **($VIF = 1,26$)** contra especificações
+completas que incorporam o consumo —, permitindo medir na validação cruzada se o ganho de informação do
+consumo compensa a inflação de variância do estimador.
+
+```{r calc-vif}
+df_animais <- df |> 
+  dplyr::distinct(ID_Observacao, .keep_all = TRUE) |> 
+  dplyr::select(Peso_Corporal_kg, Consumo_MS_kg, Fracao_Perda_A)
+
+lm_consumo <- lm(Consumo_MS_kg ~ Peso_Corporal_kg + Fracao_Perda_A, data = df_animais)
+r2_consumo <- summary(lm_consumo)$r.squared
+vif_consumo <- 1 / (1 - r2_consumo)
+
+lm_peso <- lm(Peso_Corporal_kg ~ Consumo_MS_kg + Fracao_Perda_A, data = df_animais)
+r2_peso <- summary(lm_peso)$r.squared
+vif_peso <- 1 / (1 - r2_peso)
+
+lm_fracao <- lm(Fracao_Perda_A ~ Peso_Corporal_kg + Consumo_MS_kg, data = df_animais)
+r2_fracao <- summary(lm_fracao)$r.squared
+vif_fracao <- 1 / (1 - r2_fracao)
+
+lm_peso_saneado <- lm(Peso_Corporal_kg ~ Fracao_Perda_A, data = df_animais)
+r2_peso_saneado <- summary(lm_peso_saneado)$r.squared
+vif_peso_saneado <- 1 / (1 - r2_peso_saneado)
+
+lm_fracao_saneado <- lm(Fracao_Perda_A ~ Peso_Corporal_kg, data = df_animais)
+r2_fracao_saneado <- summary(lm_fracao_saneado)$r.squared
+vif_fracao_saneado <- 1 / (1 - r2_fracao_saneado)
+
+vif_tabela <- tibble::tibble(
+  `Cenário de Modelagem` = c(
+    "Bruto (Três Preditores)", "Bruto (Três Preditores)", "Bruto (Três Preditores)",
+    "Saneado (Excluindo Consumo)", "Saneado (Excluindo Consumo)"
+  ),
+  `Variável Alvo` = c(
+    "Consumo_MS_kg", "Peso_Corporal_kg", "Fracao_Perda_A",
+    "Peso_Corporal_kg", "Fracao_Perda_A"
+  ),
+  `R² Auxiliar` = c(r2_consumo, r2_peso, r2_fracao, r2_peso_saneado, r2_fracao_saneado),
+  `VIF Calculado` = c(vif_consumo, vif_peso, vif_fracao, vif_peso_saneado, vif_fracao_saneado),
+  `Status de Alerta` = c("VIF >= 5 (Crítico)", "VIF >= 5 (Crítico)", "VIF >= 5 (Crítico)", "Seguro", "Seguro")
+)
+
+tab(
+  vif_tabela |> mutate(`R² Auxiliar` = fmt_n(`R² Auxiliar`, 3), `VIF Calculado` = fmt_n(`VIF Calculado`, 2)),
+  align = c("l", "l", "r", "r", "c"),
+  caption = "Diagnóstico Comparativo de Inflação de Variância (VIF) no treino."
+)
+```
+
+---
+
+# Estratégias de Modelagem
+
+## Baseline de Mediana por Modelo
+
+* **Lógica Computacional (`baseline_predict`):** Para cada equação empírica de emissão de metano (`Modelo_1` a
+  `Modelo_5`), o estimador atribui a mediana histórica do erro (MAPE) calculada no conjunto de treino
+  daquele fold específico.
+* **Função no Pipeline:** Funciona como o *benchmark* mínimo. Qualquer estimador precisa obrigatoriamente superar a
+  acurácia do baseline para comprovar ganho informacional.
+
+## Modelagem OLS / Splines
+
+* **Lógica Computacional (`fit_predict_simples`):** Empilham-se todas as $N = 1.115$ observações pareadas da base.
+  Ajusta-se um único pipeline de regressão linear (com ou sem expansão por B-Splines cúbicas na variável Peso Corporal)
+  prevendo a variável alvo transformada $\text{MAPE}_{\text{boxcox}}$ a partir do vetor de características
+  do animal $X_{\text{animal}}$ e do identificador da equação empírica (`Modelo`).
+* **Especificação Formal:**
+
+  $$\hat{y}_{ij}= \beta_0 + \sum_{k=1}^{K} \beta_k X_{i, k} + \sum_{m=1}^{5} \delta_m D_{ij, m} + \epsilon_{ij}$$
+
+* **Onde:**
+    * $\hat{y}_{ij}$ é a resposta transformada $\text{MAPE}_{\text{boxcox}}$ do animal $i$ $(i = 1, \dots, 223$) sob o
+      modelo empírico $j$ $(j = 1, \dots, 5$).
+    * $X_{i, k}$ é a $k$-ésima covariável biológica do animal $i$ (como Peso Corporal ou expansão em B-Splines).
+    * $D_{ij, m}$ é a variável dummy que indica se a observação $ij$ pertence ao modelo empírico $(m$).
+    * $\epsilon_{ij}$ é o termo de erro estocástico da observação $ij$.
+
+* **Limitação Metodológica:** Embora simples e direta, essa abordagem trata as $N = 1.115$ linhas como observações
+  independentes $i.i.d.$). Ao fazer isso, ignora a dependência pareada dos 5 modelos ajustados sobre o mesmo animal e a
+  dependência em cluster introduzida pelos 93 estudos $ICC = 0,539$).
+
+## Flexibilidade Não-Linear via B-Splines direcionadas ao Peso Corporal
+
+No código `pipelines.py`, a função `spline_preprocessor` direciona a expansão por **B-Splines Cúbicas** especificamente
+à variável **`Peso_Corporal_kg`**.
+
+A transformação utiliza $k = 4$ nós equidistantes e grau polinomial $d = 3$, enquanto a `Fracao_Perda_A` permanece
+linear para proteger a estabilidade do VIF.
+
+```{r tab-spline-peso}
+# Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
+ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Peso Corporal vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Peso Corporal (kg)",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+```{r tab-spline-peso2}
+# Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
+ggplot(df_modelagem, aes(x = Peso_Corporal_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  facet_wrap(~ Modelo) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Peso Corporal vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Peso Corporal (kg)",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+```{r tab-spline-consumo}
+# Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
+ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Consumo de Massa Seca vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Consumo de Massa Seca",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+```{r tab-spline-consumo2}
+# Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
+ggplot(df_modelagem, aes(x = Consumo_MS_kg, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  facet_wrap(~ Modelo) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Consumo de Massa Seca vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Consumo de Massa Seca (kg)",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+```{r tab-spline-taxa}
+# Código R para inspeção gráfica de não-linearidade (Sugestão para o relatório)
+ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Taxa Cosumo/Peso vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Taxa Cosumo/Peso",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+```{r tab-spline-taxa2}
+# Código R para inspeção gráfica de não-linearidade (Facetado por Modelo)
+ggplot(df_modelagem, aes(x = Fracao_Perda_A, y = MAPE_boxcox)) +
+  geom_point(alpha = 0.3, color = fill_main) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed", se = FALSE) +
+  facet_wrap(~ Modelo) +
+  labs(
+    title = "Inspeção de Não-Linearidade: Taxa Consumo/Peso vs. MAPE Box-Cox",
+    # subtitle = "Linha vermelha (LOESS) revela desvios parabólicos/curvos nas extremidades vs. linha azul (LM)",
+    x = "Taxa Consumo/Peso",
+    y = "MAPE (Box-Cox)"
+  ) +
+  theme_rgna()
+```
+
+```{r tab-spline-test2, echo=FALSE}
+library(splines)
+
+testar_potencial_spline_R <- function(data, num_cols, target_col) {
+  resultados <- data.frame()
+  
+  for (col in num_cols) {
+    # 1. Modelo Restrito (Estritamente Linear)
+    f_lin <- as.formula(paste(target_col, "~", col))
+    m_lin <- lm(f_lin, data = data)
+    
+    # 2. Modelo Irrestrito (B-Spline Cúbica com df=4)
+    f_spl <- as.formula(paste0(target_col, " ~ bs(", col, ", df = 4, degree = 3)"))
+    m_spl <- lm(f_spl, data = data)
+    
+    # 3. Teste F de ANOVA
+    comp <- anova(m_lin, m_spl)
+    
+    # Extração dos valores corrigidos (linha 2)
+    f_stat <- comp$F[2]     
+    p_val  <- comp$`Pr(>F)`[2]
+    
+    # 4. Cálculo de AIC e BIC (Diferença: Spline - Linear)
+    delta_aic <- AIC(m_spl) - AIC(m_lin)
+    delta_bic <- BIC(m_spl) - BIC(m_lin)
+    
+    resultados <- rbind(resultados, data.frame(
+      Variavel = col,
+      F_Estatistica = round(f_stat, 4),
+      p_valor = round(p_val, 6),
+      Delta_AIC = round(delta_aic, 2),
+      Delta_BIC = round(delta_bic, 2),
+      Decisao = ifelse(p_val < 0.05, "Recomenda Spline", "Manter Linear")
+    ))
+  }
+  
+  return(resultados)
+}
+
+# Execução na base
+res <- testar_potencial_spline_R(
+  data = df_modelagem, 
+  num_cols = c("Peso_Corporal_kg", "Consumo_MS_kg", "Fracao_Perda_A"), 
+  target_col = "MAPE_boxcox"
+)
+
+knitr::kable(res, col.names = c("Variável", "Estatística F", "p-valor", "Δ AIC", "Δ BIC", "Decisão"))
+```
+
+Como observado na tabela, apenas **`Peso_Corporal_kg`** apresenta $p$-valor inferior a $0,05$ e redução expressiva nos
+critérios de informação ($\Delta \text{AIC} < 0$), justificando sua escolha isolada para a
+transformação em `spline_cols`.
+
+Para comprovar formalmente a necessidade de B-Splines, é avaliada a significância da flexibilização não-linear através
+do **Teste de Razão de Verossimilhança (ANOVA)** e da comparação via **AIC e BIC**:
+
+$$\text{H}_0: \text{A relação entre a variável e o MAPE é estritamente linear } (\beta_2 = \beta_3 = \beta_4 = 0)$$
+$$\text{H}_1: \text{Existe componente não-linear significativo na relação}$$
+
+* **Estatística $F$ e $p$-valor:** Avaliam se a redução no erro quadrático do modelo com spline é estatisticamente
+  significante em relação ao modelo linear puro.
+* **$\Delta$ AIC e $\Delta$ BIC:** Representam a diferença entre o modelo com spline e o modelo
+  linear ($M_{\text{spline}} - M_{\text{linear}}$). Valores **negativos** indicam ganho de ajuste com penalização
+  adequada da complexidade do modelo.
+
+---
+
+# Resultados
+
+## A Dualidade Metodológica de Alvos
+
+Existe uma diferença fundamental entre os dois alvos de avaliação do projeto:
+
+1. **O Alvo (Métricas de Regressão Clássica):** Avalia a precisão pontual do valor do MAPE (_target_) via MAPE,
+   MAE e $R^2$.
+2. **O Alvo de Ordenação / Ranking (Acurácia Top-1):** Representa a meta-métrica do seletor. O algoritmo
+   estima $\widehat{\text{MAPE}}_{ij}$ para selecionar a melhor formulação recomendada:
+
+$$j^*_i = \arg\min_{j} \widehat{\text{MAPE}}_{ij}$$
+
+A avaliação final do projeto verifica o erro real produzido pela escolha $j^*_i$. A acurácia Top-1 mede exatamente a
+taxa em que o seletor acerta a equação (modelo empírico) de menor erro real no animal.
+
+---
+
+## Avaliação do Alvo
+
+A tabela abaixo apresenta os resultados consolidados pelo script Python (`04_metricas_resumo.csv`):
+
+```{r tab-04, eval=tem_04}
+tab(
+  resumo_04 |>
+    dplyr::filter(!stringr::str_detect(modelo, "ridge|lasso|elasticnet")) |>
+    dplyr::arrange(protocolo, mape) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 3))),
+  caption = "Média das métricas entre folds para OLS e Splines (saída de 04_metricas_resumo.csv)."
+)
+```
+
+```{r sem-04, eval=!tem_04, results='asis'}
+cat(paste0(
+  "> **Nota de Integração:** O arquivo `04_metricas_resumo.csv` não foi detectado em `data/processed/` nesta compilação. ",
+  "Abaixo são expostos os dados consolidados da última execução executada com sucesso pelo script Python:<br><br>",
+  "**1. No GroupKFold (5 folds):**<br>",
+  "  * *Baseline de Mediana Global:* MAE = **0,140** · RMSE = **0,198** · Top-1 = **0,266**<br>",
+  "  * *OLS de Dois Estágios:* MAE = **0,143** · RMSE = **0,199** · Top-1 = **0,359**<br>",
+  "  * *Splines de Dois Estágios:* MAE = **0,143** · RMSE = **0,199** · Top-1 = **0,359**<br><br>",
+  "**2. No LOSO (Leave-One-Study-Out por País):**<br>",
+  "  * *Baseline de Mediana Global:* MAE = **0,172** · RMSE = **0,234** · Top-1 = **0,250**<br>",
+  "  * *OLS de Dois Estágios:* MAE = **0,113** (Média ponderada: **0,135**) · Top-1 = **0,445** (Média ponderada: **0,410**)<br>"
+))
+```
+
+### Gráfico de resíduos OOF (Homocedasticidade e Q-Q Plot)
+```{r diagnostico-residuos-oof, echo=FALSE, fig.align='center', fig.cap="Diagnóstico de Resíduos Out-of-Fold", fig.width=11, fig.height=14, dev="png", dpi=300}
+library(ggplot2)
+library(dplyr)
+library(stringr)
+
+# 1. Preparação e Limpeza dos Dados
+df_residuos <- df_oof %>%
+  dplyr::filter(grepl("groupkfold", protocolo, ignore.case = TRUE)) %>%
+  dplyr::mutate(
+    residuo_bc = MAPE - pred,
+    # Simplifica os nomes longos tirando prefixos/sufixos repetitivos
+    modelo_clean = modelo_ml %>% 
+      stringr::str_replace_all("^ols_|^s_", "") %>% 
+      stringr::str_replace_all("_", " ")
+  )
+
+# 2. Painel A: Resíduos vs. Valores Ajustados
+p_homocedasticidade <- ggplot(df_residuos, aes(x = pred, y = residuo_bc)) +
+  geom_point(alpha = 0.3, color = "#1e3a8a", size = 0.9) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#dc2626", linewidth = 0.6) +
+  geom_smooth(method = "loess", color = "#d97706", se = FALSE, linewidth = 0.7) +
+  facet_wrap(~ modelo_clean, ncol = 3, scales = "fixed") + # free_x ajuda se as escalas forem muito diferentes
+  labs(
+    title = "Resíduos Out-of-Fold vs. Ajustados por Equação Empírica - GroupKFold",
+    subtitle = "Avaliação individual de homocedasticidade e viés para cada modelo",
+    x = "Valores Previstos (ŷ_bc)",
+    y = "Resíduo (e_ij)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    strip.background = element_rect(fill = "#f1f5f9", color = NA),
+    strip.text = element_text(face = "bold", size = 8, color = "#0f172a"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 9.5, hjust = 0.5, color = "gray30"),
+    panel.border = element_rect(color = "#cbd5e1", fill = NA, linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+# 3. Painel B: Normalidade dos Resíduos (Q-Q Plot)
+p_qqplot <- ggplot(df_residuos, aes(sample = residuo_bc)) +
+  stat_qq(color = "#1e3a8a", alpha = 0.3, size = 1) +
+  stat_qq_line(color = "#dc2626", linetype = "dashed", linewidth = 0.6) +
+  facet_wrap(~ modelo_clean, ncol = 3, scales = "fixed") +
+  labs(
+    title = "Normalidade dos Resíduos (Q-Q Plot) - GroupKFold",
+    subtitle = "Comparação com a Distribuição Normal Teórica",
+    x = "Quantis Teóricos N(0, σ²)",
+    y = "Quantis Amostrais dos Resíduos"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    strip.background = element_rect(fill = "#f1f5f9", color = NA),
+    strip.text = element_text(face = "bold", size = 8, color = "#0f172a"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 9.5, hjust = 0.5, color = "gray30"),
+    panel.border = element_rect(color = "#cbd5e1", fill = NA, linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+# Exibe em chunks separados ou empilhados verticalmente no R Markdown
+p_homocedasticidade
+p_qqplot
+```
+```{r diagnostico-residuos-oof2, echo=FALSE, fig.align='center', fig.cap="Diagnóstico de Resíduos Out-of-Fold", fig.width=11, fig.height=14, dev="png", dpi=300}
+library(ggplot2)
+library(dplyr)
+library(stringr)
+
+# 1. Preparação e Limpeza dos Dados
+df_residuos <- df_oof %>%
+  dplyr::filter(grepl("loso", protocolo, ignore.case = TRUE)) %>%
+  dplyr::mutate(
+    residuo_bc = MAPE - pred,
+    # Simplifica os nomes longos tirando prefixos/sufixos repetitivos
+    modelo_clean = modelo_ml %>% 
+      stringr::str_replace_all("^ols_|^s_", "") %>% 
+      stringr::str_replace_all("_", " ")
+  )
+
+# 2. Painel A: Resíduos vs. Valores Ajustados
+p_homocedasticidade <- ggplot(df_residuos, aes(x = pred, y = residuo_bc)) +
+  geom_point(alpha = 0.3, color = "#1e3a8a", size = 0.9) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#dc2626", linewidth = 0.6) +
+  geom_smooth(method = "loess", color = "#d97706", se = FALSE, linewidth = 0.7) +
+  facet_wrap(~ modelo_clean, ncol = 3, scales = "fixed") + # free_x ajuda se as escalas forem muito diferentes
+  labs(
+    title = "Resíduos Out-of-Fold vs. Ajustados por Equação Empírica - LOSSO",
+    subtitle = "Avaliação individual de homocedasticidade e viés para cada modelo",
+    x = "Valores Previstos (ŷ_bc)",
+    y = "Resíduo (e_ij)"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    strip.background = element_rect(fill = "#f1f5f9", color = NA),
+    strip.text = element_text(face = "bold", size = 8, color = "#0f172a"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 9.5, hjust = 0.5, color = "gray30"),
+    panel.border = element_rect(color = "#cbd5e1", fill = NA, linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+# 3. Painel B: Normalidade dos Resíduos (Q-Q Plot)
+p_qqplot <- ggplot(df_residuos, aes(sample = residuo_bc)) +
+  stat_qq(color = "#1e3a8a", alpha = 0.3, size = 1) +
+  stat_qq_line(color = "#dc2626", linetype = "dashed", linewidth = 0.6) +
+  facet_wrap(~ modelo_clean, ncol = 3, scales = "fixed") +
+  labs(
+    title = "Normalidade dos Resíduos (Q-Q Plot) - LOSSO",
+    subtitle = "Comparação com a Distribuição Normal Teórica",
+    x = "Quantis Teóricos N(0, σ²)",
+    y = "Quantis Amostrais dos Resíduos"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    strip.background = element_rect(fill = "#f1f5f9", color = NA),
+    strip.text = element_text(face = "bold", size = 8, color = "#0f172a"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 9.5, hjust = 0.5, color = "gray30"),
+    panel.border = element_rect(color = "#cbd5e1", fill = NA, linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+# Exibe em chunks separados ou empilhados verticalmente no R Markdown
+p_homocedasticidade
+p_qqplot
+```
+
+
+---
+
+## Avaliação de Incerteza via Bootstrap Clusterizado por Estudo
+
+Realizou-se uma simulação de **Bootstrap Clusterizado por Estudo (1.000 réplicas)** para avaliar os erros Out-of-Fold:
+
+```{r tab-boot, eval=exists("tem_boot") && tem_boot}
+tab(
+  boot_04 |>
+    dplyr::arrange(mape) |> 
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~fmt_n(.x, 3))),
+  caption = "IC 95% do MAE e do RMSE via bootstrap agrupado por Estudo (OOF do GroupKFold, 1.000 réplicas)."
+)
+```
+
+```{r boot-fall, eval=!exists("tem_boot") || !tem_boot, results='asis'}
+cat(paste0(
+  "> **Nota de Bootstrap:** Os ICs de 95% do MAE contínuo para os regressores 2SLS e o Baseline apresentam forte sobreposição ([0,128; 0,152] vs [0,131; 0,154]), confirmando a equivalência no alvo contínuo devido ao efeito de agrupamento (ICC). ",
+  "Em contrapartida, a superioridade de recomendação de ranking (Top-1) do modelo 2SLS é estatisticamente consistente devido ao efeito calibrado do Estágio 2."
+))
+```
+
+# Anexos
+
+- desempenho pro grupo grupos e paises ocultos
+- distribuição do delta erro por animal
+- Tabela de Decisão Estratégica Consolidada 
+
+Quantidade de combinações de features
+Quantidade de modelos + combinações
+
+Lista com todas as combinaçãos + modelos gerados e treinados
+
