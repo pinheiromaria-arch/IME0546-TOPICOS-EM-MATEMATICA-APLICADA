@@ -230,22 +230,38 @@ def run_loso_paises(df: pd.DataFrame) -> tuple[list[dict], pd.DataFrame, list[st
 
 def summarize_results(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Agrega os resultados dos folds."""
-    utils.log(f"Agregando resultados dos folds...")
+    utils.log(f"Agregando resultados dos folds com estratégia '{config.AGGREGATION_STRATEGY}'...")
     raw = pd.DataFrame(rows)
     if raw.empty:
         cols = ["protocolo", "modelo", "n_folds", "mape", "mae", "rmse", "r2", "top1", "top1_sempre_campeao"]
         return raw, pd.DataFrame(columns=cols)
+
+    strategy = str(config.AGGREGATION_STRATEGY).lower()
+    if strategy in {"weighted_mean", "weightedmean", "media_pesada"}:
+        def agg_metric(series: pd.Series) -> float:
+            return float(np.average(series.to_numpy(dtype=float), weights=raw.loc[series.index, "n"]))
+    elif strategy == "mean":
+        def agg_metric(series: pd.Series) -> float:
+            return float(series.mean())
+    elif strategy == "median":
+        def agg_metric(series: pd.Series) -> float:
+            return float(series.median())
+    else:
+        raise ValueError(
+            "config.AGGREGATION_STRATEGY inválida. Use 'weighted_mean', 'mean' ou 'median'."
+        )
+
     agg = (
         raw.groupby(["protocolo", "modelo"], as_index=False)
         .agg(
             n_folds=("fold", "nunique"),
             n=("n", "sum"),
-            mape=("mape", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
-            mae=("mae", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
-            rmse=("rmse", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
-            r2=("r2", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
-            top1=("top1", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
-            top1_sempre_campeao=("top1_sempre_campeao", lambda s: np.average(s, weights=raw.loc[s.index, "n"])),
+            mape=("mape", agg_metric),
+            mae=("mae", agg_metric),
+            rmse=("rmse", agg_metric),
+            r2=("r2", agg_metric),
+            top1=("top1", agg_metric),
+            top1_sempre_campeao=("top1_sempre_campeao", agg_metric),
         )
         .sort_values(["protocolo", "mape"])
     )

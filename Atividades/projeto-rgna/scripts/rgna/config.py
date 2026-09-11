@@ -39,5 +39,10 @@ map_columns = {
 N_BOOT = 1000
 BOOT_SEED = 42
 
+# Estratégia de agregação dos resultados por fold
+# Opções: "weighted_mean" (padrão, usa pesos pelo número de observações do fold),
+# "mean" (média simples), "median" (mediana por fold).
+AGGREGATION_STRATEGY = "median"
+
 # Configurações do filtro de modelos
-TOP_N_MODELOS_POR_PROTOCOLO = 100
+TOP_N_MODELOS_POR_PROTOCOLO = 10
