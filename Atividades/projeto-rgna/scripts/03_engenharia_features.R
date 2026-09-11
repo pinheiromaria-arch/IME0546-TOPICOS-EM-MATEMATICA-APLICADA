@@ -3,7 +3,7 @@
 # Estudo permanece só como grupo de validação, não como preditor.
 
 # Carrega o tema e as funções de leitura a partir do caminho do próprio script.
-source(file.path(dirname(this.path::this.path()), "tema_rgna.R"), encoding = "UTF-8")
+source(file.path(dirname(rstudioapi::getActiveDocumentContext()$path), "tema_rgna.R"), encoding = "UTF-8")
 
 # --- Setup ---
 root <- find_root()
@@ -20,7 +20,7 @@ if (n_distinct(df$Sistema_Producao) != 1L) {
 }
 
 # Transformação Box-Cox para a variável resposta (MAPE)
-box_result <- boxcox(MAPE ~ 1, data = df, lambda = seq(-2, 2, 0.1), plotit = FALSE)
+box_result <- boxcox(MAPE ~ 1, data = df, lambda = seq(-2, 2, 0.001), plotit = FALSE)
 best_lambda <- box_result$x[which.max(box_result$y)]
 
 # Criação da base de modelagem
@@ -58,7 +58,7 @@ meta <- tibble(
   n_id = n_distinct(modelagem$ID_Observacao),
   n_estudo = n_distinct(modelagem$Estudo),
   campeao_global = campeao,
-  lambda_boxcox = best_lambda,
+  lambda_boxcox = round(best_lambda, 4),
   colunas_excluidas = "Sistema_Producao; Fracao_Perda_B",
   info = "Estudo usado apenas como grupo de CV. País será one-hot encoded."
 )

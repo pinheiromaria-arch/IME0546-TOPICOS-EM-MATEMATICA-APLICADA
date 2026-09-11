@@ -2,7 +2,7 @@
 # Relatório consolidado: relatorio/relatorio-eda.Rmd
 
 # Carrega o tema e as funções de leitura a partir do caminho do próprio script.
-source(file.path(dirname(this.path::this.path()), "tema_rgna.R"), encoding = "UTF-8")
+source(file.path(dirname(rstudioapi::getActiveDocumentContext()$path), "tema_rgna.R"), encoding = "UTF-8")
 
 # --- Setup ---
 root <- find_root()
