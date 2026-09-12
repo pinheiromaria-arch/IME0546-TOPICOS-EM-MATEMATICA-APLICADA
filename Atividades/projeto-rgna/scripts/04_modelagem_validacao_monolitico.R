@@ -205,7 +205,13 @@ prepare_cat_levels <- function(train, cat_cols) {
   for (col in cat_cols) {
     values <- as.character(train[[col]])
     values[is.na(values) | !nzchar(values)] <- safe_mode(values)
-    levels_map[[col]] <- unique(values)
+    todos_os_niveis <- unique(values)
+    # Descarta o primeiro nivel (categoria de referencia) para evitar
+    # colinearidade exata com o intercepto quando ha mais de uma categorica
+    # one-hot no mesmo modelo. Sem isso, a matriz de design fica com posto
+    # deficiente e .lm.fit() zera coeficientes de niveis arbitrarios (ex.:
+    # colapsava Modelo_4 e Modelo_5 no mesmo valor, quebrando o Top-1).
+    levels_map[[col]] <- if (length(todos_os_niveis) > 1L) todos_os_niveis[-1] else todos_os_niveis
     mode_map[[col]] <- safe_mode(values)
   }
   list(levels = levels_map, modes = mode_map)
@@ -638,59 +644,17 @@ main <- function() {
   out_dir <- file.path(root, "data", "processed")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-  df_raw <- ler_treino(root)
-  stopifnot(isTRUE(all.equal(df_raw$Fracao_Perda_A, df_raw$Fracao_Perda_B)))
-  if (n_distinct(df_raw$Sistema_Producao) != 1L) {
-    warning("Sistema_Producao nao e constante: ", paste(unique(df_raw$Sistema_Producao), collapse = ", "))
+  # Fase 3 (Box-Cox, 03_modelagem.csv, 03_meta.csv, campeao global) ja foi
+  # produzida por scripts/03_engenharia_features.R. Reaproveitamos esses
+  # artefatos em vez de recalcular Box-Cox aqui com outra grade de busca —
+  # isso e o que causava lambda divergente entre R e Python.
+  meta_path <- file.path(out_dir, "03_meta.csv")
+  if (!file.exists(meta_path)) {
+    stop("Rode antes scripts/03_engenharia_features.R (03_meta.csv nao encontrado).")
   }
-
-  box_result <- MASS::boxcox(MAPE ~ 1, data = df_raw, lambda = seq(-2, 2, 0.001), plotit = FALSE)
-  best_lambda <- box_result$x[which.max(box_result$y)]
-
-  modelagem <- df_raw |>
-    mutate(
-      MAPE_log = log(MAPE),
-      MAPE_boxcox = if (best_lambda == 0) log(MAPE) else (MAPE^best_lambda - 1) / best_lambda
-    ) |>
-    dplyr::select(
-      ID_Observacao,
-      Estudo,
-      Pais_Estudo,
-      Status_Metabolico,
-      Sexo_Animal,
-      Peso_Corporal_kg,
-      Consumo_MS_kg,
-      Fracao_Perda_A,
-      Modelo,
-      MAPE,
-      MAPE_log,
-      MAPE_boxcox
-    )
-
-  campeao <- df_raw |>
-    group_by(Modelo) |>
-    summarise(mediana = median(MAPE), .groups = "drop") |>
-    slice_min(mediana, n = 1, with_ties = FALSE) |>
-    pull(Modelo) |>
-    as.character()
-
-  meta <- tibble(
-    n_linhas = nrow(modelagem),
-    n_id = n_distinct(modelagem$ID_Observacao),
-    n_estudo = n_distinct(modelagem$Estudo),
-    campeao_global = campeao,
-    lambda_boxcox = round(best_lambda, 4),
-    colunas_excluidas = "Sistema_Producao; Fracao_Perda_B",
-    info = "Estudo usado apenas como grupo de CV. País será one-hot encoded."
-  )
-
-  write.csv(modelagem, file.path(out_dir, "03_modelagem.csv"), row.names = FALSE, fileEncoding = "UTF-8")
-  write.csv(meta, file.path(out_dir, "03_meta.csv"), row.names = FALSE, fileEncoding = "UTF-8")
-  writeLines(campeao, file.path(out_dir, "01_campeao_global.txt"))
-
-  df <- modelagem
-  df$Estudo <- as.character(df$Estudo)
-  log_msg(sprintf("Dados carregados: n=%d, estudos=%d", nrow(df), n_distinct(df$Estudo)))
+  df <- load_frame(root)
+  best_lambda <- as.numeric(read.csv(meta_path, stringsAsFactors = FALSE)$lambda_boxcox[[1]])
+  log_msg(sprintf("Dados carregados: n=%d, estudos=%d (lambda=%.4f de 03_meta.csv)", nrow(df), n_distinct(df$Estudo), best_lambda))
 
   vif <- compute_vif(df)
   write.csv(vif, file.path(out_dir, "04_vif.csv"), row.names = FALSE)
